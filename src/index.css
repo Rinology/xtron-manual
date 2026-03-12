@@ -138,14 +138,8 @@ h1, h2, h3, h4, h5, h6 {
 
 .main-content {
   flex: 1;
-  /* Hide scrollbar for Chrome, Safari and Opera */
-  &::-webkit-scrollbar {
-    display: none;
-  }
-  
-  /* Hide scrollbar for IE, Edge and Firefox */
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  position: relative;
+  overflow: hidden;
 }
 
 .page-container {
@@ -169,4 +163,31 @@ mark {
   color: var(--ci-primary);
   padding: 0 0.125rem;
   border-radius: 4px;
+}
+
+/* Hide scrollbars everywhere but keep functionality */
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+*::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Gemini-Style UI Enhancements */
+@keyframes aurora {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.aurora-bg {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(-45deg, rgba(47, 98, 134, 0.05), rgba(114, 191, 68, 0.04), rgba(47, 98, 134, 0.02), rgba(255, 255, 255, 0));
+  background-size: 400% 400%;
+  animation: aurora 15s ease infinite;
+  z-index: 0;
+  pointer-events: none;
 }

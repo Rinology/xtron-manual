@@ -12,11 +12,13 @@ export default function Header({ activePage, setActivePage }) {
       padding: '1rem 2rem',
       position: 'sticky',
       top: 0,
-      background: 'rgba(255, 255, 255, 0.95)',
-      backdropFilter: 'blur(8px)',
+      background: 'rgba(255, 255, 255, 0.75)',
+      backdropFilter: 'blur(16px)',
+      WebkitBackdropFilter: 'blur(16px)',
       zIndex: 50,
       minHeight: '64px',
-      borderBottom: guide ? '1px solid var(--surface-border)' : 'none',
+      borderBottom: guide ? '1px solid rgba(226, 232, 240, 0.5)' : '1px solid transparent',
+      transition: 'border-color var(--transition-normal)'
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
         <img 

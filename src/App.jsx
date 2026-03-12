@@ -21,7 +21,8 @@ function App() {
         setIsOpen={setIsSidebarOpen}
       />
       
-      <div className="main-content" style={{ flex: 1, padding: '0', display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
+      <div className="main-content">
+        <div className="aurora-bg"></div>
         <Header activePage={activePage} setActivePage={setActivePage} />
         <main 
           className="page-container" 

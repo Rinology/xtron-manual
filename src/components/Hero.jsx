@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Sparkles } from 'lucide-react';
+import { Search, Sparkles, X } from 'lucide-react';
 import { allGuideItems } from '../data/guides';
 
 export default function Hero({ setActivePage }) {
@@ -16,6 +16,10 @@ export default function Hero({ setActivePage }) {
     if(localSearch.trim() && matchedItems.length > 0) {
       setActivePage(matchedItems[0].id); // Go to first result
     }
+  };
+
+  const handleClearSearch = () => {
+    setLocalSearch('');
   };
 
   const suggestions = [
@@ -62,12 +66,12 @@ export default function Hero({ setActivePage }) {
             onChange={(e) => setLocalSearch(e.target.value)}
             style={{
               width: '100%',
-              padding: '1.25rem 1.5rem 1.25rem 3.5rem',
+              padding: '1.05rem 3.5rem 1.05rem 3.5rem',
               borderRadius: 'var(--radius-lg)',
               border: '2px solid var(--ci-primary-light)',
               background: 'var(--ci-white)',
               fontFamily: 'inherit',
-              fontSize: '1.2rem',
+              fontSize: '1.1rem',
               color: 'var(--text-primary)',
               outline: 'none',
               boxShadow: 'var(--shadow-md)',
@@ -76,13 +80,42 @@ export default function Hero({ setActivePage }) {
             onFocus={(e) => {
               setIsFocused(true);
               e.target.style.borderColor = 'var(--ci-primary)';
-              e.target.style.boxShadow = 'var(--shadow-lg)';
+              e.target.style.boxShadow = '0 0 0 4px rgba(47, 98, 134, 0.15), var(--shadow-lg)';
             }}
-            onBlur={() => {
+            onBlur={(e) => {
+              e.target.style.borderColor = 'var(--ci-primary-light)';
+              e.target.style.boxShadow = 'var(--shadow-md)';
               // Delay hiding to allow click on results
               setTimeout(() => setIsFocused(false), 200);
             }}
           />
+          
+          {localSearch && (
+            <button
+              type="button"
+              onClick={handleClearSearch}
+              style={{
+                position: 'absolute',
+                right: '1rem',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                color: 'var(--text-secondary)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '0.25rem',
+                borderRadius: '50%',
+                transition: 'background 0.2s'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.05)'}
+              onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+            >
+              <X size={20} />
+            </button>
+          )}
           
           {/* Dropdown Results */}
           <AnimatePresence>

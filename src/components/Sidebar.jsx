@@ -24,8 +24,10 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen }
         height: '100vh',
         position: 'sticky',
         top: 0,
-        background: 'var(--bg-color)',
-        borderRight: '1px solid var(--surface-border)',
+        background: 'rgba(248, 250, 252, 0.85)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        borderRight: '1px solid rgba(226, 232, 240, 0.6)',
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
@@ -166,9 +168,10 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen }
          justifyContent: 'center',
          gap: '0.5rem', 
          width: isOpen ? '320px' : '68px',
-         background: 'var(--bg-color)',
-         borderTop: '1px solid var(--surface-border)',
-         paddingBottom: '1.5rem'
+         background: 'transparent',
+         borderTop: '1px solid rgba(226, 232, 240, 0.6)',
+         paddingBottom: '1.5rem',
+         transition: 'width 0.3s ease-out'
       }}>
         <ExternalLinkButton isOpen={isOpen} icon={<MessageCircle size={18} />} text="카카오톡" url="https://pf.kakao.com" color="#371d1e" bg="#fee500" />
         <ExternalLinkButton isOpen={isOpen} icon={<ShoppingBag size={18} />} text="스토어" url="https://brand.naver.com" color="#ffffff" bg="#03c75a" />
