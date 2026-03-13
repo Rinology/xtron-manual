@@ -29,8 +29,8 @@ export default function Footer() {
       pointerEvents: 'none' // Let clicks pass through if it's just fading
     }}>
       <div style={{ pointerEvents: 'auto' }}>
-        <p style={{ marginBottom: '0.25rem', fontWeight: 600, color: 'var(--text-primary)' }}>© 2025 Quali Sports. All rights reserved.</p>
-        <p style={{ opacity: 0.8 }}>본 설명서는 퀄리 전기자전거 공식 고객 지원용으로 가장 최신의 정보를 제공합니다.</p>
+        <p style={{ marginBottom: '0.25rem', fontWeight: 600, color: 'var(--text-primary)' }}>© 2026 XTRON. All rights reserved.</p>
+        <p style={{ opacity: 0.8 }}>본 설명서는 엑스트론 전기자전거 공식 고객 지원용으로 가장 최신의 정보를 제공합니다.</p>
       </div>
     </footer>
   );
