@@ -1,5 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import Zoom from 'react-medium-image-zoom';
+import 'react-medium-image-zoom/dist/styles.css';
 import { BatteryCharging, Zap, ShieldCheck } from 'lucide-react';
 
 export default function BatteryGuide() {
@@ -36,11 +38,13 @@ export default function BatteryGuide() {
             <h4 style={{ fontSize: '1.1rem', marginBottom: '0.25rem', color: 'var(--text-primary)' }}>전원 끄기 및 분리</h4>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1rem' }}>먼저 자전거의 전원을 완전히 끄고, 열쇠를 이용해 잠금을 해제한 후 배터리를 프레임/싯포스트에서 분리합니다.</p>
             {/* TODO: 배터리 탈착 GIF 연결 */}
-            <img 
-              src="https://placehold.co/600x300?text=Battery+Detach+GIF\n(/images/battery/battery_detach.gif)" 
-              alt="배터리 탈착" 
-              style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '400px' }} 
-            />
+            <Zoom>
+              <img 
+                src="https://placehold.co/600x300?text=Battery+Detach+GIF\n(/images/battery/battery_detach.gif)" 
+                alt="배터리 탈착" 
+                style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '400px' }} 
+              />
+            </Zoom>
           </div>
         </motion.div>
 
@@ -65,11 +69,13 @@ export default function BatteryGuide() {
             <h4 style={{ fontSize: '1.1rem', marginBottom: '0.25rem', color: 'var(--text-primary)' }}>충전기 단자 결합</h4>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1rem' }}>충전기의 단자를 배터리의 충전 포트에 먼저 꽂아줍니다. (딸깍 소리가 날 때까지 밀어 넣습니다.)</p>
             {/* TODO: 특수 충전 단자 이미지 연결 */}
-            <img 
-              src="https://placehold.co/600x300?text=Charger+Port+Image\n(/images/battery/battery_charge.jpg)" 
-              alt="충전기 연결 포트" 
-              style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '400px' }} 
-            />
+            <Zoom>
+              <img 
+                src="https://placehold.co/600x300?text=Charger+Port+Image\n(/images/battery/battery_charge.jpg)" 
+                alt="충전기 연결 포트" 
+                style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '400px' }} 
+              />
+            </Zoom>
           </div>
         </motion.div>
 

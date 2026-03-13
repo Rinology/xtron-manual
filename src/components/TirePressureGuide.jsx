@@ -1,5 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import Zoom from 'react-medium-image-zoom';
+import 'react-medium-image-zoom/dist/styles.css';
 import { Wind, AlertCircle } from 'lucide-react';
 
 export default function TirePressureGuide() {
@@ -38,7 +40,9 @@ export default function TirePressureGuide() {
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1rem' }}>
               타이어 측면을 보면 <strong>MAX 45 PSI</strong> 와 같이 장착된 타이어의 최대/적정 공기압 수치가 적혀 있습니다. 이 수치를 먼저 확인하세요.
             </p>
-            <img src="https://placehold.co/400x300?text=Tire+PSI+Info" alt="타이어 측면 PSI 표기" style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '400px' }} />
+            <Zoom>
+              <img src="https://placehold.co/400x300?text=Tire+PSI+Info" alt="타이어 측면 PSI 표기" style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '400px' }} />
+            </Zoom>
           </div>
         </motion.div>
 

@@ -1,5 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import Zoom from 'react-medium-image-zoom';
+import 'react-medium-image-zoom/dist/styles.css';
 import { Wrench, AlertCircle, ArrowRightCircle, ArrowLeftCircle } from 'lucide-react';
 
 export default function PedalGuide() {
@@ -38,7 +40,9 @@ export default function PedalGuide() {
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1rem' }}>
               페달 나사선 끝부분에 알파벳 <strong>L(왼쪽)</strong>과 <strong>R(오른쪽)</strong>이 각인되어 있습니다. 방향을 반드시 확인 후 장착하세요.
             </p>
-            <img src="https://placehold.co/400x300?text=L/R+Check\n(/images/pedal/pedal_lr_check.jpg)" alt="페달 L/R 확인 방법" style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '400px' }} />
+            <Zoom>
+              <img src="https://placehold.co/400x300?text=L/R+Check\n(/images/pedal/pedal_lr_check.jpg)" alt="페달 L/R 확인 방법" style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '400px' }} />
+            </Zoom>
           </div>
         </motion.div>
 
@@ -56,7 +60,9 @@ export default function PedalGuide() {
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1rem' }}>
               자전거 진행 방향의 오른쪽 체인이 있는 크랭크암에 장착합니다. 나사를 <strong>시계 방향(오른쪽)</strong>으로 돌려 체결합니다.
             </p>
-            <img src="https://placehold.co/400x300?text=Right+Pedal+Install+GIF\n(/images/pedal/pedal_right_install.gif)" alt="우측 페달 장착" style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '400px' }} />
+            <Zoom>
+              <img src="https://placehold.co/400x300?text=Right+Pedal+Install+GIF\n(/images/pedal/pedal_right_install.gif)" alt="우측 페달 장착" style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '400px' }} />
+            </Zoom>
           </div>
         </motion.div>
 
@@ -74,7 +80,9 @@ export default function PedalGuide() {
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1rem' }}>
               자전거 진행 방향의 왼쪽 크랭크암에 장착합니다. 나사를 <strong>반시계 방향(왼쪽)</strong>으로 돌려 체결합니다.
             </p>
-            <img src="https://placehold.co/400x300?text=Left+Pedal+Install+GIF\n(/images/pedal/pedal_left_install.gif)" alt="좌측 페달 장착" style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '400px' }} />
+            <Zoom>
+              <img src="https://placehold.co/400x300?text=Left+Pedal+Install+GIF\n(/images/pedal/pedal_left_install.gif)" alt="좌측 페달 장착" style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '400px' }} />
+            </Zoom>
           </div>
         </motion.div>
       </div>

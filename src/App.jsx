@@ -4,6 +4,7 @@ import Sidebar from './components/Sidebar';
 import Footer from './components/Footer';
 import Header from './components/Header';
 import GuideContent from './components/GuideContent';
+import BackToTop from './components/BackToTop';
 import { AnimatePresence } from 'framer-motion';
 import useSecurity from './hooks/useSecurity';
 
@@ -28,8 +29,7 @@ function App() {
           style={{ flex: 1, padding: '0 2rem 2rem 2rem', overflowY: 'auto' }}
           onScroll={(e) => {
             const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
-            // You can dispatch a custom event or use state, but custom event is more performant for scroll
-            window.dispatchEvent(new CustomEvent('main-scroll', { detail: { isAtBottom: bottom } }));
+            window.dispatchEvent(new CustomEvent('main-scroll', { detail: { isAtBottom: bottom, scrollTop: e.target.scrollTop } }));
           }}
         >
           <AnimatePresence mode="wait">
@@ -41,6 +41,7 @@ function App() {
           </AnimatePresence>
         </main>
         <Footer />
+        <BackToTop />
       </div>
     </div>
   );
