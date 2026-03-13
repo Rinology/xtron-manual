@@ -2,6 +2,7 @@ import React from 'react';
 import { Wrench, BatteryCharging, AlertTriangle, Wind, ZapOff, CheckCircle } from 'lucide-react';
 import PedalGuide from '../components/PedalGuide';
 import BatteryGuide from '../components/BatteryGuide';
+import TirePressureGuide from '../components/TirePressureGuide';
 
 export const guidesData = {
   categories: [
@@ -33,6 +34,19 @@ export const guidesData = {
           ],
           placeholderType: "image",
           placeholderText: "핸들바 정렬 및 육각볼트 위치 사진"
+        },
+        {
+          id: "tire-pressure-basic",
+          title: "타이어 공기압 체크",
+          icon: <Wind size={18} />,
+          summary: [
+            "주행 전 타이어 측면에 표기된 적정 공기압(PSI)을 확인하세요.",
+            "계절에 따라 여름철에는 최대치보다 약간 적게, 겨울철에는 더 보충하는 것이 좋습니다.",
+            "주기적인 공기압 관리는 펑크 예방과 주행거리 향상에 큰 도움이 됩니다."
+          ],
+          placeholderType: "image",
+          placeholderText: "타이어 공기 주입 사진",
+          customComponent: TirePressureGuide
         }
       ]
     },
