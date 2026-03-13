@@ -103,7 +103,6 @@ body {
 
 img {
   -webkit-user-drag: none; /* Prevent dragging on Webkit browsers */
-  pointer-events: none; /* Prevent right-click and touch events entirely on images */
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -127,6 +126,40 @@ h1, h2, h3, h4, h5, h6 {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   display: inline-block;
+}
+
+/* Minimalist Navigation Button */
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 0rem;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 1rem;
+  transition: color var(--transition-fast), transform var(--transition-fast);
+  outline: none;
+}
+
+.nav-btn:hover {
+  color: var(--ci-primary);
+}
+
+.nav-btn:active {
+  transform: scale(0.98);
+}
+
+.nav-btn-right {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.nav-btn-left {
+  justify-content: flex-start;
+  text-align: left;
 }
 
 /* App Layout */

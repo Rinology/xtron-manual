@@ -62,7 +62,7 @@ export default function PedalGuide() {
               자전거 진행 방향의 오른쪽 체인이 있는 크랭크암에 장착합니다. 나사를 <strong>시계 방향(오른쪽)</strong>으로 돌려 체결합니다.
             </p>
             <Zoom>
-              <img src="https://placehold.co/400x300?text=Right+Pedal+Install+GIF\n(/images/pedal/pedal_right_install.gif)" alt="우측 페달 장착" style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '400px' }} />
+              <img src={tempLogo} alt="우측 페달 장착" style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '400px' }} />
             </Zoom>
           </div>
         </motion.div>
@@ -82,7 +82,7 @@ export default function PedalGuide() {
               자전거 진행 방향의 왼쪽 크랭크암에 장착합니다. 나사를 <strong>반시계 방향(왼쪽)</strong>으로 돌려 체결합니다.
             </p>
             <Zoom>
-              <img src="https://placehold.co/400x300?text=Left+Pedal+Install+GIF\n(/images/pedal/pedal_left_install.gif)" alt="좌측 페달 장착" style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '400px' }} />
+              <img src={tempLogo} alt="좌측 페달 장착" style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '400px' }} />
             </Zoom>
           </div>
         </motion.div>

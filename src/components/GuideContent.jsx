@@ -21,15 +21,11 @@ export default function GuideContent({ activePage, setActivePage }) {
             setActivePage(prevGuide.id);
             document.querySelector('.page-container').scrollTo({ top: 0, behavior: 'smooth' });
           }}
-          style={{ flex: 1, padding: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', border: 'none', background: 'transparent', textAlign: 'left', outline: 'none' }}
+          className="nav-btn nav-btn-left"
+          style={{ flex: 1 }}
         >
-          <div style={{ color: 'var(--text-secondary)' }}>
-            <ChevronLeft size={24} />
-          </div>
-          <div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.1rem' }}>이전 가이드</div>
-            <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '1rem' }}>{prevGuide.title}</div>
-          </div>
+          <ChevronLeft size={20} />
+          {prevGuide.title}
         </button>
       ) : <div style={{ flex: 1 }}></div>}
 
@@ -39,15 +35,11 @@ export default function GuideContent({ activePage, setActivePage }) {
             setActivePage(nextGuide.id);
             document.querySelector('.page-container').scrollTo({ top: 0, behavior: 'smooth' });
           }}
-          style={{ flex: 1, padding: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.5rem', cursor: 'pointer', border: 'none', background: 'transparent', textAlign: 'right', outline: 'none' }}
+          className="nav-btn nav-btn-right"
+          style={{ flex: 1 }}
         >
-          <div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.1rem' }}>다음 가이드</div>
-            <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '1rem' }}>{nextGuide.title}</div>
-          </div>
-          <div style={{ color: 'var(--text-secondary)' }}>
-            <ChevronRight size={24} />
-          </div>
+          {nextGuide.title}
+          <ChevronRight size={20} />
         </button>
       ) : <div style={{ flex: 1 }}></div>}
     </div>
