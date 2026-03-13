@@ -25,66 +25,59 @@ export default function PedalGuide() {
         <h3 style={{ fontSize: '2rem', color: 'var(--ci-primary)' }}>페달 장착 방법</h3>
       </div>
       
-      <motion.div 
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: "-100px" }}
-        style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}
-      >
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {/* Step 1: 좌우 확인 */}
-        <motion.div variants={itemVariants} className="glass-panel" style={{ padding: '2rem', position: 'relative', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', top: '-1rem', right: '-1rem', fontSize: '6rem', fontWeight: 900, color: 'var(--surface-border)', lineHeight: 1, zIndex: 0 }}>1</div>
-          <div style={{ position: 'relative', zIndex: 1 }}>
-            <h4 style={{ fontSize: '1.25rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-primary)' }}>
+        <motion.div variants={itemVariants} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-50px' }} className="glass-panel" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+          <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--ci-primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: 'var(--ci-primary)', flexShrink: 0 }}>
+            1
+          </div>
+          <div>
+            <h4 style={{ fontSize: '1.1rem', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-primary)' }}>
               <span style={{ color: 'var(--ci-primary)' }}>L/R</span> 표시 확인
             </h4>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '1rem' }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1rem' }}>
               페달 나사선 끝부분에 알파벳 <strong>L(왼쪽)</strong>과 <strong>R(오른쪽)</strong>이 각인되어 있습니다. 방향을 반드시 확인 후 장착하세요.
             </p>
-            {/* TODO: L/R 확인 이미지 연결 */}
-            <img 
-              src="https://placehold.co/400x300?text=L/R+Check\n(/images/pedal/pedal_lr_check.jpg)" 
-              alt="페달 L/R 확인 방법" 
-              style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)' }} 
-            />
+            <img src="https://placehold.co/400x300?text=L/R+Check\n(/images/pedal/pedal_lr_check.jpg)" alt="페달 L/R 확인 방법" style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '400px' }} />
           </div>
         </motion.div>
 
         {/* Step 2: 우측 페달 */}
-        <motion.div variants={itemVariants} className="glass-panel" style={{ padding: '2rem', borderTop: '4px solid var(--ci-secondary)' }}>
-          <h4 style={{ fontSize: '1.25rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-primary)' }}>
-            <ArrowRightCircle size={20} color="var(--ci-secondary)" />
-            우측(R) 페달 조립
-          </h4>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '1rem' }}>
-            자전거 진행 방향의 오른쪽 체인이 있는 크랭크암에 장착합니다. 나사를 <strong>시계 방향(오른쪽)</strong>으로 돌려 체결합니다.
-          </p>
-          {/* TODO: 우측 페달 장착 GIF 연결 */}
-          <img 
-            src="https://placehold.co/400x300?text=Right+Pedal+Install+GIF\n(/images/pedal/pedal_right_install.gif)" 
-            alt="우측 페달 장착" 
-            style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', marginTop: '0.5rem' }} 
-          />
+        <motion.div variants={itemVariants} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-50px' }} className="glass-panel" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem', position: 'relative' }}>
+          <div style={{ position: 'absolute', top: '-1rem', left: '2rem', width: '2px', height: '1rem', background: 'var(--surface-border)' }}></div>
+          <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--ci-primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: 'var(--ci-secondary)', flexShrink: 0 }}>
+            2
+          </div>
+          <div>
+            <h4 style={{ fontSize: '1.1rem', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-primary)' }}>
+              <ArrowRightCircle size={18} color="var(--ci-secondary)" />
+              우측(R) 페달 조립
+            </h4>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1rem' }}>
+              자전거 진행 방향의 오른쪽 체인이 있는 크랭크암에 장착합니다. 나사를 <strong>시계 방향(오른쪽)</strong>으로 돌려 체결합니다.
+            </p>
+            <img src="https://placehold.co/400x300?text=Right+Pedal+Install+GIF\n(/images/pedal/pedal_right_install.gif)" alt="우측 페달 장착" style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '400px' }} />
+          </div>
         </motion.div>
 
         {/* Step 3: 좌측 페달 */}
-        <motion.div variants={itemVariants} className="glass-panel" style={{ padding: '2rem', borderTop: '4px solid var(--ci-primary)' }}>
-          <h4 style={{ fontSize: '1.25rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-primary)' }}>
-            <ArrowLeftCircle size={20} color="var(--ci-primary)" />
-            좌측(L) 페달 조립
-          </h4>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '1rem' }}>
-            자전거 진행 방향의 왼쪽 크랭크암에 장착합니다. 나사를 <strong>반시계 방향(왼쪽)</strong>으로 돌려 체결합니다.
-          </p>
-          {/* TODO: 좌측 페달 장착 GIF 연결 */}
-          <img 
-            src="https://placehold.co/400x300?text=Left+Pedal+Install+GIF\n(/images/pedal/pedal_left_install.gif)" 
-            alt="좌측 페달 장착" 
-            style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', marginTop: '0.5rem' }} 
-          />
+        <motion.div variants={itemVariants} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-50px' }} className="glass-panel" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem', position: 'relative' }}>
+          <div style={{ position: 'absolute', top: '-1rem', left: '2rem', width: '2px', height: '1rem', background: 'var(--surface-border)' }}></div>
+          <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--ci-primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: 'var(--ci-primary)', flexShrink: 0 }}>
+            3
+          </div>
+          <div>
+            <h4 style={{ fontSize: '1.1rem', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-primary)' }}>
+              <ArrowLeftCircle size={18} color="var(--ci-primary)" />
+              좌측(L) 페달 조립
+            </h4>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1rem' }}>
+              자전거 진행 방향의 왼쪽 크랭크암에 장착합니다. 나사를 <strong>반시계 방향(왼쪽)</strong>으로 돌려 체결합니다.
+            </p>
+            <img src="https://placehold.co/400x300?text=Left+Pedal+Install+GIF\n(/images/pedal/pedal_left_install.gif)" alt="좌측 페달 장착" style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '400px' }} />
+          </div>
         </motion.div>
-      </motion.div>
+      </div>
 
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}

@@ -25,41 +25,39 @@ export default function TirePressureGuide() {
         <h3 style={{ fontSize: '2rem', color: 'var(--ci-primary)' }}>타이어 공기압 체크</h3>
       </div>
       
-      <motion.div 
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: "-100px" }}
-        style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}
-      >
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {/* Step 1 */}
-        <motion.div variants={itemVariants} className="glass-panel" style={{ padding: '2rem', position: 'relative', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', top: '-1rem', right: '-1rem', fontSize: '6rem', fontWeight: 900, color: 'var(--surface-border)', lineHeight: 1, zIndex: 0 }}>1</div>
-          <div style={{ position: 'relative', zIndex: 1 }}>
-            <h4 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--text-primary)' }}>
+        <motion.div variants={itemVariants} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-50px' }} className="glass-panel" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+          <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--ci-primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: 'var(--ci-primary)', flexShrink: 0 }}>
+            1
+          </div>
+          <div>
+            <h4 style={{ fontSize: '1.1rem', marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
               적정 공기압 수치 확인
             </h4>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '1rem' }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1rem' }}>
               타이어 측면을 보면 <strong>MAX 45 PSI</strong> 와 같이 장착된 타이어의 최대/적정 공기압 수치가 적혀 있습니다. 이 수치를 먼저 확인하세요.
             </p>
-            <img 
-              src="https://placehold.co/400x300?text=Tire+PSI+Info" 
-              alt="타이어 측면 PSI 표기" 
-              style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)' }} 
-            />
+            <img src="https://placehold.co/400x300?text=Tire+PSI+Info" alt="타이어 측면 PSI 표기" style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '400px' }} />
           </div>
         </motion.div>
 
         {/* Step 2 */}
-        <motion.div variants={itemVariants} className="glass-panel" style={{ padding: '2rem' }}>
-          <h4 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--text-primary)' }}>
-            에어펌프 연결 및 주입
-          </h4>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', margin: 0 }}>
-            공기주입구(밸브) 캡을 열고 펌프를 연결합니다. 게이지가 있는 펌프를 사용하여 확인된 적정 수치의 <strong>약 80~90%</strong> 정도만 채우는 것을 권장합니다 (겨울철 제외). 손가락으로 눌렀을 때 탄탄한 느낌이 나야 합니다.
-          </p>
+        <motion.div variants={itemVariants} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-50px' }} className="glass-panel" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem', position: 'relative' }}>
+          <div style={{ position: 'absolute', top: '-1rem', left: '2rem', width: '2px', height: '1rem', background: 'var(--surface-border)' }}></div>
+          <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--ci-primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: 'var(--ci-primary)', flexShrink: 0 }}>
+            2
+          </div>
+          <div>
+            <h4 style={{ fontSize: '1.1rem', marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
+              에어펌프 연결 및 주입
+            </h4>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', margin: 0 }}>
+              공기주입구(밸브) 캡을 열고 펌프를 연결합니다. 게이지가 있는 펌프를 사용하여 확인된 적정 수치의 <strong>약 80~90%</strong> 정도만 채우는 것을 권장합니다 (겨울철 제외). 손가락으로 눌렀을 때 탄탄한 느낌이 나야 합니다.
+            </p>
+          </div>
         </motion.div>
-      </motion.div>
+      </div>
 
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
