@@ -10,7 +10,7 @@ import useSecurity from './hooks/useSecurity';
 function App() {
   useSecurity(); // 보안 로직 적용
   const [activePage, setActivePage] = useState(null); // null means Hero (Home)
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
     <div className="app-layout" style={{ display: 'flex', height: '100vh', width: '100vw', background: 'var(--ci-white)', overflow: 'hidden' }}>
