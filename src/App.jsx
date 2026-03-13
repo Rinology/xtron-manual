@@ -22,7 +22,6 @@ function App() {
       />
       
       <div className="main-content">
-        <div className="aurora-bg"></div>
         <Header activePage={activePage} setActivePage={setActivePage} />
         <main 
           className="page-container" 

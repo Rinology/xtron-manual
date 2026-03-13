@@ -22,7 +22,7 @@ export default function Header({ activePage, setActivePage }) {
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
         <img 
-          src="/images/Xtron_x_Qualisports_Logo_Black.png" 
+          src={`${import.meta.env.BASE_URL}images/Xtron_x_Qualisports_Logo_Black.png`} 
           alt="Qualisports Logo" 
           style={{ height: '26px', objectFit: 'contain', cursor: 'pointer' }} 
           onClick={() => setActivePage(null)} 

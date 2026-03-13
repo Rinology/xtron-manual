@@ -47,7 +47,7 @@
   --ci-black: #231f20;
   --ci-white: #ffffff;
   
-  --bg-color: #f8fafc; /* Very light gray/blue background for depth */
+  --bg-color: var(--ci-white); /* Solid white background as requested */
   --surface-color: var(--ci-white);
   --surface-border: #e2e8f0;
   --text-primary: var(--ci-black);
@@ -140,6 +140,8 @@ h1, h2, h3, h4, h5, h6 {
   flex: 1;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .page-container {
@@ -175,19 +177,3 @@ mark {
   display: none; /* Chrome, Safari, Opera */
 }
 
-/* Gemini-Style UI Enhancements */
-@keyframes aurora {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-.aurora-bg {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(-45deg, rgba(47, 98, 134, 0.05), rgba(114, 191, 68, 0.04), rgba(47, 98, 134, 0.02), rgba(255, 255, 255, 0));
-  background-size: 400% 400%;
-  animation: aurora 15s ease infinite;
-  z-index: 0;
-  pointer-events: none;
-}

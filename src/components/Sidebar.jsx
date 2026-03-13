@@ -19,7 +19,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen }
     <motion.aside 
       initial={false}
       animate={{ width: isOpen ? 320 : 68 }}
-      transition={{ duration: 0.3, ease: 'easeOut' }}
+      transition={{ duration: 0.35, ease: [0.2, 0, 0, 1] }}
       style={{
         height: '100vh',
         position: 'sticky',
@@ -94,76 +94,88 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen }
         </div>
 
         {/* Navigation Categories */}
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: isOpen ? '1.5rem' : '0.5rem', flex: 1, padding: '0 1rem' }}>
-          {isOpen && guidesData.categories.map(category => {
-            const filteredItems = category.items.filter(item => item.title.includes(localSearch));
-            if (localSearch && filteredItems.length === 0) return null;
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: isOpen ? '1.5rem' : '0.5rem', flex: 1, padding: '0 1rem', overflowX: 'hidden' }}>
+          <AnimatePresence mode="popLayout">
+            {isOpen && (
+              <motion.div
+                key="nav-content"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0, transition: { duration: 0.15 } }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+                style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}
+              >
+                {guidesData.categories.map(category => {
+                  const filteredItems = category.items.filter(item => item.title.includes(localSearch));
+                  if (localSearch && filteredItems.length === 0) return null;
 
-            return (
-              <div key={category.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                <div 
-                  onClick={() => toggleCategory(category.id)} 
-                  style={{ 
-                     display: 'flex', alignItems: 'center', justifyContent: 'space-between', 
-                     cursor: 'pointer', padding: '0.5rem'
-                  }}
-                >
-                  <h3 style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0, fontWeight: 700, whiteSpace: 'nowrap' }}>
-                    {category.title}
-                  </h3>
-                  {openCategories[category.id] || localSearch ? <ChevronDown size={16} color="var(--text-secondary)" /> : <ChevronRight size={16} color="var(--text-secondary)" />}
-                </div>
-                
-                <AnimatePresence>
-                  {(openCategories[category.id] || localSearch) && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '0.15rem' }}
-                    >
-                      {(localSearch ? filteredItems : category.items).map(item => (
-                        <button 
-                          key={item.id}
-                          onClick={() => setActivePage(item.id)}
-                          style={{
-                            display: 'flex', alignItems: 'center',
-                            gap: '0.75rem', padding: '0.75rem 1rem', 
-                            borderRadius: 'var(--radius-full)',
-                            color: activePage === item.id ? 'var(--ci-primary)' : 'var(--text-primary)',
-                            background: activePage === item.id ? 'var(--ci-primary-light)' : 'transparent',
-                            border: 'none', cursor: 'pointer', textAlign: 'left', 
-                            width: '100%', fontFamily: 'inherit', fontSize: '0.95rem',
-                            whiteSpace: 'nowrap', transition: 'all 0.2s',
-                          }}
-                          onMouseEnter={e => {
-                             if(activePage !== item.id) e.currentTarget.style.background = 'var(--surface-border)';
-                          }}
-                          onMouseLeave={e => {
-                             if(activePage !== item.id) e.currentTarget.style.background = 'transparent';
-                          }}
-                        >
-                          <span style={{ color: activePage === item.id ? 'var(--ci-primary)' : 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            {item.icon}
-                          </span>
-                          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.title}</span>
-                        </button>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            );
-          })}
+                  return (
+                    <div key={category.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                      <div 
+                        onClick={() => toggleCategory(category.id)} 
+                        style={{ 
+                           display: 'flex', alignItems: 'center', justifyContent: 'space-between', 
+                           cursor: 'pointer', padding: '0.5rem'
+                        }}
+                      >
+                        <h3 style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0, fontWeight: 700, whiteSpace: 'nowrap' }}>
+                          {category.title}
+                        </h3>
+                        {openCategories[category.id] || localSearch ? <ChevronDown size={16} color="var(--text-secondary)" /> : <ChevronRight size={16} color="var(--text-secondary)" />}
+                      </div>
+                      
+                      <AnimatePresence>
+                        {(openCategories[category.id] || localSearch) && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '0.15rem' }}
+                          >
+                            {(localSearch ? filteredItems : category.items).map(item => (
+                              <button 
+                                key={item.id}
+                                onClick={() => setActivePage(item.id)}
+                                style={{
+                                  display: 'flex', alignItems: 'center',
+                                  gap: '0.75rem', padding: '0.75rem 1rem', 
+                                  borderRadius: 'var(--radius-full)',
+                                  color: activePage === item.id ? 'var(--ci-primary)' : 'var(--text-primary)',
+                                  background: activePage === item.id ? 'var(--ci-primary-light)' : 'transparent',
+                                  border: 'none', cursor: 'pointer', textAlign: 'left', 
+                                  width: '100%', fontFamily: 'inherit', fontSize: '0.95rem',
+                                  whiteSpace: 'nowrap', transition: 'all 0.2s',
+                                }}
+                                onMouseEnter={e => {
+                                   if(activePage !== item.id) e.currentTarget.style.background = 'var(--surface-border)';
+                                }}
+                                onMouseLeave={e => {
+                                   if(activePage !== item.id) e.currentTarget.style.background = 'transparent';
+                                }}
+                              >
+                                <span style={{ color: activePage === item.id ? 'var(--ci-primary)' : 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                  {item.icon}
+                                </span>
+                                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.title}</span>
+                              </button>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                })}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </nav>
       </div>
 
       {/* Footer External Links in Sidebar (Pinned) */}
       <div style={{ 
-         padding: isOpen ? '1rem' : '1rem 0', 
+         padding: isOpen ? '1rem 1.5rem' : '1rem 0', 
          display: 'flex', 
-         flexDirection: isOpen ? 'row' : 'column', 
-         flexWrap: isOpen ? 'wrap' : 'nowrap',
+         flexDirection: 'column', 
          alignItems: 'center',
          justifyContent: 'center',
          gap: '0.5rem', 
@@ -171,46 +183,53 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen }
          background: 'transparent',
          borderTop: '1px solid rgba(226, 232, 240, 0.6)',
          paddingBottom: '1.5rem',
-         transition: 'width 0.3s ease-out'
+         transition: 'width 0.35s cubic-bezier(0.2, 0, 0, 1)'
       }}>
-        <ExternalLinkButton isOpen={isOpen} icon={<MessageCircle size={18} />} text="카카오톡" url="https://pf.kakao.com" color="#371d1e" bg="#fee500" />
-        <ExternalLinkButton isOpen={isOpen} icon={<ShoppingBag size={18} />} text="스토어" url="https://brand.naver.com" color="#ffffff" bg="#03c75a" />
-        <ExternalLinkButton isOpen={isOpen} icon={<MapPin size={18} />} text="대리점" url="https://qualisports.com/stores" color="var(--text-primary)" bg="var(--ci-white)" />
-        <ExternalLinkButton isOpen={isOpen} icon={<Tag size={18} />} text="제품등록" url="https://registration.qualisports.com" color="var(--text-primary)" bg="var(--ci-white)" />
+        <ExternalLinkButton isOpen={isOpen} icon={<MessageCircle size={18} />} text="카카오톡 채널 상담하기" url="https://pf.kakao.com" />
+        <ExternalLinkButton isOpen={isOpen} icon={<ShoppingBag size={18} />} text="브랜드스토어" url="https://brand.naver.com" />
+        <ExternalLinkButton isOpen={isOpen} icon={<MapPin size={18} />} text="전국 대리점안내" url="https://qualisports.com/stores" />
+        <ExternalLinkButton isOpen={isOpen} icon={<Tag size={18} />} text="제품등록센터" url="https://registration.qualisports.com" />
       </div>
     </motion.aside>
   );
 }
 
-function ExternalLinkButton({ isOpen, icon, text, url, color, bg }) {
+function ExternalLinkButton({ isOpen, icon, text, url }) {
    return (
       <a 
          href={url} 
          target="_blank" 
          rel="noreferrer" 
          title={!isOpen ? text : ''}
+         className="external-link-btn"
          style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: isOpen ? 'flex-start' : 'center',
-            gap: isOpen ? '0.5rem' : '0',
+            gap: isOpen ? '0.75rem' : '0',
             padding: isOpen ? '0.75rem 1rem' : '0',
-            width: isOpen ? 'calc(50% - 0.25rem)' : '40px',
+            width: isOpen ? '100%' : '40px',
             height: isOpen ? 'auto' : '40px',
             borderRadius: isOpen ? 'var(--radius-md)' : '50%',
-            background: bg,
-            color: color,
+            background: 'transparent',
+            color: 'var(--text-primary)',
             textDecoration: 'none',
             fontSize: '0.85rem',
-            fontWeight: 700,
-            border: isOpen ? '1px solid var(--surface-border)' : 'none',
-            boxShadow: isOpen ? 'none' : 'var(--shadow-sm)',
+            fontWeight: 500,
             transition: 'all 0.2s',
             flexShrink: 0
          }}
+         onMouseEnter={e => {
+            e.currentTarget.style.background = 'var(--surface-border)';
+         }}
+         onMouseLeave={e => {
+            e.currentTarget.style.background = 'transparent';
+         }}
       >
-         {icon}
-         {isOpen && <span>{text}</span>}
+         <span style={{ color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {icon}
+         </span>
+         {isOpen && <span style={{ whiteSpace: 'nowrap' }}>{text}</span>}
       </a>
    );
 }
