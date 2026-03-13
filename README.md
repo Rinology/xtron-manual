@@ -49,33 +49,34 @@
 ---
 
 ## 2. 나만의 상세 페이지 만들기 (방법 B - 고수용)
-'페달 장착'처럼 여러 사진과 긴 설명, 주의사항 등이 들어가는 예쁜 전용 페이지를 만들 때 사용합니다.
+'페달 장착 방법'이나 '타이어 공기압 체크'처럼 사진과 긴 설명, 주의사항 등이 들어가는 예쁜 전용 페이지를 새롭게 추가하는 방법입니다. 단 2단계만 거치면 됩니다.
 
-### 📝 따라하기 단계:
+### 🚀 1단계: 내용물이 담길 컴포넌트 만들기 (`src/components/` 폴더)
 1. **새 파일 만들기**: `src/components/` 폴더 안에 새로운 파일을 만듭니다. (파일 이름 끝에 `.jsx`를 꼭 붙이세요! 예: `MyManual.jsx`)
-2. **코드 붙여넣기**: 아래 코드를 통째로 복사해서 새 파일에 넣고 저장합니다.
+2. **코드 붙여넣기**: 기존에 있는 `src/components/PedalGuide.jsx` 파일의 코드를 복사해서 새 파일에 그대로 붙여넣습니다.
+3. **내용 수정하기**: 복사된 코드 안에서 함수 이름(예: `export default function MyManual`)과 본문의 제목, 설명 텍스트, 아이콘만 새 주제에 맞게 수정하여 틀을 완성합니다.
 
-```javascript
-import React from 'react';
-
-export default function MyManual() {
-  return (
-    <section style={{ paddingTop: '2rem' }}>
-      <h3 style={{ fontSize: '2rem', color: 'var(--ci-primary)', marginBottom: '1.5rem' }}>
-        여기에 상세 페이지 제목
-      </h3>
-      <p style={{ marginBottom: '2rem' }}>여기에 아주 긴 설명을 마음껏 적으세요.</p>
-      
-      {/* 사진 위치 (사진이 준비되면 아래 이름을 바꾸세요) */}
-      <img src="/images/sample.jpg" style={{ width: '100%', borderRadius: '12px' }} />
-    </section>
-  );
-}
-```
-
-3. **연결하기**: 다시 **`src/data/guides.jsx`** 파일을 열고 두 가지만 더 하면 됩니다.
-   - **맨 윗줄**에 내 파일을 불러오는 코드를 적습니다: `import MyManual from '../components/MyManual';`
-   - **아래 목록**에 `customComponent: MyManual` 이라는 문장을 추가합니다. (기존 페달 장착 코드를 참고하세요!)
+### 🔗 2단계: 웹사이트 메뉴판에 등록하기 (`src/data/guides.jsx` 파일)
+1. **파일 위쪽에서 불러오기(Import)**: `src/data/guides.jsx` 파일의 맨 위쪽(import가 모여있는 곳)에 1단계에서 만든 파일을 불러옵니다.
+   ```javascript
+   import MyManual from '../components/MyManual';
+   ```
+2. **원하는 카테고리에 내용 추가하기**: 파일 중간에 있는 `categories` 배열을 살펴보고, 넣고 싶은 곳(예: `id: "basic"`)의 `items: [` 안에 아래처럼 새 내용을 적어줍니다. 기존 양식을 복사해서 수정하면 쉽습니다.
+   ```javascript
+   {
+     id: "my-new-manual",            // 영어로 된 고유 이름 (URL이나 고유값으로 쓰임)
+     title: "사이드바에 뜰 새 제목",      // 사이드바 메뉴에 표시될 제목
+     icon: <Wrench size={18} />,     // 메뉴 옆에 표시될 아이콘
+     summary: [                      // 검색 시 보여줄 요약 설명 (따옴표로 묶어 작성)
+       "첫 번째 요약 설명",
+       "두 번째 요약 설명"
+     ],
+     placeholderType: "image",
+     placeholderText: "안내 이미지 공간",
+     customComponent: MyManual       // ★중요★ 1단계에서 만든 컴포넌트 이름 연결!
+   }
+   ```
+이렇게 추가하고 파일을 저장(`Ctrl+S`)하여 다시 GitHub에 `push`하면, 실제 웹사이트 메뉴에도 생기고 클릭 시 방금 만든 상세 페이지가 보입니다!
 
 ---
 
