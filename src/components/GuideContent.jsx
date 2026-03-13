@@ -21,17 +21,14 @@ export default function GuideContent({ activePage, setActivePage }) {
             setActivePage(prevGuide.id);
             document.querySelector('.page-container').scrollTo({ top: 0, behavior: 'smooth' });
           }}
-          className="glass-panel"
-          style={{ flex: 1, padding: '1rem', display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', border: '1px solid var(--surface-border)', background: 'transparent', textAlign: 'left', transition: 'all 0.2s' }}
-          onMouseOver={e => e.currentTarget.style.background = 'var(--ci-white)'}
-          onMouseOut={e => e.currentTarget.style.background = 'transparent'}
+          style={{ flex: 1, padding: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', border: 'none', background: 'transparent', textAlign: 'left', outline: 'none' }}
         >
-          <div style={{ background: 'var(--bg-color)', padding: '0.5rem', borderRadius: '50%', color: 'var(--text-secondary)' }}>
-            <ChevronLeft size={20} />
+          <div style={{ color: 'var(--text-secondary)' }}>
+            <ChevronLeft size={24} />
           </div>
           <div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>이전 가이드</div>
-            <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{prevGuide.title}</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.1rem' }}>이전 가이드</div>
+            <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '1rem' }}>{prevGuide.title}</div>
           </div>
         </button>
       ) : <div style={{ flex: 1 }}></div>}
@@ -42,17 +39,14 @@ export default function GuideContent({ activePage, setActivePage }) {
             setActivePage(nextGuide.id);
             document.querySelector('.page-container').scrollTo({ top: 0, behavior: 'smooth' });
           }}
-          className="glass-panel"
-          style={{ flex: 1, padding: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.75rem', cursor: 'pointer', border: '1px solid var(--surface-border)', background: 'transparent', textAlign: 'right', transition: 'all 0.2s' }}
-          onMouseOver={e => e.currentTarget.style.background = 'var(--ci-white)'}
-          onMouseOut={e => e.currentTarget.style.background = 'transparent'}
+          style={{ flex: 1, padding: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.5rem', cursor: 'pointer', border: 'none', background: 'transparent', textAlign: 'right', outline: 'none' }}
         >
           <div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>다음 가이드</div>
-            <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{nextGuide.title}</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.1rem' }}>다음 가이드</div>
+            <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '1rem' }}>{nextGuide.title}</div>
           </div>
-          <div style={{ background: 'var(--ci-primary-light)', padding: '0.5rem', borderRadius: '50%', color: 'var(--ci-primary)' }}>
-            <ChevronRight size={20} />
+          <div style={{ color: 'var(--text-secondary)' }}>
+            <ChevronRight size={24} />
           </div>
         </button>
       ) : <div style={{ flex: 1 }}></div>}

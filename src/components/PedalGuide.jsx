@@ -41,7 +41,7 @@ export default function PedalGuide() {
               페달 나사선 끝부분에 알파벳 <strong>L(왼쪽)</strong>과 <strong>R(오른쪽)</strong>이 각인되어 있습니다. 방향을 반드시 확인 후 장착하세요.
             </p>
             <Zoom>
-              <img src="https://placehold.co/400x300?text=L/R+Check\n(/images/pedal/pedal_lr_check.jpg)" alt="페달 L/R 확인 방법" style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '400px' }} />
+              <img src="/images/Xtron_x_Qualisports_Logo_Black.png" alt="확대 테스트용 임시 로고" style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '400px' }} />
             </Zoom>
           </div>
         </motion.div>
