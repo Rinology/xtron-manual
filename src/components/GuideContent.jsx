@@ -14,7 +14,7 @@ export default function GuideContent({ activePage, setActivePage }) {
   const nextGuide = guideIndex < allGuideItems.length - 1 ? allGuideItems[guideIndex + 1] : null;
 
   const NavigationButtons = () => (
-    <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', marginTop: '3rem', borderTop: '1px solid var(--surface-border)', paddingTop: '2rem' }}>
+    <div className="nav-buttons-container">
       {prevGuide ? (
         <button 
           onClick={() => {
@@ -68,7 +68,7 @@ export default function GuideContent({ activePage, setActivePage }) {
       transition={{ duration: 0.4 }}
       style={{ paddingBottom: '4rem', paddingTop: '1rem' }}
     >
-      <div className="glass-panel" style={{ padding: '2.5rem', marginBottom: '2rem' }}>
+      <div className="glass-panel guide-panel">
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
           <div style={{ background: 'var(--ci-primary-light)', color: 'var(--ci-primary)', padding: '0.75rem', borderRadius: '12px' }}>
             {guide.icon}

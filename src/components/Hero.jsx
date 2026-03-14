@@ -35,8 +35,8 @@ export default function Hero({ setActivePage }) {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.6 }}
+      className="hero-section"
       style={{
-        padding: '6rem 2rem',
         textAlign: 'center',
         position: 'relative',
         display: 'flex',
@@ -48,11 +48,11 @@ export default function Hero({ setActivePage }) {
     >
       <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '600px' }}>
         
-        <h2 style={{ fontSize: '3rem', marginBottom: '1rem', letterSpacing: '-0.02em', color: 'var(--ci-primary)' }}>
+        <h2 className="hero-title" style={{ marginBottom: '1rem', letterSpacing: '-0.02em', color: 'var(--ci-primary)' }}>
           무엇을 <span className="text-gradient">도와</span>드릴까요?
         </h2>
         
-        <p style={{ color: 'var(--text-secondary)', fontSize: '1.2rem', margin: '0 auto 3rem auto', lineHeight: 1.6 }}>
+        <p className="hero-subtitle" style={{ color: 'var(--text-secondary)', margin: '0 auto 3rem auto', lineHeight: 1.6 }}>
           전기자전거 조립부터 주행 중 발생한 문제 해결까지 <br/>
           궁금한 점을 검색해 보세요.
         </p>

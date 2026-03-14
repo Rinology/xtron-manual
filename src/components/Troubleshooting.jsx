@@ -36,7 +36,7 @@ export default function Troubleshooting({ searchKeyword }) {
   return (
     <section id="troubleshooting" style={{ marginBottom: '4rem', paddingTop: '2rem' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
-        <h3 style={{ fontSize: '2rem', color: 'var(--ci-primary)' }}>자주 묻는 질문 및 해결법</h3>
+        <h3 className="guide-title">자주 묻는 질문 및 해결법</h3>
       </div>
       
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -47,8 +47,8 @@ export default function Troubleshooting({ searchKeyword }) {
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="glass-panel"
-            style={{ padding: '2rem', borderLeft: '4px solid var(--ci-primary)' }}
+            className="glass-panel guide-item-panel"
+            style={{ borderLeft: '4px solid var(--ci-primary)' }}
           >
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
               <div style={{ flexShrink: 0, marginTop: '2px' }}>

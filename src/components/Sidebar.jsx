@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { guidesData, allGuideItems } from '../data/guides';
 import { ChevronDown, ChevronRight, Search, Menu, MessageCircle, ShoppingBag, MapPin, Tag, Plus } from 'lucide-react';
@@ -10,21 +10,50 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen }
     "troubleshooting": true
   });
   const [localSearch, setLocalSearch] = useState('');
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const toggleCategory = (id) => {
     setOpenCategories(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
   return (
-    <motion.aside 
-      initial={false}
-      animate={{ width: isOpen ? 320 : 68 }}
-      transition={{ duration: 0.35, ease: [0.2, 0, 0, 1] }}
-      style={{
-        height: '100vh',
-        position: 'sticky',
-        top: 0,
-        background: 'rgba(248, 250, 252, 0.85)',
+    <>
+      <AnimatePresence>
+        {isMobile && isOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setIsOpen(false)}
+            style={{
+              position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 90
+            }}
+          />
+        )}
+      </AnimatePresence>
+
+      <motion.aside 
+        initial={false}
+        animate={
+          isMobile 
+            ? { width: 300, x: isOpen ? 0 : -300 }
+            : { width: isOpen ? 320 : 68, x: 0 }
+        }
+        transition={{ duration: 0.35, ease: [0.2, 0, 0, 1] }}
+        style={{
+          height: '100dvh',
+          position: isMobile ? 'fixed' : 'sticky',
+          top: 0,
+          left: 0,
+          background: 'rgba(248, 250, 252, 0.95)',
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)',
         borderRight: '1px solid rgba(226, 232, 240, 0.6)',
@@ -179,7 +208,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen }
          alignItems: 'center',
          justifyContent: 'center',
          gap: '0.5rem', 
-         width: isOpen ? '320px' : '68px',
+         width: isMobile ? '100%' : (isOpen ? '320px' : '68px'),
          background: 'transparent',
          borderTop: '1px solid rgba(226, 232, 240, 0.6)',
          paddingBottom: '1.5rem',
@@ -191,6 +220,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen }
         <ExternalLinkButton isOpen={isOpen} icon={<Tag size={18} />} text="제품등록센터" url="https://registration.qualisports.com" />
       </div>
     </motion.aside>
+    </>
   );
 }
 

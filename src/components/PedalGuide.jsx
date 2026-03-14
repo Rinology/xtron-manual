@@ -25,12 +25,12 @@ export default function PedalGuide() {
         <div style={{ background: 'var(--ci-primary-light)', padding: '0.75rem', borderRadius: '12px' }}>
           <Wrench size={28} color="var(--ci-primary)" />
         </div>
-        <h3 style={{ fontSize: '2rem', color: 'var(--ci-primary)' }}>페달 장착 방법</h3>
+        <h3 className="guide-title">페달 장착 방법</h3>
       </div>
       
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {/* Step 1: 좌우 확인 */}
-        <motion.div variants={itemVariants} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-50px' }} className="glass-panel" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+        <motion.div variants={itemVariants} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-50px' }} className="glass-panel guide-step-panel">
           <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--ci-primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: 'var(--ci-primary)', flexShrink: 0 }}>
             1
           </div>
@@ -48,7 +48,7 @@ export default function PedalGuide() {
         </motion.div>
 
         {/* Step 2: 우측 페달 */}
-        <motion.div variants={itemVariants} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-50px' }} className="glass-panel" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem', position: 'relative' }}>
+        <motion.div variants={itemVariants} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-50px' }} className="glass-panel guide-step-panel" style={{ position: 'relative' }}>
           <div style={{ position: 'absolute', top: '-1rem', left: '2rem', width: '2px', height: '1rem', background: 'var(--surface-border)' }}></div>
           <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--ci-primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: 'var(--ci-secondary)', flexShrink: 0 }}>
             2
@@ -68,7 +68,7 @@ export default function PedalGuide() {
         </motion.div>
 
         {/* Step 3: 좌측 페달 */}
-        <motion.div variants={itemVariants} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-50px' }} className="glass-panel" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem', position: 'relative' }}>
+        <motion.div variants={itemVariants} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-50px' }} className="glass-panel guide-step-panel" style={{ position: 'relative' }}>
           <div style={{ position: 'absolute', top: '-1rem', left: '2rem', width: '2px', height: '1rem', background: 'var(--surface-border)' }}></div>
           <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--ci-primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: 'var(--ci-primary)', flexShrink: 0 }}>
             3

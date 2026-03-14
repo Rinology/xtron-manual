@@ -1,15 +1,14 @@
 import React from 'react';
 import { allGuideItems } from '../data/guides';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Menu } from 'lucide-react';
 
-export default function Header({ activePage, setActivePage }) {
+export default function Header({ activePage, setActivePage, isOpen, setIsOpen }) {
   const guide = activePage ? allGuideItems.find(item => item.id === activePage) : null;
 
   return (
     <header style={{
       display: 'flex',
       alignItems: 'center',
-      padding: '1rem 2rem',
       position: 'sticky',
       top: 0,
       background: 'rgba(255, 255, 255, 0.75)',
@@ -19,8 +18,17 @@ export default function Header({ activePage, setActivePage }) {
       minHeight: '64px',
       borderBottom: guide ? '1px solid rgba(226, 232, 240, 0.5)' : '1px solid transparent',
       transition: 'border-color var(--transition-normal)'
-    }}>
+    }} className="app-header">
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
+        {!isOpen && (
+          <button
+            className="mobile-menu-btn"
+            onClick={() => setIsOpen(true)}
+            title="메뉴 열기"
+          >
+            <Menu size={24} />
+          </button>
+        )}
         <img 
           src={`${import.meta.env.BASE_URL}images/Xtron_x_Qualisports_Logo_Black.png`} 
           alt="Qualisports Logo" 

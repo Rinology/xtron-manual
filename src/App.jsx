@@ -14,7 +14,7 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="app-layout" style={{ display: 'flex', height: '100vh', width: '100vw', background: 'var(--ci-white)', overflow: 'hidden' }}>
+    <div className="app-layout">
       <Sidebar 
         activePage={activePage}
         setActivePage={setActivePage}
@@ -23,10 +23,9 @@ function App() {
       />
       
       <div className="main-content">
-        <Header activePage={activePage} setActivePage={setActivePage} />
+        <Header activePage={activePage} setActivePage={setActivePage} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
         <main 
           className="page-container" 
-          style={{ flex: 1, padding: '0 2rem 2rem 2rem', overflowY: 'auto' }}
           onScroll={(e) => {
             const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
             window.dispatchEvent(new CustomEvent('main-scroll', { detail: { isAtBottom: bottom, scrollTop: e.target.scrollTop } }));

@@ -16,7 +16,7 @@ export default function BatteryGuide() {
         <div style={{ background: 'var(--ci-secondary-light)', padding: '0.75rem', borderRadius: '12px' }}>
           <BatteryCharging size={28} color="var(--ci-secondary)" />
         </div>
-        <h3 style={{ fontSize: '2rem', color: 'var(--ci-primary)' }}>배터리 충전 방법</h3>
+        <h3 className="guide-title">배터리 충전 방법</h3>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -25,8 +25,7 @@ export default function BatteryGuide() {
           initial="hidden" 
           whileInView="show" 
           viewport={{ once: true, margin: '-50px' }}
-          className="glass-panel" 
-          style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}
+          className="glass-panel guide-step-panel"
         >
           <div style={{ 
             width: '40px', height: '40px', borderRadius: '50%', background: 'var(--ci-primary-light)', 
@@ -53,8 +52,8 @@ export default function BatteryGuide() {
           initial="hidden" 
           whileInView="show" 
           viewport={{ once: true, margin: '-50px' }}
-          className="glass-panel" 
-          style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem', position: 'relative' }}
+          className="glass-panel guide-step-panel" 
+          style={{ position: 'relative' }}
         >
           {/* subtle line connecting steps */}
           <div style={{ position: 'absolute', top: '-1rem', left: '2rem', width: '2px', height: '1rem', background: 'var(--surface-border)' }}></div>
@@ -84,8 +83,8 @@ export default function BatteryGuide() {
           initial="hidden" 
           whileInView="show" 
           viewport={{ once: true, margin: '-50px' }}
-          className="glass-panel" 
-          style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem', position: 'relative' }}
+          className="glass-panel guide-step-panel" 
+          style={{ position: 'relative' }}
         >
           <div style={{ position: 'absolute', top: '-1rem', left: '2rem', width: '2px', height: '1rem', background: 'var(--surface-border)' }}></div>
           
@@ -102,7 +101,7 @@ export default function BatteryGuide() {
         </motion.div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: '1rem', marginTop: '1.5rem' }}>
+      <div className="guide-grid-2">
         <div className="glass-panel" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', border: '1px solid rgba(239,68,68,0.2)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#ef4444' }}>
             <Zap size={18} />
