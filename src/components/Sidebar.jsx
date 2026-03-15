@@ -11,6 +11,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen }
   });
   const [localSearch, setLocalSearch] = useState('');
   const [isMobile, setIsMobile] = useState(false);
+  const [isExternalOpen, setIsExternalOpen] = useState(true);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth <= 768);
@@ -205,21 +206,50 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen }
          padding: isOpen ? '1rem 1.5rem' : '1rem 0', 
          display: 'flex', 
          flexDirection: 'column', 
-         alignItems: 'center',
-         justifyContent: 'center',
-         gap: '0.5rem', 
+         gap: '0.25rem', 
          width: isMobile ? '100%' : (isOpen ? '320px' : '68px'),
          background: 'transparent',
          borderTop: '1px solid rgba(226, 232, 240, 0.6)',
          paddingBottom: '1.5rem',
          transition: 'width 0.35s cubic-bezier(0.2, 0, 0, 1)'
       }}>
-        <ExternalLinkButton isOpen={isOpen} icon={<MessageCircle size={18} />} text="카카오톡 채널 상담하기" url="https://pf.kakao.com" />
-        <ExternalLinkButton isOpen={isOpen} icon={<ShoppingBag size={18} />} text="브랜드스토어" url="https://brand.naver.com" />
-        <ExternalLinkButton isOpen={isOpen} icon={<MapPin size={18} />} text="전국 대리점안내" url="https://qualisports.com/stores" />
-        <ExternalLinkButton isOpen={isOpen} icon={<Tag size={18} />} text="제품등록센터" url="https://registration.qualisports.com" />
+        {isOpen && (
+          <div 
+            onClick={() => setIsExternalOpen(!isExternalOpen)}
+            style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'space-between', 
+              padding: '0.5rem 0.5rem 0.5rem 1rem', 
+              cursor: 'pointer',
+              marginBottom: '0.25rem'
+            }}
+          >
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 700, letterSpacing: '0.02em' }}>
+              QUICK LINKS
+            </span>
+            {isExternalOpen ? <ChevronDown size={14} color="var(--text-secondary)" /> : <ChevronRight size={14} color="var(--text-secondary)" />}
+          </div>
+        )}
+
+        <AnimatePresence>
+          {(!isOpen || isExternalOpen) && (
+            <motion.div
+              initial={isOpen ? { height: 0, opacity: 0 } : { height: 'auto', opacity: 1 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'center' }}
+            >
+              <ExternalLinkButton isOpen={isOpen} icon={<MessageCircle size={18} />} text="카카오톡 채널 상담하기" url="https://pf.kakao.com" />
+              <ExternalLinkButton isOpen={isOpen} icon={<ShoppingBag size={18} />} text="브랜드스토어" url="https://brand.naver.com" />
+              <ExternalLinkButton isOpen={isOpen} icon={<MapPin size={18} />} text="전국 대리점안내" url="https://qualisports.com/stores" />
+              <ExternalLinkButton isOpen={isOpen} icon={<Tag size={18} />} text="제품등록센터" url="https://registration.qualisports.com" />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.aside>
+
     </>
   );
 }
