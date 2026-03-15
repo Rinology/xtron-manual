@@ -324,13 +324,65 @@ mark {
   border-radius: 4px;
 }
 
-/* Hide scrollbars everywhere but keep functionality */
+/* Beautiful Scrollbar Design */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(47, 98, 134, 0.2); /* CI Primary with low opacity */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(47, 98, 134, 0.4);
+}
+
 * {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(47, 98, 134, 0.2) transparent;
 }
 
-*::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+/* Print / PDF Export Utilities */
+@media print {
+  /* Hide UI Elements */
+  header, footer, .sidebar, .mobile-menu-btn, button, .app-header, .top-actions-container, .nav-buttons-container, .BackToTop, #back-to-top, #search-modal {
+    display: none !important;
+  }
+  
+  /* Reset Layouts for Paper */
+  body, .app-layout, .main-content, .page-container {
+    height: auto !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    color: black !important;
+    background: white !important;
+  }
+  
+  /* Panel Adjustments */
+  .glass-panel {
+    border: 1px solid #ccc !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  
+  /* Text adjustments */
+  h1, h2, h3, h4, i {
+    color: black !important;
+  }
+  
+  .text-gradient {
+    background: none !important;
+    -webkit-text-fill-color: black !important;
+    color: black !important;
+  }
 }
-

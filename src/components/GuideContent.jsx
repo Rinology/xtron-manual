@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { allGuideItems } from '../data/guides';
-import { ChevronLeft, ChevronRight, Image as ImageIcon, Video as VideoIcon } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Image as ImageIcon, Video as VideoIcon, Link as LinkIcon, Check, Menu, Printer, QrCode, X } from 'lucide-react';
+import { AnimatePresence } from 'framer-motion';
 
 export default function GuideContent({ activePage, setActivePage }) {
   const guideIndex = allGuideItems.findIndex(item => item.id === activePage);
   const guide = allGuideItems[guideIndex];
+  const [copied, setCopied] = useState(false);
+  const [showQR, setShowQR] = useState(false);
 
   if (!guide) return null;
 
@@ -13,13 +16,66 @@ export default function GuideContent({ activePage, setActivePage }) {
   const prevGuide = guideIndex > 0 ? allGuideItems[guideIndex - 1] : null;
   const nextGuide = guideIndex < allGuideItems.length - 1 ? allGuideItems[guideIndex + 1] : null;
 
+  const handleCopyLink = () => {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }).catch(err => {
+      console.error('Failed to copy link: ', err);
+    });
+  };
+
+  const actionBtnStyle = {
+    display: 'flex', alignItems: 'center', gap: '0.4rem',
+    background: 'var(--ci-white)', color: 'var(--text-secondary)',
+    border: '1px solid var(--surface-border)',
+    padding: '0.4rem 0.8rem', borderRadius: 'var(--radius-full)',
+    fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s ease',
+    boxShadow: 'var(--shadow-sm)'
+  };
+
+  const TopActions = () => (
+    <div className="top-actions-container" style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.8rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+      <button
+        onClick={() => setShowQR(true)}
+        title="스마트폰 카메라로 보기 (QR)"
+        style={actionBtnStyle}
+        onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-color)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
+        onMouseLeave={e => { e.currentTarget.style.background = 'var(--ci-white)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
+      >
+        <QrCode size={14} /> 모바일 보기
+      </button>
+
+      <button
+        onClick={handleCopyLink}
+        title="현재 가이드 링크 복사"
+        style={{
+          ...actionBtnStyle,
+          background: copied ? 'var(--ci-secondary)' : 'var(--ci-white)',
+          color: copied ? 'var(--ci-white)' : 'var(--text-secondary)',
+          border: copied ? '1px solid var(--ci-secondary)' : '1px solid var(--surface-border)'
+        }}
+        onMouseEnter={e => {
+          if (!copied) { e.currentTarget.style.background = 'var(--bg-color)'; e.currentTarget.style.color = 'var(--text-primary)'; }
+        }}
+        onMouseLeave={e => {
+          if (!copied) { e.currentTarget.style.background = 'var(--ci-white)'; e.currentTarget.style.color = 'var(--text-secondary)'; }
+        }}
+      >
+        {copied ? <Check size={14} /> : <LinkIcon size={14} />}
+        {copied ? '링크 복사됨' : '가이드 링크 복사'}
+      </button>
+    </div>
+  );
+
   const NavigationButtons = () => (
-    <div className="nav-buttons-container">
+    <div className="nav-buttons-container" style={{ display: 'flex', gap: '0.5rem', alignItems: 'stretch' }}>
       {prevGuide ? (
         <button 
           onClick={() => {
             setActivePage(prevGuide.id);
-            document.querySelector('.page-container').scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: 'instant' });
           }}
           className="nav-btn nav-btn-left"
           style={{ flex: 1 }}
@@ -33,7 +89,7 @@ export default function GuideContent({ activePage, setActivePage }) {
         <button 
           onClick={() => {
             setActivePage(nextGuide.id);
-            document.querySelector('.page-container').scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: 'instant' });
           }}
           className="nav-btn nav-btn-right"
           style={{ flex: 1 }}
@@ -54,6 +110,22 @@ export default function GuideContent({ activePage, setActivePage }) {
         transition={{ duration: 0.4 }}
         style={{ paddingBottom: '4rem', paddingTop: '1rem' }}
       >
+        {showQR && (
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 11000, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setShowQR(false)}>
+            <div style={{ background: 'white', padding: '2rem', borderRadius: '16px', textAlign: 'center', position: 'relative' }} onClick={e => e.stopPropagation()}>
+              <button 
+                onClick={() => setShowQR(false)} 
+                style={{ position: 'absolute', top: '10px', right: '10px', background: 'transparent', border: 'none', cursor: 'pointer', color: '#666' }}
+              >
+                <X size={20} />
+              </button>
+              <h4 style={{ marginBottom: '1rem', color: 'var(--ci-primary)', fontSize: '1.1rem' }}>스마트폰 스캔 (QR)</h4>
+              <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(window.location.href)}`} alt="QR Code" style={{ width: '200px', height: '200px', margin: '0 auto', display: 'block' }} />
+              <p style={{ marginTop: '1rem', fontSize: '0.85rem', color: 'var(--text-secondary)', margin: '1rem 0 0 0' }}>모바일 화면에 최적화된 엑스트론<br/>매뉴얼을 경험해보세요.</p>
+            </div>
+          </div>
+        )}
+        <TopActions />
         <CustomComponent />
         <NavigationButtons />
       </motion.div>
@@ -68,6 +140,22 @@ export default function GuideContent({ activePage, setActivePage }) {
       transition={{ duration: 0.4 }}
       style={{ paddingBottom: '4rem', paddingTop: '1rem' }}
     >
+      {showQR && (
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 11000, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setShowQR(false)}>
+            <div style={{ background: 'white', padding: '2rem', borderRadius: '16px', textAlign: 'center', position: 'relative' }} onClick={e => e.stopPropagation()}>
+              <button 
+                onClick={() => setShowQR(false)} 
+                style={{ position: 'absolute', top: '10px', right: '10px', background: 'transparent', border: 'none', cursor: 'pointer', color: '#666' }}
+              >
+                <X size={20} />
+              </button>
+              <h4 style={{ marginBottom: '1rem', color: 'var(--ci-primary)', fontSize: '1.1rem' }}>스마트폰 스캔 (QR)</h4>
+              <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(window.location.href)}`} alt="QR Code" style={{ width: '200px', height: '200px', margin: '0 auto', display: 'block' }} />
+              <p style={{ marginTop: '1rem', fontSize: '0.85rem', color: 'var(--text-secondary)', margin: '1rem 0 0 0' }}>모바일 화면에 최적화된 엑스트론<br/>매뉴얼을 경험해보세요.</p>
+            </div>
+          </div>
+      )}
+      <TopActions />
       <div className="glass-panel guide-panel">
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
           <div style={{ background: 'var(--ci-primary-light)', color: 'var(--ci-primary)', padding: '0.75rem', borderRadius: '12px' }}>

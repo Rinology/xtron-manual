@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Sparkles, X } from 'lucide-react';
+import { Search, Sparkles, X, HelpCircle } from 'lucide-react';
 import { allGuideItems } from '../data/guides';
+import TroubleshootingWizard from './TroubleshootingWizard';
 
 export default function Hero({ setActivePage }) {
   const [localSearch, setLocalSearch] = useState('');
   const [isFocused, setIsFocused] = useState(false);
+  const [isWizardOpen, setIsWizardOpen] = useState(false);
 
   const matchedItems = allGuideItems.filter(item => 
     item.title.includes(localSearch) || item.summary.some(text => text.includes(localSearch))
@@ -173,6 +175,34 @@ export default function Hero({ setActivePage }) {
           <button type="submit" style={{ display: 'none' }}>검색</button>
         </form>
 
+        {/* 자가진단 마법사 배너 (검색창 바로 밑으로 이동) */}
+        <div style={{ marginBottom: '2.5rem', width: '100%' }}>
+          <button
+            onClick={() => setIsWizardOpen(true)}
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem',
+              background: 'linear-gradient(135deg, rgba(47, 98, 134, 0.05), rgba(114, 191, 68, 0.05))',
+              color: 'var(--ci-primary)',
+              padding: '0.85rem 1.75rem', borderRadius: 'var(--radius-lg)',
+              border: '1px solid var(--ci-primary-light)', fontSize: '1rem', fontWeight: 600,
+              cursor: 'pointer', margin: '0 auto', width: '100%',
+              transition: 'all var(--transition-fast)'
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.background = 'var(--ci-primary-light)';
+              e.currentTarget.style.borderColor = 'var(--ci-primary)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(47, 98, 134, 0.05), rgba(114, 191, 68, 0.05))';
+              e.currentTarget.style.borderColor = 'var(--ci-primary-light)';
+            }}
+          >
+            <HelpCircle size={18} />
+            어떤 문제가 있는지 잘 모르시겠나요? 자가진단 마법사 시작하기
+          </button>
+        </div>
+
+        {/* 추천 퀵 가이드 */}
         <div style={{ display: 'flex', justifyContent: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
           <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', alignSelf: 'center', marginRight: '0.5rem' }}>추천 퀵 가이드:</span>
           {suggestions.map(s => (
@@ -205,6 +235,12 @@ export default function Hero({ setActivePage }) {
             </button>
           ))}
         </div>
+        
+        <TroubleshootingWizard 
+          isOpen={isWizardOpen} 
+          onClose={() => setIsWizardOpen(false)} 
+          onResult={(id) => setActivePage(id)} 
+        />
 
       </div>
     </motion.section>

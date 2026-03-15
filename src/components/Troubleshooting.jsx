@@ -1,5 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import Zoom from 'react-medium-image-zoom';
+import 'react-medium-image-zoom/dist/styles.css';
 import { AlertTriangle, CheckCircle } from 'lucide-react';
 
 export default function Troubleshooting({ searchKeyword }) {
@@ -63,11 +65,13 @@ export default function Troubleshooting({ searchKeyword }) {
                 </p>
                 {/* TODO: 트러블슈팅 이미지 연결 가능 영역 */}
                 <div style={{ marginBottom: '1rem' }}>
-                  <img 
-                    src={`https://placehold.co/600x200?text=Troubleshooting+Image\n(/images/troubleshooting/${problem.id}.jpg)`}
-                    alt={problem.title} 
-                    style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '500px' }} 
-                  />
+                  <Zoom>
+                    <img 
+                      src={`https://placehold.co/600x200?text=Troubleshooting+Image\n(/images/troubleshooting/${problem.id}.jpg)`}
+                      alt={problem.title} 
+                      style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '500px' }} 
+                    />
+                  </Zoom>
                 </div>
                 <div style={{
                   display: 'inline-block',
