@@ -122,12 +122,12 @@ export default function PedalGuide() {
               </div>
 
               {/* 3-2. 크랭크 위치 및 손 조립 사진 */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center' }}>
                 <Zoom>
-                  <img src={`${import.meta.env.BASE_URL}images/pedal/crank-position-r.png`} alt="우측 자전거 크랭크 위치" style={{ flex: '1 1 250px', width: '100%', objectFit: 'cover', aspectRatio: '4/3', border: '1px solid var(--surface-border)', borderRadius: '8px', cursor: 'zoom-in' }} />
+                  <img src={`${import.meta.env.BASE_URL}images/pedal/crank-position-r.png`} alt="우측 자전거 크랭크 위치" style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '500px', cursor: 'zoom-in' }} />
                 </Zoom>
                 <Zoom>
-                  <img src={`${import.meta.env.BASE_URL}images/pedal/pedal-hand-install-r.png`} alt="오른쪽 페달을 손(시계 방향)으로 돌리는 작업" style={{ flex: '1 1 250px', width: '100%', objectFit: 'cover', aspectRatio: '4/3', border: '1px solid var(--surface-border)', borderRadius: '8px', cursor: 'zoom-in' }} />
+                  <img src={`${import.meta.env.BASE_URL}images/pedal/pedal-hand-install-r.png`} alt="오른쪽 페달을 손(시계 방향)으로 돌리는 작업" style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '500px', cursor: 'zoom-in' }} />
                 </Zoom>
               </div>
 
@@ -136,9 +136,9 @@ export default function PedalGuide() {
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '1rem', lineHeight: 1.6 }}>
                   손으로 충분히 결합했다면, <strong>15mm 페달 렌치 또는 육각 렌치</strong>를 사용하여 전륜 방향(시계 방향)으로 강하게 조입니다.
                 </p>
-                <div style={{ width: '100%', aspectRatio: '16/9', maxWidth: '500px', background: 'var(--bg-color)', border: '2px dashed var(--surface-border)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)', margin: '0 auto' }}>
-                  [향후 추가]<br/>15mm 렌치 또는 공구를 이용해 우측 페달을 강하게 조이는 사진
-                </div>
+                <Zoom>
+                  <img src={`${import.meta.env.BASE_URL}images/pedal/pedal-wrench-install-r.png`} alt="15mm 렌치로 우측 페달을 강하게 조이는 모습" style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '500px', display: 'block', margin: '0 auto', cursor: 'zoom-in' }} />
+                </Zoom>
               </div>
             </div>
           </div>
@@ -165,11 +165,11 @@ export default function PedalGuide() {
               </div>
 
               {/* 4-2. 크랭크 위치 및 손 조립 사진 */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-                <div style={{ flex: '1 1 250px', aspectRatio: '4/3', background: 'var(--bg-color)', border: '2px dashed rgba(220, 38, 38, 0.4)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#dc2626', textAlign: 'center', padding: '1rem' }}>
-                  [향후 추가]<br/>좌측 자전거 크랭크 위치 소개 등 사진
-                </div>
-                <div style={{ flex: '1 1 250px', aspectRatio: '4/3', background: 'var(--bg-color)', border: '2px dashed rgba(220, 38, 38, 0.4)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#dc2626', textAlign: 'center', padding: '1rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center' }}>
+                <Zoom>
+                  <img src={`${import.meta.env.BASE_URL}images/pedal/crank-position-l.png`} alt="좌측 자전거 크랭크 위치" style={{ width: '100%', borderRadius: '8px', border: '1px solid rgba(220, 38, 38, 0.4)', maxWidth: '500px', cursor: 'zoom-in' }} />
+                </Zoom>
+                <div style={{ width: '100%', aspectRatio: '4/3', maxWidth: '500px', background: 'var(--bg-color)', border: '2px dashed rgba(220, 38, 38, 0.4)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#dc2626', textAlign: 'center', padding: '1rem' }}>
                   [향후 추가]<br/>왼쪽 페달을 손(시계 반대 방향)으로<br/>돌리는 작업 사진
                 </div>
               </div>
