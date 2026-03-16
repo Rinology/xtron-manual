@@ -148,7 +148,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                   onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--ci-primary)'}
                   onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--surface-border)'}
                 >
-                  <span>가이드 검색...</span>
+                  <span>가이드 검색</span>
                   <div style={{ display: 'flex', gap: '0.2rem' }}>
                     <kbd style={{ fontSize: '0.7rem', padding: '0.1rem 0.3rem', background: 'var(--bg-color)', border: '1px solid var(--surface-border)', borderRadius: '4px', fontFamily: 'inherit' }}>Ctrl</kbd>
                     <kbd style={{ fontSize: '0.7rem', padding: '0.1rem 0.3rem', background: 'var(--bg-color)', border: '1px solid var(--surface-border)', borderRadius: '4px', fontFamily: 'inherit' }}>K</kbd>

@@ -63,7 +63,7 @@ export default function Hero({ setActivePage }) {
           <Search size={24} color="var(--ci-primary)" style={{ position: 'absolute', left: '1.5rem', top: '50%', transform: 'translateY(-50%)' }} />
           <input 
             type="text"
-            placeholder="상황이나 키워드를 검색하세요..."
+            placeholder="상황이나키워드를 검색하세요."
             value={localSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
             style={{

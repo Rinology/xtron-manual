@@ -118,17 +118,17 @@ export default function PedalGuide() {
                   크랭크 나사산의 영구적인 파손 방지를 위해 먼저 손으로 가결합을 진행합니다.<br/>
                   우측은 <strong>시계 방향 회전</strong>으로 결합됩니다.
                 </p>
-                <PedalRotationAnim isLeft={false} />
+                <PedalRotationAnim isLeft={false} bgImage={`${import.meta.env.BASE_URL}images/pedal/crank-bg.png`} />
               </div>
 
               {/* 3-2. 크랭크 위치 및 손 조립 사진 */}
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-                <div style={{ flex: '1 1 250px', aspectRatio: '4/3', background: 'var(--bg-color)', border: '2px dashed var(--surface-border)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)', textAlign: 'center', padding: '1rem' }}>
-                  [향후 추가]<br/>우측 자전거 크랭크 위치 소개 등 사진
-                </div>
-                <div style={{ flex: '1 1 250px', aspectRatio: '4/3', background: 'var(--bg-color)', border: '2px dashed var(--surface-border)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)', textAlign: 'center', padding: '1rem' }}>
-                  [향후 추가]<br/>오른쪽 페달을 손(시계 방향)으로<br/>돌리는 작업 사진
-                </div>
+                <Zoom>
+                  <img src={`${import.meta.env.BASE_URL}images/pedal/crank-position-r.png`} alt="우측 자전거 크랭크 위치" style={{ flex: '1 1 250px', width: '100%', objectFit: 'cover', aspectRatio: '4/3', border: '1px solid var(--surface-border)', borderRadius: '8px', cursor: 'zoom-in' }} />
+                </Zoom>
+                <Zoom>
+                  <img src={`${import.meta.env.BASE_URL}images/pedal/pedal-hand-install-r.png`} alt="오른쪽 페달을 손(시계 방향)으로 돌리는 작업" style={{ flex: '1 1 250px', width: '100%', objectFit: 'cover', aspectRatio: '4/3', border: '1px solid var(--surface-border)', borderRadius: '8px', cursor: 'zoom-in' }} />
+                </Zoom>
               </div>
 
               {/* 3-3. 공구 본결합 */}
