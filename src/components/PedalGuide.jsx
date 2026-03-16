@@ -95,7 +95,7 @@ export default function PedalGuide() {
               <li><strong>좌측 페달(L):</strong> 구동계가 없는 방향</li>
             </ul>
             <Zoom>
-              <img src={`${import.meta.env.BASE_URL}images/pedal/pedal-identify-lr-01.jpg`} alt="페달 스핀들 L/R 각인 식별" style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '500px' }} />
+              <img src={`${import.meta.env.BASE_URL}images/pedal/pedal-identify-lr-01.jpg`} alt="페달 스핀들 L/R 각인 식별" style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '500px', display: 'block', margin: '0 auto' }} />
             </Zoom>
           </div>
         </motion.div>
@@ -118,14 +118,11 @@ export default function PedalGuide() {
                   크랭크 나사산의 영구적인 파손 방지를 위해 먼저 손으로 가결합을 진행합니다.<br/>
                   우측은 <strong>시계 방향 회전</strong>으로 결합됩니다.
                 </p>
-                <PedalRotationAnim isLeft={false} bgImage={`${import.meta.env.BASE_URL}images/pedal/crank-bg.png`} />
+                <PedalRotationAnim isLeft={false} />
               </div>
 
-              {/* 3-2. 크랭크 위치 및 손 조립 사진 */}
+              {/* 3-2. 손 조립 사진 */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center' }}>
-                <Zoom>
-                  <img src={`${import.meta.env.BASE_URL}images/pedal/crank-position-r.png`} alt="우측 자전거 크랭크 위치" style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '500px', cursor: 'zoom-in' }} />
-                </Zoom>
                 <Zoom>
                   <img src={`${import.meta.env.BASE_URL}images/pedal/pedal-hand-install-r.png`} alt="오른쪽 페달을 손(시계 방향)으로 돌리는 작업" style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '500px', cursor: 'zoom-in' }} />
                 </Zoom>
@@ -164,14 +161,11 @@ export default function PedalGuide() {
                 <PedalRotationAnim isLeft={true} />
               </div>
 
-              {/* 4-2. 크랭크 위치 및 손 조립 사진 */}
+              {/* 4-2. 손 조립 사진 */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center' }}>
                 <Zoom>
-                  <img src={`${import.meta.env.BASE_URL}images/pedal/crank-position-l.png`} alt="좌측 자전거 크랭크 위치" style={{ width: '100%', borderRadius: '8px', border: '1px solid rgba(220, 38, 38, 0.4)', maxWidth: '500px', cursor: 'zoom-in' }} />
+                  <img src={`${import.meta.env.BASE_URL}images/pedal/pedal-hand-install-l.png`} alt="왼쪽 페달을 손(시계 반대 방향)으로 돌리는 작업" style={{ width: '100%', borderRadius: '8px', border: '1px solid rgba(220, 38, 38, 0.4)', maxWidth: '500px', cursor: 'zoom-in' }} />
                 </Zoom>
-                <div style={{ width: '100%', aspectRatio: '4/3', maxWidth: '500px', background: 'var(--bg-color)', border: '2px dashed rgba(220, 38, 38, 0.4)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#dc2626', textAlign: 'center', padding: '1rem' }}>
-                  [향후 추가]<br/>왼쪽 페달을 손(시계 반대 방향)으로<br/>돌리는 작업 사진
-                </div>
               </div>
 
               {/* 4-3. 공구 본결합 */}
@@ -179,9 +173,9 @@ export default function PedalGuide() {
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '1rem', lineHeight: 1.6 }}>
                   손으로 충분히 결합했다면, <strong>15mm 페달 렌치 또는 육각 렌치</strong>를 사용하여 전륜 방향(시계 반대 방향)으로 강하게 조입니다.
                 </p>
-                <div style={{ width: '100%', aspectRatio: '16/9', maxWidth: '500px', background: 'var(--bg-color)', border: '2px dashed rgba(220, 38, 38, 0.4)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#dc2626', margin: '0 auto' }}>
-                  [향후 추가]<br/>15mm 렌치 또는 공구를 이용해 좌측 페달을 강하게 조이는 사진
-                </div>
+                <Zoom>
+                  <img src={`${import.meta.env.BASE_URL}images/pedal/pedal-wrench-install-l.png`} alt="15mm 렌치로 좌측 페달을 강하게 조이는 모습" style={{ width: '100%', borderRadius: '8px', border: '1px solid rgba(220, 38, 38, 0.4)', maxWidth: '500px', display: 'block', margin: '0 auto', cursor: 'zoom-in' }} />
+                </Zoom>
               </div>
             </div>
           </div>

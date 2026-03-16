@@ -19,7 +19,7 @@ export default function BackToTop() {
   }, []);
 
   const scrollToTop = () => {
-    const container = document.querySelector('.page-container');
+    const container = document.querySelector('.main-content');
     if (container) {
       container.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -34,7 +34,7 @@ export default function BackToTop() {
           exit={{ opacity: 0, y: 20 }}
           onClick={scrollToTop}
           style={{
-            position: 'absolute',
+            position: 'fixed',
             bottom: '2rem',
             right: '2.5rem',
             background: 'var(--ci-primary)',

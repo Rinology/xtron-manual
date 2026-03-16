@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { allGuideItems } from '../data/guides';
-import { ChevronLeft, ChevronRight, Image as ImageIcon, Video as VideoIcon, Link as LinkIcon, Check, Menu, Printer, QrCode, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Image as ImageIcon, Video as VideoIcon, Link as LinkIcon, Check, Menu, Printer, Youtube, X } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 
 export default function GuideContent({ activePage, setActivePage }) {
   const guideIndex = allGuideItems.findIndex(item => item.id === activePage);
   const guide = allGuideItems[guideIndex];
   const [copied, setCopied] = useState(false);
-  const [showQR, setShowQR] = useState(false);
 
   if (!guide) return null;
 
@@ -37,15 +36,19 @@ export default function GuideContent({ activePage, setActivePage }) {
 
   const TopActions = () => (
     <div className="top-actions-container" style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.8rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-      <button
-        onClick={() => setShowQR(true)}
-        title="스마트폰 카메라로 보기 (QR)"
-        style={actionBtnStyle}
-        onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-color)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
-        onMouseLeave={e => { e.currentTarget.style.background = 'var(--ci-white)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
-      >
-        <QrCode size={14} /> 모바일 보기
-      </button>
+      {guide.youtubeLink && (
+        <a
+          href={guide.youtubeLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="유튜브 영상으로 가기"
+          style={{ ...actionBtnStyle, textDecoration: 'none' }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-color)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'var(--ci-white)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
+        >
+          <Youtube size={14} color="#dc2626" /> 유튜브 영상으로 가기
+        </a>
+      )}
 
       <button
         onClick={handleCopyLink}
@@ -63,7 +66,7 @@ export default function GuideContent({ activePage, setActivePage }) {
           if (!copied) { e.currentTarget.style.background = 'var(--ci-white)'; e.currentTarget.style.color = 'var(--text-secondary)'; }
         }}
       >
-        {copied ? <Check size={14} /> : <LinkIcon size={14} />}
+        {copied ? <Check size={14} color="var(--ci-secondary)" /> : <LinkIcon size={14} color="var(--ci-primary)" />}
         {copied ? '링크 복사됨' : '가이드 링크 복사'}
       </button>
     </div>
@@ -110,21 +113,6 @@ export default function GuideContent({ activePage, setActivePage }) {
         transition={{ duration: 0.4 }}
         style={{ paddingBottom: '4rem', paddingTop: '1rem' }}
       >
-        {showQR && (
-          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 11000, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setShowQR(false)}>
-            <div style={{ background: 'white', padding: '2rem', borderRadius: '16px', textAlign: 'center', position: 'relative' }} onClick={e => e.stopPropagation()}>
-              <button 
-                onClick={() => setShowQR(false)} 
-                style={{ position: 'absolute', top: '10px', right: '10px', background: 'transparent', border: 'none', cursor: 'pointer', color: '#666' }}
-              >
-                <X size={20} />
-              </button>
-              <h4 style={{ marginBottom: '1rem', color: 'var(--ci-primary)', fontSize: '1.1rem' }}>스마트폰 스캔 (QR)</h4>
-              <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(window.location.href)}`} alt="QR Code" style={{ width: '200px', height: '200px', margin: '0 auto', display: 'block' }} />
-              <p style={{ marginTop: '1rem', fontSize: '0.85rem', color: 'var(--text-secondary)', margin: '1rem 0 0 0' }}>모바일 화면에 최적화된 엑스트론<br/>매뉴얼을 경험해보세요.</p>
-            </div>
-          </div>
-        )}
         <TopActions />
         <CustomComponent />
         <NavigationButtons />
@@ -140,21 +128,6 @@ export default function GuideContent({ activePage, setActivePage }) {
       transition={{ duration: 0.4 }}
       style={{ paddingBottom: '4rem', paddingTop: '1rem' }}
     >
-      {showQR && (
-          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 11000, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setShowQR(false)}>
-            <div style={{ background: 'white', padding: '2rem', borderRadius: '16px', textAlign: 'center', position: 'relative' }} onClick={e => e.stopPropagation()}>
-              <button 
-                onClick={() => setShowQR(false)} 
-                style={{ position: 'absolute', top: '10px', right: '10px', background: 'transparent', border: 'none', cursor: 'pointer', color: '#666' }}
-              >
-                <X size={20} />
-              </button>
-              <h4 style={{ marginBottom: '1rem', color: 'var(--ci-primary)', fontSize: '1.1rem' }}>스마트폰 스캔 (QR)</h4>
-              <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(window.location.href)}`} alt="QR Code" style={{ width: '200px', height: '200px', margin: '0 auto', display: 'block' }} />
-              <p style={{ marginTop: '1rem', fontSize: '0.85rem', color: 'var(--text-secondary)', margin: '1rem 0 0 0' }}>모바일 화면에 최적화된 엑스트론<br/>매뉴얼을 경험해보세요.</p>
-            </div>
-          </div>
-      )}
       <TopActions />
       <div className="glass-panel guide-panel">
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>

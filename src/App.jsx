@@ -88,15 +88,15 @@ function App() {
         }} 
       />
       
-      <div className="main-content">
+      <div 
+        className="main-content"
+        onScroll={(e) => {
+          const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+          window.dispatchEvent(new CustomEvent('main-scroll', { detail: { isAtBottom: bottom, scrollTop: e.target.scrollTop } }));
+        }}
+      >
         <Header activePage={activePage} setActivePage={setActivePage} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
-        <main 
-          className="page-container" 
-          onScroll={(e) => {
-            const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
-            window.dispatchEvent(new CustomEvent('main-scroll', { detail: { isAtBottom: bottom, scrollTop: e.target.scrollTop } }));
-          }}
-        >
+        <main className="page-container">
           <AnimatePresence mode="wait">
             {!activePage ? (
               <Hero key="hero" setActivePage={setActivePage} />

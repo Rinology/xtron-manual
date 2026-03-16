@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { guidesData, allGuideItems } from '../data/guides';
-import { ChevronDown, ChevronRight, Search, Menu, MessageCircle, ShoppingBag, MapPin, Tag, Plus } from 'lucide-react';
+import { ChevronDown, ChevronRight, Search, Menu, MessageCircle, ShoppingBag, MapPin, Tag, Plus, Youtube } from 'lucide-react';
 
 export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch }) {
   const [openCategories, setOpenCategories] = useState({
@@ -339,16 +339,19 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
               style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'center' }}
             >
               <motion.div initial={isOpen ? { x: -30, opacity: 0 } : false} animate={{ x: 0, opacity: 1 }} transition={{ type: 'spring', stiffness: 300, damping: 15, delay: 0.05 }} style={{ width: '100%' }}>
-                <ExternalLinkButton isOpen={isOpen} icon={<MessageCircle size={18} />} text="카카오톡 채널 상담하기" url="https://pf.kakao.com" />
+                <ExternalLinkButton isOpen={isOpen} icon={<MessageCircle size={18} color="#eab308" />} text="카카오톡 채널 상담하기" url="https://pf.kakao.com/_xhxhRZxl" />
               </motion.div>
               <motion.div initial={isOpen ? { x: -30, opacity: 0 } : false} animate={{ x: 0, opacity: 1 }} transition={{ type: 'spring', stiffness: 300, damping: 15, delay: 0.1 }} style={{ width: '100%' }}>
-                <ExternalLinkButton isOpen={isOpen} icon={<ShoppingBag size={18} />} text="브랜드스토어" url="https://brand.naver.com" />
+                <ExternalLinkButton isOpen={isOpen} icon={<ShoppingBag size={18} color="#03C75A" />} text="브랜드스토어" url="https://brand.naver.com/qualisports" />
               </motion.div>
               <motion.div initial={isOpen ? { x: -30, opacity: 0 } : false} animate={{ x: 0, opacity: 1 }} transition={{ type: 'spring', stiffness: 300, damping: 15, delay: 0.15 }} style={{ width: '100%' }}>
-                <ExternalLinkButton isOpen={isOpen} icon={<MapPin size={18} />} text="전국 대리점안내" url="https://qualisports.com/stores" />
+                <ExternalLinkButton isOpen={isOpen} icon={<MapPin size={18} color="var(--ci-primary)" />} text="전국 대리점안내" url="https://xtronmap.kr" />
               </motion.div>
               <motion.div initial={isOpen ? { x: -30, opacity: 0 } : false} animate={{ x: 0, opacity: 1 }} transition={{ type: 'spring', stiffness: 300, damping: 15, delay: 0.2 }} style={{ width: '100%' }}>
-                <ExternalLinkButton isOpen={isOpen} icon={<Tag size={18} />} text="제품등록센터" url="https://registration.qualisports.com" />
+                <ExternalLinkButton isOpen={isOpen} icon={<Tag size={18} color="var(--ci-primary)" />} text="제품등록센터" url="https://xtroncare.kr" />
+              </motion.div>
+              <motion.div initial={isOpen ? { x: -30, opacity: 0 } : false} animate={{ x: 0, opacity: 1 }} transition={{ type: 'spring', stiffness: 300, damping: 15, delay: 0.25 }} style={{ width: '100%' }}>
+                <ExternalLinkButton isOpen={isOpen} icon={<Youtube size={18} color="#dc2626" />} text="엑스트론 공식 유튜브" url="https://www.youtube.com/@xtron.official" />
               </motion.div>
             </motion.div>
           )}

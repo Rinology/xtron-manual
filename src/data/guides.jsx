@@ -14,6 +14,7 @@ export const guidesData = {
           id: "pedal",
           title: "페달 장착 방법",
           icon: <Wrench size={18} />,
+          youtubeLink: "https://youtu.be/rgEEC-B9zR8", // 유튜브 영상 링크 (예시)
           summary: [
             "좌(L)/우(R) 페달 식별 및 결합 방향 확인",
             "크랭크 파손 방지를 위한 수동 가결합 필수",
