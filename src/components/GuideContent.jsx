@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { allGuideItems } from '../data/guides';
+import { useGuides } from '../context/GuideContext';
 import { ChevronLeft, ChevronRight, Image as ImageIcon, Video as VideoIcon, Link as LinkIcon, Check, Youtube } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -9,6 +9,7 @@ import remarkGfm from 'remark-gfm';
 const markdownModules = import.meta.glob('../data/markdown/*.md', { query: '?raw', import: 'default' });
 
 export default function GuideContent({ activePage, setActivePage }) {
+  const { allGuideItems } = useGuides();
   const guideIndex = allGuideItems.findIndex(item => item.id === activePage);
   const guide = allGuideItems[guideIndex];
   const [copied, setCopied] = useState(false);

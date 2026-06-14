@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, ChevronRight, FileText } from 'lucide-react';
-import { allGuideItems } from '../data/guides';
+import { useGuides } from '../context/GuideContext';
 
 export default function SearchModal({ isOpen, onClose, onSelect }) {
+  const { allGuideItems } = useGuides();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(0);

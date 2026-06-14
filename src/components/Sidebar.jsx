@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { guidesData, allGuideItems } from '../data/guides';
+import { useGuides } from '../context/GuideContext';
 import { ChevronDown, ChevronRight, Search, Menu, MessageCircle, ShoppingBag, MapPin, Tag, Plus, Youtube } from 'lucide-react';
 
 export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch }) {
+  const { guidesData } = useGuides();
   const [openCategories, setOpenCategories] = useState({
     "basic": true,
     "battery-guide": true,
