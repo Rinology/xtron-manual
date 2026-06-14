@@ -1,8 +1,9 @@
 import React from 'react';
-import { allGuideItems } from '../data/guides';
+import { useGuides } from '../context/GuideContext';
 import { ChevronLeft, Menu, Home } from 'lucide-react';
 
 export default function Header({ activePage, setActivePage, isOpen, setIsOpen }) {
+  const { allGuideItems } = useGuides();
   const guide = activePage ? allGuideItems.find(item => item.id === activePage) : null;
 
   return (

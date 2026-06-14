@@ -9,23 +9,28 @@ import BackToTop from './components/BackToTop';
 import SearchModal from './components/SearchModal';
 import { AnimatePresence } from 'framer-motion';
 import useSecurity from './hooks/useSecurity';
-import { allGuideItems } from './data/guides';
+import { useGuides } from './context/GuideContext';
 
 function App() {
   useSecurity(); // 보안 로직 적용
   
-  // URL 해시값 읽어오기 (초기 상태)
-  const getInitialPage = () => {
-    const hash = window.location.hash.replace('#', '');
-    if (hash && allGuideItems.some(item => item.id === hash)) {
-      return hash;
-    }
-    return null;
-  };
+  const { allGuideItems } = useGuides();
 
-  const [activePage, setActivePage] = useState(getInitialPage()); // null means Hero (Home)
+  const [activePage, setActivePage] = useState(() => {
+    const hash = window.location.hash.replace('#', '');
+    return hash && allGuideItems.some(item => item.id === hash) ? hash : null;
+  }); // null means Hero (Home)
+  
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  // 데이터(시트)가 로드되어 allGuideItems가 업데이트 되었을 때 URL 해시 다시 검증
+  useEffect(() => {
+    const hash = window.location.hash.replace('#', '');
+    if (hash && allGuideItems.some(item => item.id === hash)) {
+      setActivePage(hash);
+    }
+  }, [allGuideItems]);
 
   // Cmd+K 단축키 리스너
   useEffect(() => {
@@ -99,7 +104,7 @@ function App() {
         <main className="page-container">
           <AnimatePresence mode="wait">
             {!activePage ? (
-              <Hero key="hero" setActivePage={setActivePage} />
+              <Hero key="hero" setActivePage={setActivePage} onOpenSearch={() => setIsSearchOpen(true)} />
             ) : (
               <GuideContent key={activePage} activePage={activePage} setActivePage={setActivePage} />
             )}
