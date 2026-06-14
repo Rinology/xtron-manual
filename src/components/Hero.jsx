@@ -4,19 +4,20 @@ import { Search, Sparkles, X, HelpCircle } from 'lucide-react';
 import { allGuideItems } from '../data/guides';
 import TroubleshootingWizard from './TroubleshootingWizard';
 
-export default function Hero({ setActivePage }) {
+export default function Hero({ setActivePage, onOpenSearch }) {
   const [localSearch, setLocalSearch] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [isWizardOpen, setIsWizardOpen] = useState(false);
 
   const matchedItems = allGuideItems.filter(item => 
-    item.title.includes(localSearch) || item.summary.some(text => text.includes(localSearch))
+    item.title.toLowerCase().includes(localSearch.toLowerCase()) || 
+    (item.summary && item.summary.some(text => text.toLowerCase().includes(localSearch.toLowerCase())))
   );
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if(localSearch.trim() && matchedItems.length > 0) {
-      setActivePage(matchedItems[0].id); // Go to first result
+      setActivePage(matchedItems[0].id);
     }
   };
 
@@ -63,7 +64,7 @@ export default function Hero({ setActivePage }) {
           <Search size={24} color="var(--ci-primary)" style={{ position: 'absolute', left: '1.5rem', top: '50%', transform: 'translateY(-50%)' }} />
           <input 
             type="text"
-            placeholder="상황이나키워드를 검색하세요."
+            placeholder="상황이나 키워드를 검색하세요."
             value={localSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
             style={{
@@ -138,14 +139,21 @@ export default function Hero({ setActivePage }) {
                   border: '1px solid var(--surface-border)',
                   overflow: 'hidden',
                   zIndex: 10,
-                  textAlign: 'left'
+                  textAlign: 'left',
+                  maxHeight: '300px',
+                  overflowY: 'auto'
                 }}
               >
                 {matchedItems.length > 0 ? (
                   matchedItems.map(item => (
                     <div 
                       key={item.id}
-                      onClick={() => setActivePage(item.id)}
+                      onMouseDown={(e) => {
+                        e.preventDefault(); // Prevent input blur
+                        setActivePage(item.id);
+                        setLocalSearch(''); // Clear search on selection
+                        setIsFocused(false);
+                      }}
                       style={{
                         padding: '1rem',
                         cursor: 'pointer',
@@ -159,8 +167,15 @@ export default function Hero({ setActivePage }) {
                       onMouseEnter={(e) => e.target.style.background = 'var(--ci-primary-light)'}
                       onMouseLeave={(e) => e.target.style.background = 'transparent'}
                     >
-                      <Sparkles size={16} color="var(--ci-primary)" style={{ pointerEvents: 'none' }}/>
-                      <span style={{ pointerEvents: 'none' }}>{item.title}</span>
+                      <Sparkles size={16} color="var(--ci-primary)" style={{ flexShrink: 0, pointerEvents: 'none' }}/>
+                      <div style={{ pointerEvents: 'none', display: 'flex', flexDirection: 'column', gap: '0.1rem' }}>
+                        <span style={{ fontWeight: 600 }}>{item.title}</span>
+                        {item.summary && (
+                          <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                            {item.summary[0]}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   ))
                 ) : (

@@ -99,7 +99,7 @@ function App() {
         <main className="page-container">
           <AnimatePresence mode="wait">
             {!activePage ? (
-              <Hero key="hero" setActivePage={setActivePage} />
+              <Hero key="hero" setActivePage={setActivePage} onOpenSearch={() => setIsSearchOpen(true)} />
             ) : (
               <GuideContent key={activePage} activePage={activePage} setActivePage={setActivePage} />
             )}

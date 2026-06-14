@@ -1,13 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { allGuideItems } from '../data/guides';
-import { ChevronLeft, ChevronRight, Image as ImageIcon, Video as VideoIcon, Link as LinkIcon, Check, Menu, Printer, Youtube, X } from 'lucide-react';
-import { AnimatePresence } from 'framer-motion';
+import { ChevronLeft, ChevronRight, Image as ImageIcon, Video as VideoIcon, Link as LinkIcon, Check, Youtube } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+
+// Load all markdown files at build time
+const markdownModules = import.meta.glob('../data/markdown/*.md', { query: '?raw', import: 'default' });
 
 export default function GuideContent({ activePage, setActivePage }) {
   const guideIndex = allGuideItems.findIndex(item => item.id === activePage);
   const guide = allGuideItems[guideIndex];
   const [copied, setCopied] = useState(false);
+  const [markdownContent, setMarkdownContent] = useState('');
+
+  useEffect(() => {
+    if (guide?.markdownFile) {
+      const loader = markdownModules[`../data/markdown/${guide.markdownFile}`];
+      if (loader) {
+        loader().then(content => setMarkdownContent(content));
+      } else {
+        setMarkdownContent('마크다운 파일을 찾을 수 없습니다.');
+      }
+    } else {
+      setMarkdownContent('');
+    }
+  }, [guide]);
 
   if (!guide) return null;
 
@@ -104,7 +122,26 @@ export default function GuideContent({ activePage, setActivePage }) {
     </div>
   );
 
-  if (CustomComponent) {
+  // Markdown renderer components
+  const MarkdownComponents = {
+    h3: ({node, ...props}) => <h3 style={{ fontSize: '1.4rem', color: 'var(--ci-primary)', marginTop: '2rem', marginBottom: '1rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--surface-border)' }} {...props} />,
+    h4: ({node, ...props}) => <h4 style={{ fontSize: '1.2rem', color: 'var(--text-primary)', marginTop: '1.5rem', marginBottom: '0.5rem' }} {...props} />,
+    p: ({node, ...props}) => <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '1rem' }} {...props} />,
+    ul: ({node, ...props}) => <ul style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6, paddingLeft: '1.5rem', marginBottom: '1rem' }} {...props} />,
+    blockquote: ({node, ...props}) => (
+      <blockquote style={{
+        background: 'rgba(47, 98, 134, 0.05)',
+        borderLeft: '4px solid var(--ci-primary)',
+        padding: '1rem 1.5rem',
+        margin: '1.5rem 0',
+        borderRadius: '0 var(--radius-md) var(--radius-md) 0'
+      }} {...props} />
+    ),
+    img: ({node, ...props}) => <img style={{ width: '100%', maxWidth: '600px', borderRadius: '8px', border: '1px solid var(--surface-border)', display: 'block', margin: '1.5rem auto' }} {...props} />
+  };
+
+  // Legacy rendering for non-migrated components
+  if (CustomComponent && !guide.markdownFile) {
     return (
       <motion.div
         initial={{ opacity: 0, x: 20 }}
@@ -120,6 +157,7 @@ export default function GuideContent({ activePage, setActivePage }) {
     );
   }
 
+  // Unified Rendering (Markdown or Fallback)
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}
@@ -137,37 +175,92 @@ export default function GuideContent({ activePage, setActivePage }) {
           <h2 style={{ fontSize: '2rem', color: 'var(--ci-primary)', margin: 0 }}>{guide.title}</h2>
         </div>
 
-        <div style={{ background: 'var(--bg-color)', borderRadius: 'var(--radius-md)', padding: '1.5rem', border: '1px solid var(--surface-border)', marginBottom: '2rem' }}>
-          <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: 'var(--text-primary)' }}>요약 설명</h3>
-          <ol style={{ paddingLeft: '1.25rem', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            {guide.summary.map((text, idx) => (
-              <li key={idx} style={{ lineHeight: 1.6 }}>{text}</li>
-            ))}
-          </ol>
-        </div>
-
-        <div>
-          <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: 'var(--text-primary)' }}>상세 이미지 / 비디오</h3>
-          
-          {/* Placeholder for Media */}
-          <div style={{
-            width: '100%',
-            aspectRatio: '16/9',
-            background: 'var(--surface-border)',
-            border: '2px dashed var(--text-secondary)',
-            borderRadius: 'var(--radius-md)',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'var(--text-secondary)',
-            gap: '1rem'
-          }}>
-            {guide.placeholderType === 'gif' ? <VideoIcon size={48} opacity={0.5} /> : <ImageIcon size={48} opacity={0.5} />}
-            <span style={{ fontWeight: 600 }}>{guide.placeholderText} 공간입니다.</span>
-            <span style={{ fontSize: '0.85rem' }}>(실제 이미지나 GIF로 교체될 영역)</span>
+        {guide.markdownFile ? (
+          <div className="markdown-body">
+            <ReactMarkdown 
+              remarkPlugins={[remarkGfm]} 
+              components={MarkdownComponents}
+            >
+              {markdownContent}
+            </ReactMarkdown>
           </div>
-        </div>
+        ) : guide.jsonData ? (
+          <div className="json-data-body">
+            {/* Intro */}
+            {guide.jsonData.intro && (
+              <div style={{ background: 'var(--ci-primary-light)', border: '1px solid rgba(47, 98, 134, 0.3)', borderRadius: 'var(--radius-md)', padding: '1.5rem', marginBottom: '2rem' }}>
+                <ReactMarkdown remarkPlugins={[remarkGfm]} components={MarkdownComponents}>
+                  {guide.jsonData.intro}
+                </ReactMarkdown>
+              </div>
+            )}
+            
+            {/* Steps */}
+            {guide.jsonData.steps && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '2rem' }}>
+                {guide.jsonData.steps.map((step, idx) => (
+                  <motion.div 
+                    key={idx}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: '-50px' }}
+                    className="glass-panel guide-step-panel" 
+                    style={{ position: 'relative' }}
+                  >
+                    <div style={{ position: 'absolute', top: '-1.5rem', left: '2rem', width: '2px', height: '1.5rem', background: 'var(--surface-border)' }}></div>
+                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--ci-primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: 'var(--ci-primary)', flexShrink: 0 }}>
+                      {idx + 1}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <h4 style={{ fontSize: '1.2rem', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>
+                        {step.title}
+                      </h4>
+                      <div style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '1rem', lineHeight: 1.6 }}>
+                        <ReactMarkdown remarkPlugins={[remarkGfm]} components={MarkdownComponents}>
+                          {step.text}
+                        </ReactMarkdown>
+                      </div>
+                      {step.image && (
+                        <img src={step.image} alt={step.title} style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '500px', display: 'block', margin: '1rem auto' }} />
+                      )}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          <React.Fragment>
+            <div style={{ background: 'var(--bg-color)', borderRadius: 'var(--radius-md)', padding: '1.5rem', border: '1px solid var(--surface-border)', marginBottom: '2rem' }}>
+              <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: 'var(--text-primary)' }}>요약 설명</h3>
+              <ol style={{ paddingLeft: '1.25rem', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {guide.summary.map((text, idx) => (
+                  <li key={idx} style={{ lineHeight: 1.6 }}>{text}</li>
+                ))}
+              </ol>
+            </div>
+            <div>
+              <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: 'var(--text-primary)' }}>상세 내용 준비중</h3>
+              <div style={{
+                width: '100%',
+                aspectRatio: '16/9',
+                background: 'var(--surface-border)',
+                border: '2px dashed var(--text-secondary)',
+                borderRadius: 'var(--radius-md)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--text-secondary)',
+                gap: '1rem'
+              }}>
+                <ImageIcon size={48} opacity={0.5} />
+                <span style={{ fontWeight: 600 }}>상세 가이드를 마크다운으로 작성해주세요.</span>
+              </div>
+            </div>
+          </React.Fragment>
+        )}
+
         <NavigationButtons />
       </div>
     </motion.div>
