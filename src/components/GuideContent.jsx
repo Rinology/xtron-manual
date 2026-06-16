@@ -232,32 +232,20 @@ export default function GuideContent({ activePage, setActivePage }) {
           </div>
         ) : (
           <React.Fragment>
-            <div style={{ background: 'var(--bg-color)', borderRadius: 'var(--radius-md)', padding: '1.5rem', border: '1px solid var(--surface-border)', marginBottom: '2rem' }}>
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: 'var(--text-primary)' }}>요약 설명</h3>
-              <ol style={{ paddingLeft: '1.25rem', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                {guide.summary.map((text, idx) => (
-                  <li key={idx} style={{ lineHeight: 1.6 }}>{text}</li>
-                ))}
-              </ol>
-            </div>
-            <div>
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: 'var(--text-primary)' }}>상세 내용 준비중</h3>
-              <div style={{
-                width: '100%',
-                aspectRatio: '16/9',
-                background: 'var(--surface-border)',
-                border: '2px dashed var(--text-secondary)',
-                borderRadius: 'var(--radius-md)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'var(--text-secondary)',
-                gap: '1rem'
-              }}>
-                <ImageIcon size={48} opacity={0.5} />
-                <span style={{ fontWeight: 600 }}>상세 가이드를 마크다운으로 작성해주세요.</span>
-              </div>
+            <div style={{
+              width: '100%',
+              aspectRatio: '16/9',
+              background: 'var(--surface-border)',
+              border: '2px dashed var(--text-secondary)',
+              borderRadius: 'var(--radius-md)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'var(--text-secondary)',
+              margin: '2rem 0'
+            }}>
+              <span style={{ fontWeight: 600, fontSize: '1.2rem', color: 'var(--text-primary)' }}>상세 내용 준비중</span>
             </div>
           </React.Fragment>
         )}
