@@ -56,9 +56,6 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
          if(activePage !== item.id) e.currentTarget.style.background = 'transparent';
       }}
     >
-      <span style={{ color: activePage === item.id ? 'var(--ci-primary)' : 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        {item.icon}
-      </span>
       <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.title}</span>
     </button>
   );
