@@ -64,21 +64,21 @@ export const guidesData = {
               title: "기어 변속 방법",
               icon: <Settings size={18} />,
               summary: ["체인이 굴러가고(주행 중) 있을 때만 1단씩 변속하세요."],
-              customComponent: GearGuide
+              markdownFile: 'gear-guide.md'
             },
             {
               id: "brake-guide",
               title: "안전한 브레이킹 (모터컷)",
               icon: <ShieldAlert size={18} />,
               summary: ["레버를 당길 때 즉시 모터 동력을 차단하는 모터컷 원리 설명"],
-              customComponent: BrakeGuide
+              markdownFile: 'brake-guide.md'
             },
             {
               id: "tire-pressure-basic",
               title: "타이어 공기압 체크",
               icon: <Wind size={18} />,
               summary: ["주행 전 타이어 측면에 표기된 적정 공기압(PSI)을 확인하세요."],
-              customComponent: TirePressureGuide
+              markdownFile: 'tire-pressure-basic.md'
             }
           ]
         },
@@ -92,7 +92,7 @@ export const guidesData = {
               icon: <Wrench size={18} />,
               youtubeLink: "https://youtu.be/T0fKF32Y158",
               summary: ["안장과 싯포스트를 분리하고 썬투어 싯포스트를 결합합니다."],
-              customComponent: SuntourGuide
+              markdownFile: 'suntour-seatpost.md'
             }
           ]
         }
