@@ -10,8 +10,9 @@ export function GuideProvider({ children }) {
 
   useEffect(() => {
     async function loadCMS() {
-      // User provided spreadsheet URL for CSV output
-      const SHEET_URL = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQLeyv9lic0ituxpPWhCvEfqnkEpttZn9GbGMIBtZGjErqYvKkzirEN2hVW-Q7Wy8rXQVzpcQcHTqwG/pub?output=csv&t=${new Date().getTime()}`;
+      // User provided spreadsheet URL for CSV output (loaded from environment variable)
+      const baseUrl = import.meta.env.VITE_SHEETS_URL;
+      const SHEET_URL = `${baseUrl}&t=${new Date().getTime()}`;
       
       const remoteData = await fetchGuidesFromGoogleSheet(SHEET_URL);
       if (remoteData && remoteData.categories && remoteData.categories.length > 0) {
