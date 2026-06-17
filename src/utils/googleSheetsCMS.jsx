@@ -29,7 +29,7 @@ export async function fetchGuidesFromGoogleSheet(csvUrl) {
             const { 
               CategoryID, CategoryTitle, 
               SubCategoryID, SubCategoryTitle, 
-              ItemID, ItemTitle, IconName, Summary, MarkdownFile 
+              ItemID, ItemTitle, IconName, Summary, MarkdownFile, YoutubeLink
             } = row;
 
             // 1. 카테고리 찾기 또는 생성
@@ -55,7 +55,8 @@ export async function fetchGuidesFromGoogleSheet(csvUrl) {
               title: ItemTitle,
               icon: <IconComponent size={18} />,
               summary: Summary ? Summary.split('|').map(s => s.trim()) : [], // | 문자로 줄바꿈 분리
-              markdownFile: MarkdownFile
+              markdownFile: MarkdownFile,
+              youtubeLink: YoutubeLink
             });
           });
 
