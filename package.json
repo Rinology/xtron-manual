@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://rinology.github.io/xtron-manual/",
+  "homepage": "https://xtron-guide.kr/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
