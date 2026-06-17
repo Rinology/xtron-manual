@@ -52,7 +52,7 @@ export default function Hero({ setActivePage, onOpenSearch }) {
       <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '600px' }}>
         
         <h2 className="hero-title" style={{ marginBottom: '1rem', letterSpacing: '-0.02em', color: 'var(--ci-primary)' }}>
-          무엇을 <span className="text-gradient">도와</span>드릴까요?
+          무엇을 <span style={{ color: 'var(--ci-secondary)' }}>도와드릴까요?</span>
         </h2>
         
         <p className="hero-subtitle" style={{ color: 'var(--text-secondary)', margin: '0 auto 3rem auto', lineHeight: 1.6 }}>
