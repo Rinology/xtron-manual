@@ -6,7 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 // Load all markdown files at build time
-const markdownModules = import.meta.glob('../data/markdown/*.md', { query: '?raw', import: 'default' });
+const markdownModules = import.meta.glob('../data/markdown/**/*.md', { query: '?raw', import: 'default' });
 
 export default function GuideContent({ activePage, setActivePage }) {
   const { allGuideItems } = useGuides();
