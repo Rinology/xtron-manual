@@ -21,7 +21,7 @@ export default function GuideContent({ activePage, setActivePage }) {
       if (loader) {
         loader().then(content => setMarkdownContent(content));
       } else {
-        setMarkdownContent('마크다운 파일을 찾을 수 없습니다.');
+        setMarkdownContent('설명 문서를 찾을 수 없습니다');
       }
     } else {
       setMarkdownContent('');
