@@ -4,6 +4,7 @@ import { useGuides } from '../context/GuideContext';
 import { ChevronLeft, ChevronRight, Image as ImageIcon, Video as VideoIcon, Link as LinkIcon, Check, Youtube } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { sanitizeUrl } from '../utils/security';
 
 // Load all markdown files at build time
 const markdownModules = import.meta.glob('../data/markdown/**/*.md', { query: '?raw', import: 'default' });
@@ -17,7 +18,14 @@ export default function GuideContent({ activePage, setActivePage }) {
 
   useEffect(() => {
     if (guide?.markdownFile) {
-      const loader = markdownModules[`../data/markdown/${guide.markdownFile}`];
+      // 파일명만 입력해도 하위 폴더에서 자동으로 찾을 수 있도록 개선
+      const moduleKey = Object.keys(markdownModules).find(key => 
+        key === `../data/markdown/${guide.markdownFile}` || 
+        key.endsWith(`/${guide.markdownFile}`)
+      );
+      
+      const loader = moduleKey ? markdownModules[moduleKey] : null;
+
       if (loader) {
         loader().then(content => setMarkdownContent(content));
       } else {
@@ -57,7 +65,7 @@ export default function GuideContent({ activePage, setActivePage }) {
     <div className="top-actions-container" style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.8rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
       {guide.youtubeLink && (
         <a
-          href={guide.youtubeLink}
+          href={sanitizeUrl(guide.youtubeLink)}
           target="_blank"
           rel="noopener noreferrer"
           title="유튜브 영상으로 가기"
