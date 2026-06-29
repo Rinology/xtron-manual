@@ -5,7 +5,7 @@ import { X, ChevronRight, RotateCcw, HelpCircle } from 'lucide-react';
 import { useGuides } from '../context/GuideContext';
 
 export default function TroubleshootingWizard({ isOpen, onClose, onResult }) {
-  const { wizardFlow } = useGuides();
+  const { wizardFlow, isWizardLoading } = useGuides();
   const [currentNode, setCurrentNode] = useState('start');
   const [history, setHistory] = useState([]);
 
@@ -83,8 +83,27 @@ export default function TroubleshootingWizard({ isOpen, onClose, onResult }) {
                 </div>
                 {/* Body */}
                 <div style={{ padding: '3rem 1.5rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
-                  <p>로딩 중이거나 데이터를 불러올 수 없습니다...</p>
-                  <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>자가진단마법사 연결상태를 확인해주세요.</p>
+                  {isWizardLoading ? (
+                    <>
+                      <div style={{
+                        display: 'inline-block',
+                        width: '30px', height: '30px',
+                        border: '3px solid var(--surface-border)',
+                        borderTop: '3px solid var(--ci-primary)',
+                        borderRadius: '50%',
+                        animation: 'spin 1s linear infinite',
+                        marginBottom: '1rem'
+                      }} />
+                      <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+                      <p>스프레드시트에서 데이터를 불러오는 중입니다...</p>
+                      <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>잠시만 기다려주세요.</p>
+                    </>
+                  ) : (
+                    <>
+                      <p>로딩 중이거나 데이터를 불러올 수 없습니다...</p>
+                      <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>자가진단마법사 연결상태를 확인해주세요.</p>
+                    </>
+                  )}
                 </div>
               </motion.div>
             </div>

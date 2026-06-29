@@ -7,14 +7,15 @@ const GuideContext = createContext();
 export function GuideProvider({ children }) {
   const [guidesData, setGuidesData] = useState(fallbackData);
   const [allGuideItems, setAllGuideItems] = useState(fallbackItems);
-  const [wizardFlow, setWizardFlow] = useState(null); // 초기에는 null (로딩 상태 구분을 위해)
+  const [wizardFlow, setWizardFlow] = useState(null);
+  const [isWizardLoading, setIsWizardLoading] = useState(true);
 
   useEffect(() => {
     async function loadCMS() {
       // 1. 가이드 메뉴 데이터 로딩
       const baseUrl = import.meta.env.VITE_SHEETS_URL;
       if (baseUrl) {
-        const SHEET_URL = `${baseUrl}&t=${new Date().getTime()}`;
+        const SHEET_URL = baseUrl;
         const remoteData = await fetchGuidesFromGoogleSheet(SHEET_URL);
         if (remoteData && remoteData.categories && remoteData.categories.length > 0) {
           setGuidesData(remoteData);
@@ -33,18 +34,24 @@ export function GuideProvider({ children }) {
       // 2. 자가진단 마법사 데이터 로딩
       const wizardBaseUrl = import.meta.env.VITE_WIZARD_SHEETS_URL;
       if (wizardBaseUrl) {
-        const WIZARD_SHEET_URL = `${wizardBaseUrl}&t=${new Date().getTime()}`;
-        const remoteWizardData = await fetchWizardFromGoogleSheet(WIZARD_SHEET_URL);
-        if (remoteWizardData && Object.keys(remoteWizardData).length > 0) {
-          setWizardFlow(remoteWizardData);
+        try {
+          const WIZARD_SHEET_URL = wizardBaseUrl;
+          const remoteWizardData = await fetchWizardFromGoogleSheet(WIZARD_SHEET_URL);
+          if (remoteWizardData && Object.keys(remoteWizardData).length > 0) {
+            setWizardFlow(remoteWizardData);
+          }
+        } finally {
+          setIsWizardLoading(false);
         }
+      } else {
+        setIsWizardLoading(false);
       }
     }
     loadCMS();
   }, []);
 
   return (
-    <GuideContext.Provider value={{ guidesData, allGuideItems, wizardFlow }}>
+    <GuideContext.Provider value={{ guidesData, allGuideItems, wizardFlow, isWizardLoading }}>
       {children}
     </GuideContext.Provider>
   );
