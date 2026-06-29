@@ -159,22 +159,39 @@
 
 ---
 
-## 🤖 4. 자가진단 마법사 봇 질문 수정 (관리자 코딩 영역)
+## 🤖 4. 자가진단 마법사 봇 질문 수정 (스프레드시트 연동)
 
-메인 화면에 뜨는 챗봇 스타일의 '상황별 자가진단 마법사' 문항을 바꾸려면 소스코드를 약간 수정해야 합니다.
+메인 화면에 뜨는 챗봇 스타일의 '상황별 자가진단 마법사' 질문 흐름은 구글 스프레드시트의 **`WizardFlow`** 탭에서 전적으로 관리됩니다. 
 
-1. GitHub에서 `src/components/TroubleshootingWizard.jsx` 파일을 엽니다.
-2. 파일 위쪽에 위치한 `const WIZARD_FLOW = { ... }` 객체를 찾습니다.
-3. 질문(`question`)과 선택지(`options`)를 수정할 수 있습니다.
-   * `label`: 사용자에게 보여질 선택지 이름
-   * `next`: 다음으로 넘어갈 질문 덩어리 이름
-   * `result`: 이 선택지를 눌렀을 때 최종적으로 이동시킬 **가이드 ID** (스프레드시트에 있는 `ItemID`와 정확히 같아야 함)
+구글 AppSheet와의 완벽한 호환성과 확장성을 모두 고려하여, **"1행 = 1개의 선택지(버튼)"** 형식의 데이터베이스(DB) 정규화 모델로 설계되어 있습니다.
 
-수정 후 Commit을 하시면 마찬가지로 홈페이지에 바로 반영됩니다.
+### 📊 자가진단 마법사 스프레드시트 구조 (WizardFlow 탭)
+
+| 열 이름 (Column) | 설명 | AppSheet 역할 |
+| :--- | :--- | :--- |
+| **RowID** | **[필수]** 각 행을 식별하는 고유 ID (예: `OPT-001`, `OPT-002`). | `Key` 컬럼 (Primary Key) |
+| **NodeID** | 질문의 묶음(화면)을 식별하는 ID (예: `start`, `power_1`). 이 값이 같은 행들은 하나의 화면(질문)에 나오는 버튼들로 묶입니다. | `Group By` 기준 컬럼 |
+| **Question** | 화면 최상단에 띄울 질문 내용입니다. (동일한 `NodeID` 안에서는 같은 질문을 복사해 넣습니다.) | 화면 제목 텍스트 |
+| **OptionLabel** | 사용자가 누르게 될 선택지 버튼의 텍스트입니다. | 버튼 텍스트 |
+| **NextNodeID** | 버튼을 눌렀을 때 이어질 다음 질문의 `NodeID`입니다. (가이드로 바로 넘어갈 경우 비워둡니다.) | 다음 화면 라우팅 |
+| **ResultItemID** | 버튼을 눌렀을 때 연결할 최종 가이드의 `ItemID`입니다. (기존 가이드 시트의 ItemID와 동일. 다음 질문이 있을 경우 비워둡니다.) | 최종 결과(URL) 매핑 |
+
+> **💡 ResultItemID의 역할은 무엇인가요?**
+> `ResultItemID`는 스무고개의 **최종 정답지**를 의미합니다. 예를 들어 사용자가 선택지를 누르다가 이 값에 `error-tire`가 적혀 있다면, 마법사는 즉시 "이 문제를 해결하려면 '타이어 공기압' 가이드를 보세요!" 라고 판단하여 `troubleshooting/error-tire.md` 문서로 화면을 자동 이동시켜 줍니다.
+
+#### 📝 실제 데이터 입력 예시
+
+| RowID | NodeID | Question | OptionLabel | NextNodeID | ResultItemID |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| OPT-001 | `start` | 어떤 종류의 문제를 겪고 계신가요? | 전원이 안 켜지거나 배터리 문제 | `power_sub_1` | |
+| OPT-002 | `start` | 어떤 종류의 문제를 겪고 계신가요? | 주행 시 소음이나 소리가 남 | `noise_sub_1` | |
+| OPT-003 | `start` | 어떤 종류의 문제를 겪고 계신가요? | 자전거가 잘 안 나감 (주행감 저하) | | `error-tire` |
+| OPT-004 | `power_sub_1` | 충전 시 어댑터의 LED 색상은 무엇인가요? | 빨간색 (충전 중 표시) | `power_sub_2` | |
+| OPT-005 | `power_sub_1` | 충전 시 어댑터의 LED 색상은 무엇인가요? | 초록색 (완충 표시) 이지만 안 켜짐 | | `error-power` |
 
 ### 🧠 동작 원리 및 시각화 (흐름도)
 
-자가진단 마법사는 사용자가 겪고 있는 문제를 단계별로 좁혀나가, 최종적으로 **가장 적합한 가이드 문서(MD)**를 매칭해 주는 "스무고개" 형식의 네비게이션 시스템입니다. 현재 코딩되어 있는 질문 흐름을 시각화하면 다음과 같습니다:
+자가진단 마법사는 위 표를 바탕으로, 사용자가 겪고 있는 문제를 단계별로 좁혀나가 최종적으로 **가장 적합한 가이드 문서(MD)**를 매칭해 주는 시스템입니다.
 
 ```mermaid
 graph TD
@@ -189,42 +206,12 @@ graph TD
     %% 전원 문제 세부 노드 (Power1)
     Power1 -->|빨간색 (충전 중 표시)| Power2("충전 후에도 모니터가 켜지지 않나요?")
     Power1 -->|초록색 (완충 표시) 이지만 안 켜짐| ResultPower1((전원 가이드<br/>`error-power`))
-    Power1 -->|불이 아예 안 들어옴| ResultPower2((전원 가이드<br/>`error-power`))
-
-    %% 전원 문제 세부 노드 2 (Power2)
-    Power2 -->|네, 아무 반응이 없습니다.| ResultPower3((전원 가이드<br/>`error-power`))
-    Power2 -->|켜지지만 금방 꺼집니다.| ResultPower4((전원 가이드<br/>`error-power`))
-
-    %% 소음 문제 세부 노드 (Noise1)
-    Noise1 -->|바퀴 쪽 (브레이크 삐-익 소리)| ResultBrake1((브레이크 가이드<br/>`error-brake`))
-    Noise1 -->|기타 부위 (기어, 모터 등)| ResultBrake2((브레이크 가이드<br/>`error-brake`))
 
     %% 스타일링
     classDef questionNode fill:#f9f9ff,stroke:#3b82f6,stroke-width:2px,color:#1e293b,font-weight:bold
     classDef resultNode fill:#10b981,stroke:#047857,stroke-width:2px,color:#fff,font-weight:bold
     
     class Start,Power1,Power2,Noise1 questionNode
-    class ResultTire,ResultPower1,ResultPower2,ResultPower3,ResultPower4,ResultBrake1,ResultBrake2 resultNode
+    class ResultTire,ResultPower1 resultNode
 ```
 
-### 🛠️ 시나리오 추가/수정 예시
-
-새로운 질문을 추가하고 싶다면, 단순히 `WIZARD_FLOW` 객체 안에 새로운 덩어리를 만들고 `next`로 연결만 해주면 무한히 질문을 확장할 수 있습니다. 마치 레고 블록을 조립하듯 설계하시면 됩니다.
-
-**(예시: 페달 소음 질문 추가하기)**
-```javascript
-noise_sub_1: {
-  question: "소음이 발생하는 부위가 어디인가요?",
-  options: [
-    { label: "바퀴 쪽", result: "error-brake" },
-    { label: "페달을 돌릴 때마다 '딱딱' 소리", next: "pedal_noise_1" } // 새로운 질문 덩어리로 연결
-  ]
-},
-pedal_noise_1: { // 새로 추가된 질문 덩어리
-  question: "페달이 헐겁게 느껴지시나요?",
-  options: [
-    { label: "네, 흔들거립니다.", result: "pedal" }, // 페달 조립 가이드 문서로 이동
-    { label: "아니오, 단단합니다.", result: "error-motor" } // 모터 점검 가이드 문서로 이동
-  ]
-}
-```

@@ -74,6 +74,63 @@ export async function fetchGuidesFromGoogleSheet(csvUrl) {
 }
 
 /**
+ * 자가진단 마법사(Wizard) 구글 스프레드시트 CSV 데이터를 파싱하여 WIZARD_FLOW 형식의 JSON으로 변환합니다.
+ * 
+ * @param {string} csvUrl 구글 스프레드시트 CSV 웹 게시 URL (WizardFlow 탭)
+ * @returns {Promise<Object>} 변환된 wizardFlow 구조
+ */
+export async function fetchWizardFromGoogleSheet(csvUrl) {
+  try {
+    if (!csvUrl) return null;
+    
+    const response = await fetch(csvUrl);
+    const csvText = await response.text();
+
+    return new Promise((resolve, reject) => {
+      Papa.parse(csvText, {
+        header: true,
+        skipEmptyLines: true,
+        complete: (results) => {
+          const data = results.data;
+          const wizardFlow = {};
+
+          data.forEach(row => {
+            const { 
+              RowID, NodeID, Question, OptionLabel, NextNodeID, ResultItemID 
+            } = row;
+
+            if (!NodeID) return; // NodeID가 없으면 무시
+
+            // Node 초기화
+            if (!wizardFlow[NodeID]) {
+              wizardFlow[NodeID] = {
+                question: Question || '',
+                options: []
+              };
+            }
+
+            // Option 추가
+            const option = { label: OptionLabel || '' };
+            if (NextNodeID) option.next = NextNodeID;
+            if (ResultItemID) option.result = ResultItemID;
+
+            wizardFlow[NodeID].options.push(option);
+          });
+
+          resolve(wizardFlow);
+        },
+        error: (err) => {
+          reject(err);
+        }
+      });
+    });
+  } catch (error) {
+    console.error("Failed to fetch Wizard Google Sheets CSV:", error);
+    return null;
+  }
+}
+
+/**
  * 연동 테스트 사용 예시 (이 함수를 App.jsx 나 최상위 컴포넌트의 useEffect 에서 호출하세요)
  */
 export async function testSheetIntegration() {

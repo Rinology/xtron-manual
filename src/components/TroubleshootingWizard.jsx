@@ -2,44 +2,15 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronRight, RotateCcw, HelpCircle } from 'lucide-react';
 
-const WIZARD_FLOW = {
-  start: {
-    question: "어떤 종류의 문제를 겪고 계신가요?",
-    options: [
-      { label: "전원이 안 켜지거나 배터리 문제", next: "power_sub_1" },
-      { label: "주행 시 소음이나 소리가 남", next: "noise_sub_1" },
-      { label: "자전거가 잘 안 나감 (주행감 저하)", result: "error-tire" }
-    ]
-  },
-  power_sub_1: {
-    question: "충전기를 연결했을 때 어댑터(충전기)의 LED 색상은 무엇인가요?",
-    options: [
-      { label: "빨간색 (충전 중 표시)", next: "power_sub_2" },
-      { label: "초록색 (완충 표시) 이지만 전원이 안 켜짐", result: "error-power" },
-      { label: "불이 아예 안 들어옴", result: "error-power" } // 단순화: error-power로 유도
-    ]
-  },
-  power_sub_2: {
-    question: "충전 후에도 모니터가 켜지지 않나요?",
-    options: [
-      { label: "네, 아무 반응이 없습니다.", result: "error-power" },
-      { label: "켜지지만 금방 꺼집니다.", result: "error-power" }
-    ]
-  },
-  noise_sub_1: {
-    question: "소음이 발생하는 부위가 어디인가요?",
-    options: [
-      { label: "바퀴 쪽 (브레이크 잡을 때 삐-익 소리)", result: "error-brake" },
-      { label: "기타 부위 (기어, 모터 등)", result: "error-brake" } // 포괄적 안내
-    ]
-  }
-};
+import { useGuides } from '../context/GuideContext';
 
 export default function TroubleshootingWizard({ isOpen, onClose, onResult }) {
+  const { wizardFlow } = useGuides();
   const [currentNode, setCurrentNode] = useState('start');
   const [history, setHistory] = useState([]);
 
   if (!isOpen) return null;
+
 
   const handleOptionClick = (option) => {
     if (option.result) {
@@ -65,7 +36,35 @@ export default function TroubleshootingWizard({ isOpen, onClose, onResult }) {
     }
   };
 
-  const currentData = WIZARD_FLOW[currentNode];
+  // wizardFlow 데이터가 아직 로드되지 않았거나 현재 노드가 없는 경우 처리
+  if (!wizardFlow || !wizardFlow[currentNode]) {
+    return (
+      <AnimatePresence>
+        {isOpen && (
+          <React.Fragment>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={onClose}
+              style={{
+                position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999
+              }}
+            />
+            <div style={{
+              position: 'fixed', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000
+            }}>
+              <div style={{ background: 'white', padding: '2rem', borderRadius: '8px' }}>
+                로딩 중이거나 데이터를 불러올 수 없습니다...
+              </div>
+            </div>
+          </React.Fragment>
+        )}
+      </AnimatePresence>
+    );
+  }
+
+  const currentData = wizardFlow[currentNode];
 
   return (
     <AnimatePresence>
