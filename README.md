@@ -139,3 +139,60 @@
    * `result`: 이 선택지를 눌렀을 때 최종적으로 이동시킬 **가이드 ID** (스프레드시트에 있는 `ItemID`와 정확히 같아야 함)
 
 수정 후 Commit을 하시면 마찬가지로 홈페이지에 바로 반영됩니다.
+
+### 🧠 동작 원리 및 시각화 (흐름도)
+
+자가진단 마법사는 사용자가 겪고 있는 문제를 단계별로 좁혀나가, 최종적으로 **가장 적합한 가이드 문서(MD)**를 매칭해 주는 "스무고개" 형식의 네비게이션 시스템입니다. 현재 코딩되어 있는 질문 흐름을 시각화하면 다음과 같습니다:
+
+```mermaid
+graph TD
+    %% 시작 노드
+    Start("어떤 종류의 문제를 겪고 계신가요?")
+
+    %% 1단계 선택지
+    Start -->|전원이 안 켜지거나 배터리 문제| Power1("충전기를 연결했을 때<br/>어댑터(충전기)의 LED 색상은?")
+    Start -->|주행 시 소음이나 소리가 남| Noise1("소음이 발생하는 부위가 어디인가요?")
+    Start -->|자전거가 잘 안 나감| ResultTire((타이어 가이드<br/>`error-tire`))
+
+    %% 전원 문제 세부 노드 (Power1)
+    Power1 -->|빨간색 (충전 중 표시)| Power2("충전 후에도 모니터가 켜지지 않나요?")
+    Power1 -->|초록색 (완충 표시) 이지만 안 켜짐| ResultPower1((전원 가이드<br/>`error-power`))
+    Power1 -->|불이 아예 안 들어옴| ResultPower2((전원 가이드<br/>`error-power`))
+
+    %% 전원 문제 세부 노드 2 (Power2)
+    Power2 -->|네, 아무 반응이 없습니다.| ResultPower3((전원 가이드<br/>`error-power`))
+    Power2 -->|켜지지만 금방 꺼집니다.| ResultPower4((전원 가이드<br/>`error-power`))
+
+    %% 소음 문제 세부 노드 (Noise1)
+    Noise1 -->|바퀴 쪽 (브레이크 삐-익 소리)| ResultBrake1((브레이크 가이드<br/>`error-brake`))
+    Noise1 -->|기타 부위 (기어, 모터 등)| ResultBrake2((브레이크 가이드<br/>`error-brake`))
+
+    %% 스타일링
+    classDef questionNode fill:#f9f9ff,stroke:#3b82f6,stroke-width:2px,color:#1e293b,font-weight:bold
+    classDef resultNode fill:#10b981,stroke:#047857,stroke-width:2px,color:#fff,font-weight:bold
+    
+    class Start,Power1,Power2,Noise1 questionNode
+    class ResultTire,ResultPower1,ResultPower2,ResultPower3,ResultPower4,ResultBrake1,ResultBrake2 resultNode
+```
+
+### 🛠️ 시나리오 추가/수정 예시
+
+새로운 질문을 추가하고 싶다면, 단순히 `WIZARD_FLOW` 객체 안에 새로운 덩어리를 만들고 `next`로 연결만 해주면 무한히 질문을 확장할 수 있습니다. 마치 레고 블록을 조립하듯 설계하시면 됩니다.
+
+**(예시: 페달 소음 질문 추가하기)**
+```javascript
+noise_sub_1: {
+  question: "소음이 발생하는 부위가 어디인가요?",
+  options: [
+    { label: "바퀴 쪽", result: "error-brake" },
+    { label: "페달을 돌릴 때마다 '딱딱' 소리", next: "pedal_noise_1" } // 새로운 질문 덩어리로 연결
+  ]
+},
+pedal_noise_1: { // 새로 추가된 질문 덩어리
+  question: "페달이 헐겁게 느껴지시나요?",
+  options: [
+    { label: "네, 흔들거립니다.", result: "pedal" }, // 페달 조립 가이드 문서로 이동
+    { label: "아니오, 단단합니다.", result: "error-motor" } // 모터 점검 가이드 문서로 이동
+  ]
+}
+```
