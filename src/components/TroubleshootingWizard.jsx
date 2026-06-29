@@ -52,11 +52,41 @@ export default function TroubleshootingWizard({ isOpen, onClose, onResult }) {
               }}
             />
             <div style={{
-              position: 'fixed', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000
+              position: 'fixed', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000, padding: '1rem', pointerEvents: 'none'
             }}>
-              <div style={{ background: 'white', padding: '2rem', borderRadius: '8px' }}>
-                로딩 중이거나 데이터를 불러올 수 없습니다...
-              </div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                style={{
+                  width: '100%', maxWidth: '500px',
+                  background: 'var(--surface-color)',
+                  borderRadius: 'var(--radius-lg)',
+                  boxShadow: 'var(--shadow-lg)',
+                  overflow: 'hidden', pointerEvents: 'auto',
+                  display: 'flex', flexDirection: 'column'
+                }}
+              >
+                {/* Header */}
+                <div style={{
+                  padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--surface-border)',
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                  background: 'var(--ci-primary-light)'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--ci-primary)' }}>
+                    <HelpCircle size={20} />
+                    <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700 }}>자가진단 마법사</h3>
+                  </div>
+                  <button onClick={onClose} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--ci-primary)' }}>
+                    <X size={20} />
+                  </button>
+                </div>
+                {/* Body */}
+                <div style={{ padding: '3rem 1.5rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
+                  <p>로딩 중이거나 데이터를 불러올 수 없습니다...</p>
+                  <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>스프레드시트 연결 상태를 확인해 주세요.</p>
+                </div>
+              </motion.div>
             </div>
           </React.Fragment>
         )}
