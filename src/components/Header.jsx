@@ -82,9 +82,8 @@ export default function Header({ activePage, setActivePage, isOpen, setIsOpen })
         )}
 
         <div style={{ display: 'flex', alignItems: 'center', marginLeft: 'auto', paddingRight: '0.5rem' }}>
-          {/* TODO: 아래 src 부분을 AWS S3에 업로드한 로고 이미지 주소로 변경해주세요 */}
           <img 
-            src="https://YOUR_AWS_S3_DOMAIN_HERE/Xtron_x_Qualisports_Logo_Black.png" 
+            src="https://cdn.xtron-guide.kr/common/logos/Xtron_x_Qualisports_Logo_Black.webp" 
             alt="Qualisports Logo" 
             style={{ height: 'clamp(16px, 4.5vw, 24px)', objectFit: 'contain', cursor: 'pointer' }} 
             onClick={() => setActivePage(null)} 
