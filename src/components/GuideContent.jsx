@@ -146,7 +146,19 @@ export default function GuideContent({ activePage, setActivePage }) {
         borderRadius: '0 var(--radius-md) var(--radius-md) 0'
       }} {...props} />
     ),
-    img: ({node, ...props}) => <img style={{ width: '100%', maxWidth: '600px', maxHeight: '600px', objectFit: 'contain', borderRadius: '8px', border: '1px solid var(--surface-border)', display: 'block', margin: '1.5rem auto' }} {...props} />
+    img: ({node, src, ...props}) => {
+      const isRelative = src?.startsWith('/');
+      const fullSrc = (isRelative && import.meta.env.VITE_CDN_URL) 
+        ? `${import.meta.env.VITE_CDN_URL}${src}` 
+        : src;
+      return (
+        <img 
+          src={fullSrc}
+          style={{ width: '100%', maxWidth: '600px', maxHeight: '600px', objectFit: 'contain', borderRadius: '8px', border: '1px solid var(--surface-border)', display: 'block', margin: '1.5rem auto' }} 
+          {...props} 
+        />
+      );
+    }
   };
 
   // Legacy rendering for non-migrated components
