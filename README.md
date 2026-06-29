@@ -26,19 +26,35 @@
 * **관리용 구글 스프레드시트 주소:**
   [Xtron Manual CMS 접속하기](https://docs.google.com/spreadsheets/d/e/2PACX-1vQLeyv9lic0ituxpPWhCvEfqnkEpttZn9GbGMIBtZGjErqYvKkzirEN2hVW-Q7Wy8rXQVzpcQcHTqwG/edit?usp=sharing) (관리자 권한 필요)
 
-### 🚀 메뉴 수정 및 추가 방법:
-1. 위 스프레드시트에 접속합니다.
-2. 엑셀을 다루듯 행을 추가하고 내용을 입력합니다.
-   * `CategoryID`: 대분류 (예: `basic`, `battery-guide`)
-   * `CategoryTitle`: 사이드바에 뜰 대분류 이름 (예: `기본 가이드`)
-   * `SubCategoryID`: 중분류 (없는 경우 빈칸)
-   * `ItemID`: 각 메뉴의 고유 영어 이름 (예: `pedal`, `brake`)
-   * `ItemTitle`: 메뉴에 뜰 최종 제목 (예: `페달 장착 방법`)
-   * `Icon`: 메뉴 옆에 표시될 아이콘 이름 (Lucide Icon 이름 기준)
-   * `Summary`: 검색 시 나타날 요약 설명 (줄바꿈 구분자 `|` 사용)
-   * `MarkdownFile`: 보여줄 본문 마크다운 파일명 (예: `pedal.md`)
-   * `YoutubeLink`: (선택) 가이드 상단에 표시될 유튜브 영상 주소 (예: `https://youtu.be/...`)
-3. 입력을 완료하고 **웹페이지를 새로고침**하면 변경 사항이 즉시 홈페이지에 반영됩니다!
+### 🚀 메뉴 수정 및 추가 방법 (스프레드시트 구조):
+
+스프레드시트의 각 행(Row)은 화면에 표시될 **하나의 개별 가이드 항목**을 나타냅니다.
+
+| 열 이름 (Column) | 설명 | 작성 예시 |
+| :--- | :--- | :--- |
+| **CategoryID** | 대분류를 식별하는 고유 영문 ID | `basic` |
+| **CategoryTitle** | 화면에 표시될 대분류 이름 | `기본 가이드` |
+| **SubCategoryID** | 중분류를 식별하는 고유 영문 ID | `basic-assembly` |
+| **SubCategoryTitle** | 화면에 표시될 중분류 이름 | `조립 및 피팅` |
+| **ItemID** | 개별 가이드를 식별하는 고유 영문 ID | `pedal` |
+| **ItemTitle** | 화면에 표시될 개별 가이드 제목 | `페달 장착 방법` |
+| **Icon** | 사용할 lucide-react 아이콘 이름 | `Wrench` |
+| **Summary** | 검색 시 나타날 요약 설명 (여러 줄일 경우 `\|` 구분자 사용) | `좌/우 페달 식별... \| 페달 렌치로...` |
+| **MarkdownFile** | 연결될 마크다운 문서 파일의 경로 | `basic/pedal.md` |
+| **YoutubeLink** | (선택) 영상이 있는 경우 유튜브 주소 입력 | `https://youtu.be/T0fKF32Y158` (없으면 빈칸) |
+
+#### 📝 작성 예시 데이터:
+| CategoryID | CategoryTitle | SubCategoryID | SubCategoryTitle | ItemID | ItemTitle | Icon | Summary | MarkdownFile | YoutubeLink |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| basic | 기본 가이드 | basic-assembly | 조립 및 피팅 | pedal | 페달 장착 방법 | Wrench | 좌/우 페달 식별... \| 페달 렌치로... | basic/pedal.md | |
+| basic | 기본 가이드 | basic-parts | 부품 교체 | suntour-seatpost | 썬투어 서스펜션 교체 | Wrench | 안장과 싯포스트를... | basic/suntour-seatpost.md | https://youtu.be/T0fKF32Y158 |
+
+### 🛠️ 데이터 연결 및 반영 방법:
+
+스프레드시트에 입력된 데이터는 내부적으로 **`src/data/guides.jsx`** 형태의 중첩된 그룹 구조(Nested JSON)로 변환되어 사용됩니다.
+
+1. **웹 브라우저 자동 연동**: 시스템에 자동 변환(`googleSheetsCMS.jsx`)이 설정되어 있다면 스프레드시트를 수정한 후 별도 작업 없이 **웹페이지를 새로고침**하면 변환 스크립트를 거쳐 홈페이지에 즉시 반영됩니다.
+2. **수동 코드 반영 (로컬 개발 시)**: 오프라인이나 로컬 코드 위주로 작업하신다면, 스프레드시트의 내용을 바탕으로 `src/data/guides.jsx` 파일에 직접 위 데이터 구조에 맞게 코드를 추가해 주시면 됩니다. (예: `youtubeLink: "링크주소",` 한 줄 추가)
 
 ---
 
