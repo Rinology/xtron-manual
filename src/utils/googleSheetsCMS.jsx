@@ -96,7 +96,7 @@ export async function fetchWizardFromGoogleSheet(csvUrl) {
 
           data.forEach(row => {
             const { 
-              RowID, NodeID, Question, OptionLabel, NextNodeID, ResultItemID 
+              RowID, NodeID, Question, OptionLabel, NextNodeID, ResultItemID, Keywords 
             } = row;
 
             if (!NodeID) return; // NodeID가 없으면 무시
@@ -110,7 +110,10 @@ export async function fetchWizardFromGoogleSheet(csvUrl) {
             }
 
             // Option 추가
-            const option = { label: OptionLabel || '' };
+            const option = { 
+              label: OptionLabel || '',
+              keywords: Keywords || '' 
+            };
             if (NextNodeID) option.next = NextNodeID;
             if (ResultItemID) option.result = ResultItemID;
 

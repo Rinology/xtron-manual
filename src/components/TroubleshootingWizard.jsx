@@ -8,23 +8,25 @@ export default function TroubleshootingWizard({ isOpen, onClose, onResult }) {
   const { wizardFlow, isWizardLoading } = useGuides();
   const [currentNode, setCurrentNode] = useState('start');
   const [history, setHistory] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   if (!isOpen) return null;
 
+  const resetWizard = () => {
+    setCurrentNode('start');
+    setHistory([]);
+    setSearchQuery('');
+  };
 
   const handleOptionClick = (option) => {
     if (option.result) {
-      // 결과 페이지로 안내
       onResult(option.result);
       onClose();
-      // 닫히는 애니메이션 후 상태 초기화를 위해 약간의 딜레이
-      setTimeout(() => {
-        setCurrentNode('start');
-        setHistory([]);
-      }, 300);
+      setTimeout(() => resetWizard(), 300);
     } else if (option.next) {
       setHistory([...history, currentNode]);
       setCurrentNode(option.next);
+      setSearchQuery('');
     }
   };
 
@@ -33,6 +35,7 @@ export default function TroubleshootingWizard({ isOpen, onClose, onResult }) {
       const prev = history[history.length - 1];
       setCurrentNode(prev);
       setHistory(history.slice(0, -1));
+      setSearchQuery('');
     }
   };
 
@@ -114,6 +117,15 @@ export default function TroubleshootingWizard({ isOpen, onClose, onResult }) {
   }
 
   const currentData = wizardFlow[currentNode];
+  
+  let displayOptions = currentData.options;
+  if (currentNode === 'start' && searchQuery.trim() !== '') {
+    const query = searchQuery.toLowerCase();
+    displayOptions = displayOptions.filter(opt => 
+      opt.label.toLowerCase().includes(query) || 
+      (opt.keywords && opt.keywords.toLowerCase().includes(query))
+    );
+  }
 
   return (
     <AnimatePresence>
@@ -165,7 +177,7 @@ export default function TroubleshootingWizard({ isOpen, onClose, onResult }) {
               </div>
 
               {/* Body */}
-              <div style={{ padding: '2rem 1.5rem', minHeight: '250px', display: 'flex', flexDirection: 'column' }}>
+              <div style={{ padding: '2rem 1.5rem', minHeight: '250px', maxHeight: '60vh', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={currentNode}
@@ -175,12 +187,30 @@ export default function TroubleshootingWizard({ isOpen, onClose, onResult }) {
                     transition={{ duration: 0.2 }}
                     style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
                   >
-                    <h4 style={{ fontSize: '1.25rem', color: 'var(--text-primary)', marginBottom: '1.5rem', lineHeight: 1.4 }}>
+                    <h4 style={{ fontSize: '1.25rem', color: 'var(--text-primary)', marginBottom: '1rem', lineHeight: 1.4 }}>
                       {currentData.question}
                     </h4>
                     
+                    {currentNode === 'start' && (
+                      <div style={{ marginBottom: '1.5rem' }}>
+                        <input 
+                          type="text"
+                          placeholder="어떤 문제가 발생했나요? (예: 충전불가, 소음)"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          style={{ 
+                            width: '100%', padding: '0.85rem 1rem', 
+                            borderRadius: 'var(--radius-md)', 
+                            border: '1px solid var(--ci-primary)', 
+                            fontSize: '1rem', outline: 'none',
+                            boxShadow: '0 0 0 2px rgba(47, 98, 134, 0.1)'
+                          }}
+                        />
+                      </div>
+                    )}
+                    
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: 'auto' }}>
-                      {currentData.options.map((option, idx) => (
+                      {displayOptions.length > 0 ? displayOptions.map((option, idx) => (
                         <button
                           key={idx}
                           onClick={() => handleOptionClick(option)}
@@ -208,7 +238,11 @@ export default function TroubleshootingWizard({ isOpen, onClose, onResult }) {
                           <span>{option.label}</span>
                           <ChevronRight size={18} />
                         </button>
-                      ))}
+                      )) : (
+                        <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
+                          검색 결과가 없습니다.<br/>다른 키워드로 검색해 보세요.
+                        </div>
+                      )}
                     </div>
                   </motion.div>
                 </AnimatePresence>
