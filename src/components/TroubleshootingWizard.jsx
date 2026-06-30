@@ -106,7 +106,7 @@ export default function TroubleshootingWizard({ isOpen, onClose, onResult }) {
                         marginBottom: '1rem'
                       }} />
                       <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
-                      <p>스프레드시트에서 데이터를 불러오는 중입니다...</p>
+                      <p>자가진단 마법사를 불러오고 있습니다...</p>
                       <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>잠시만 기다려주세요.</p>
                     </>
                   ) : (
