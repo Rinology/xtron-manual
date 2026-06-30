@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronRight, RotateCcw, HelpCircle, Home } from 'lucide-react';
+import { X, ChevronRight, RotateCcw, HelpCircle, Home, MessageCircle } from 'lucide-react';
 
 import { useGuides } from '../context/GuideContext';
 
@@ -9,12 +9,14 @@ export default function TroubleshootingWizard({ isOpen, onClose, onResult }) {
   const [currentNode, setCurrentNode] = useState('start');
   const [history, setHistory] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showKakaoPopup, setShowKakaoPopup] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       setCurrentNode('start');
       setHistory([]);
       setSearchQuery('');
+      setShowKakaoPopup(false);
     }
   }, [isOpen]);
 
@@ -35,6 +37,8 @@ export default function TroubleshootingWizard({ isOpen, onClose, onResult }) {
       setHistory([...history, currentNode]);
       setCurrentNode(option.next);
       setSearchQuery('');
+    } else {
+      setShowKakaoPopup(true);
     }
   };
 
@@ -75,9 +79,72 @@ export default function TroubleshootingWizard({ isOpen, onClose, onResult }) {
                   borderRadius: 'var(--radius-lg)',
                   boxShadow: 'var(--shadow-lg)',
                   overflow: 'hidden', pointerEvents: 'auto',
-                  display: 'flex', flexDirection: 'column'
+                  display: 'flex', flexDirection: 'column',
+                  position: 'relative'
                 }}
               >
+                {/* Kakao Popup Overlay */}
+                <AnimatePresence>
+                  {showKakaoPopup && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      style={{
+                        position: 'absolute', inset: 0,
+                        background: 'rgba(255, 255, 255, 0.95)',
+                        backdropFilter: 'blur(2px)',
+                        display: 'flex', flexDirection: 'column',
+                        alignItems: 'center', justifyContent: 'center',
+                        zIndex: 50, padding: '2rem', textAlign: 'center'
+                      }}
+                    >
+                      <div style={{
+                        background: '#FEE500', width: '60px', height: '60px',
+                        borderRadius: '50%', display: 'flex', alignItems: 'center',
+                        justifyContent: 'center', marginBottom: '1.5rem',
+                        color: '#000', boxShadow: 'var(--shadow-md)'
+                      }}>
+                        <MessageCircle size={30} />
+                      </div>
+                      <h4 style={{ fontSize: '1.25rem', color: 'var(--text-primary)', marginBottom: '0.75rem', fontWeight: 700, lineHeight: 1.4 }}>
+                        아직 마법사가 완성되지 못했어요 😢
+                      </h4>
+                      <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', lineHeight: 1.6, fontSize: '0.95rem' }}>
+                        해당 문제에 대한 상세 가이드를 준비 중입니다.<br/>
+                        카카오톡 채널로 문의해 주시면<br/>전문 상담원이 빠르게 도와드리겠습니다.
+                      </p>
+                      
+                      <div style={{ display: 'flex', gap: '0.75rem', width: '100%', maxWidth: '280px' }}>
+                        <button
+                          onClick={() => setShowKakaoPopup(false)}
+                          style={{
+                            flex: 1, padding: '0.85rem', borderRadius: 'var(--radius-md)',
+                            border: '1px solid var(--surface-border)', background: 'var(--ci-white)',
+                            color: 'var(--text-secondary)', fontWeight: 600, cursor: 'pointer',
+                            fontSize: '0.95rem'
+                          }}
+                        >
+                          돌아가기
+                        </button>
+                        <a
+                          href="http://pf.kakao.com/_xnknxkj"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            flex: 1, padding: '0.85rem', borderRadius: 'var(--radius-md)',
+                            background: '#FEE500', color: '#000', textDecoration: 'none',
+                            fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            fontSize: '0.95rem'
+                          }}
+                        >
+                          상담하기
+                        </a>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
                 {/* Header */}
                 <div style={{
                   padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--surface-border)',
