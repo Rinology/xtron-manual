@@ -215,39 +215,38 @@ export default function Hero({ setActivePage, onOpenSearch }) {
           </button>
         </div>
 
-        {/* 추천 퀵 가이드 */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', alignSelf: 'center', marginRight: '0.5rem' }}>추천 퀵 가이드:</span>
+        {/* 추천 퀵 가이드 리뉴얼 */}
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginRight: '0.4rem' }}>자주 찾는 질문:</span>
           {suggestions.map(s => (
             <button
               key={s.id}
               onClick={() => setActivePage(s.id)}
               style={{
-                background: 'var(--bg-color)',
-                border: '1px solid var(--surface-border)',
-                padding: '0.5rem 1rem',
+                background: 'var(--surface-border)',
+                border: 'none',
+                padding: '0.4rem 0.85rem',
                 borderRadius: 'var(--radius-full)',
-                color: 'var(--text-primary)',
-                fontSize: '0.9rem',
-                fontWeight: 600,
+                color: 'var(--text-secondary)',
+                fontSize: '0.85rem',
+                fontWeight: 500,
                 cursor: 'pointer',
-                transition: 'all var(--transition-fast)'
+                transition: 'all 0.2s ease',
               }}
               onMouseEnter={(e) => {
-                e.target.style.background = 'var(--ci-primary)';
-                e.target.style.color = 'var(--ci-white)';
-                e.target.style.borderColor = 'var(--ci-primary)';
+                e.target.style.background = 'rgba(226, 232, 240, 0.8)';
+                e.target.style.color = 'var(--text-primary)';
               }}
               onMouseLeave={(e) => {
-                e.target.style.background = 'var(--bg-color)';
-                e.target.style.color = 'var(--text-primary)';
-                e.target.style.borderColor = 'var(--surface-border)';
+                e.target.style.background = 'var(--surface-border)';
+                e.target.style.color = 'var(--text-secondary)';
               }}
             >
-              #{s.title}
+              {s.title}
             </button>
           ))}
         </div>
+
 
       </div>
     </motion.section>

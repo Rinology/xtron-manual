@@ -179,36 +179,24 @@ export default function TroubleshootingWizard({ setActivePage }) {
         </div>
 
         {/* Footer Navigation */}
-        <div className="nav-buttons-container" style={{ display: 'flex', gap: '1rem', alignItems: 'stretch', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', gap: '1rem', flex: 1 }}>
-            {history.length > 0 && (
-              <>
-                <button 
-                  onClick={handleBack}
-                  className="nav-btn nav-btn-left"
-                  style={{ flex: 1, background: 'var(--bg-color)', border: '1px solid var(--surface-border)', padding: '0.8rem', borderRadius: 'var(--radius-md)', justifyContent: 'center' }}
-                >
-                  <RotateCcw size={18} /> 이전
-                </button>
-                <button 
-                  onClick={resetWizard}
-                  className="nav-btn nav-btn-left"
-                  style={{ flex: 1, background: 'var(--ci-primary-light)', border: '1px solid var(--ci-primary-light)', color: 'var(--ci-primary)', padding: '0.8rem', borderRadius: 'var(--radius-md)', justifyContent: 'center' }}
-                >
-                  다시 시작
-                </button>
-              </>
-            )}
+        {history.length > 0 && (
+          <div className="nav-buttons-container" style={{ display: 'flex', gap: '1rem', alignItems: 'stretch', justifyContent: 'flex-start' }}>
+            <button 
+              onClick={handleBack}
+              className="nav-btn nav-btn-left"
+              style={{ flex: 1, maxWidth: '200px', background: 'var(--bg-color)', border: '1px solid var(--surface-border)', padding: '0.8rem', borderRadius: 'var(--radius-md)', justifyContent: 'center' }}
+            >
+              <RotateCcw size={18} /> 이전
+            </button>
+            <button 
+              onClick={resetWizard}
+              className="nav-btn nav-btn-left"
+              style={{ flex: 1, maxWidth: '200px', background: 'var(--ci-primary-light)', border: '1px solid var(--ci-primary-light)', color: 'var(--ci-primary)', padding: '0.8rem', borderRadius: 'var(--radius-md)', justifyContent: 'center' }}
+            >
+              다시 시작
+            </button>
           </div>
-
-          <button 
-            onClick={() => setActivePage(null)}
-            className="nav-btn nav-btn-right"
-            style={{ flex: 1, maxWidth: '200px', background: 'var(--ci-primary)', border: '1px solid var(--ci-primary)', color: 'var(--ci-white)', padding: '0.8rem', borderRadius: 'var(--radius-md)', justifyContent: 'center' }}
-          >
-            <Home size={18} /> 홈으로
-          </button>
-        </div>
+        )}
 
       </div>
     </motion.div>

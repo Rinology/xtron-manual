@@ -142,25 +142,20 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                   }}
                   style={{
                     width: '100%', display: 'flex', alignItems: 'center', gap: '0.75rem',
-                    background: 'var(--surface-border)', // Gemini 새 채팅 버튼 느낌의 회색 알약
-                    padding: '0.8rem 1rem',
-                    borderRadius: 'var(--radius-full)',
-                    color: 'var(--text-primary)',
-                    fontWeight: 500,
-                    fontSize: '0.9rem',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    border: 'none',
-                    marginBottom: '0.5rem'
+                    padding: '0.65rem 1rem', borderRadius: 'var(--radius-full)',
+                    background: activePage === 'troubleshooting-wizard' ? 'var(--ci-primary-light)' : 'transparent',
+                    color: activePage === 'troubleshooting-wizard' ? 'var(--ci-primary)' : 'var(--text-primary)',
+                    fontSize: '0.9rem', border: 'none', cursor: 'pointer',
+                    transition: 'all 0.2s', marginBottom: '0.25rem'
                   }}
                   onMouseEnter={e => {
-                    e.currentTarget.style.background = 'rgba(226, 232, 240, 0.8)';
+                    if (activePage !== 'troubleshooting-wizard') e.currentTarget.style.background = 'var(--surface-border)';
                   }}
                   onMouseLeave={e => {
-                    e.currentTarget.style.background = 'var(--surface-border)';
+                    if (activePage !== 'troubleshooting-wizard') e.currentTarget.style.background = 'transparent';
                   }}
                 >
-                  <Sparkles size={18} color="var(--ci-primary)" />
+                  <Sparkles size={18} color={activePage === 'troubleshooting-wizard' ? 'var(--ci-primary)' : 'var(--text-secondary)'} />
                   자가진단 마법사
                 </button>
                 <button
@@ -189,13 +184,17 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                   title="자가진단 마법사"
                   style={{
                     width: '40px', height: '40px', borderRadius: '50%', border: 'none',
-                    background: 'var(--surface-border)',
-                    color: 'var(--ci-primary)',
+                    background: activePage === 'troubleshooting-wizard' ? 'var(--ci-primary-light)' : 'transparent',
+                    color: activePage === 'troubleshooting-wizard' ? 'var(--ci-primary)' : 'var(--text-secondary)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     cursor: 'pointer', transition: 'all 0.2s'
                   }}
-                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(226, 232, 240, 0.8)'}
-                  onMouseLeave={e => e.currentTarget.style.background = 'var(--surface-border)'}
+                  onMouseEnter={e => {
+                    if (activePage !== 'troubleshooting-wizard') e.currentTarget.style.background = 'var(--surface-border)';
+                  }}
+                  onMouseLeave={e => {
+                    if (activePage !== 'troubleshooting-wizard') e.currentTarget.style.background = 'transparent';
+                  }}
                 >
                   <Sparkles size={18} />
                 </button>
