@@ -5,21 +5,24 @@ import { ChevronLeft, Menu, Home } from 'lucide-react';
 export default function Header({ activePage, setActivePage, isOpen, setIsOpen }) {
   const { allGuideItems } = useGuides();
   const guide = activePage ? allGuideItems.find(item => item.id === activePage) : null;
+  const isWizard = activePage === 'troubleshooting-wizard';
+  const showBreadcrumb = guide || isWizard;
+  const titleText = isWizard ? '자가진단 마법사' : (guide ? guide.title : '');
 
   return (
-    <header style={{
-      display: 'flex',
-      alignItems: 'center',
-      position: 'sticky',
-      top: 0,
-      background: 'rgba(255, 255, 255, 0.75)',
-      backdropFilter: 'blur(16px)',
-      WebkitBackdropFilter: 'blur(16px)',
-      zIndex: 50,
-      minHeight: '64px',
-      borderBottom: guide ? '1px solid rgba(226, 232, 240, 0.5)' : '1px solid transparent',
-      transition: 'border-color var(--transition-normal)'
-    }} className="app-header">
+      <header style={{
+        display: 'flex',
+        alignItems: 'center',
+        position: 'sticky',
+        top: 0,
+        background: 'rgba(255, 255, 255, 0.75)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        zIndex: 50,
+        minHeight: '64px',
+        borderBottom: 'none', // 구분선을 없애 본문과 자연스럽게 이어지게 함
+        transition: 'border-color var(--transition-normal)'
+      }} className="app-header">
       <div className="header-inner">
         <div className="header-nav-container">
           {!isOpen && (
@@ -32,7 +35,7 @@ export default function Header({ activePage, setActivePage, isOpen, setIsOpen })
               <Menu size={24} />
             </button>
           )}
-          {guide && (
+          {showBreadcrumb && (
             <>
               <button 
                 onClick={() => setActivePage(null)}
@@ -77,13 +80,13 @@ export default function Header({ activePage, setActivePage, isOpen, setIsOpen })
                 gap: '0.75rem'
               }}>
                  <span style={{ color: 'var(--surface-border)', fontSize: '1.2rem', fontWeight: 300 }}>{'|'}</span>
-                 {guide.title}
+                 {titleText}
               </div>
             </>
           )}
         </div>
 
-        {!guide && (
+        {!showBreadcrumb && (
           <div className="header-logo-container">
             <img 
               src={`${import.meta.env.VITE_CDN_URL}/common/logos/Xtron_x_Qualisports_Logo_Black.webp`} 

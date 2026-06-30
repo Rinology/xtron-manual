@@ -89,7 +89,9 @@ export default function TroubleshootingWizard({ setActivePage }) {
           <div style={{ background: 'var(--ci-primary-light)', color: 'var(--ci-primary)', padding: '0.75rem', borderRadius: '12px' }}>
             <Sparkles size={24} />
           </div>
-          <h2 style={{ fontSize: '2rem', color: 'var(--ci-primary)', margin: 0 }}>자가진단 마법사</h2>
+          <h2 style={{ fontSize: '1.8rem', color: 'var(--ci-primary)', margin: 0, fontWeight: 700 }}>
+            {currentNode === 'start' ? '어떤 종류의 문제를 겪고 계신가요?' : '자가진단 마법사'}
+          </h2>
         </div>
 
         {/* Body */}
@@ -103,12 +105,14 @@ export default function TroubleshootingWizard({ setActivePage }) {
               transition={{ duration: 0.2 }}
               style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
             >
-              <h3 style={{ fontSize: '1.6rem', color: 'var(--text-primary)', marginBottom: '1.5rem', lineHeight: 1.4 }}>
-                {currentData.question}
-              </h3>
+              {currentNode !== 'start' && (
+                <h3 style={{ fontSize: '1.6rem', color: 'var(--text-primary)', marginBottom: '1.5rem', lineHeight: 1.4 }}>
+                  {currentData.question}
+                </h3>
+              )}
               
               {currentNode === 'start' && (
-                <div style={{ marginBottom: '2.5rem' }}>
+                <div style={{ marginBottom: '2rem' }}>
                   <input 
                     type="text"
                     placeholder="어떤 문제가 발생했나요? (예: 충전불가, 소음)"
@@ -121,9 +125,14 @@ export default function TroubleshootingWizard({ setActivePage }) {
                       fontSize: '1.05rem', outline: 'none',
                       boxShadow: '0 0 0 3px rgba(47, 98, 134, 0.1)',
                       background: 'var(--bg-color)',
-                      transition: 'box-shadow 0.2s'
+                      transition: 'box-shadow 0.2s',
+                      marginBottom: '1.5rem'
                     }}
                   />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                    <div style={{ width: '4px', height: '16px', background: 'var(--ci-secondary)', borderRadius: '2px' }}></div>
+                    <span style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-secondary)' }}>자주 찾는 증상 예시</span>
+                  </div>
                 </div>
               )}
               
@@ -170,26 +179,35 @@ export default function TroubleshootingWizard({ setActivePage }) {
         </div>
 
         {/* Footer Navigation */}
-        <div className="nav-buttons-container" style={{ display: 'flex', gap: '1rem', alignItems: 'stretch' }}>
-          {history.length > 0 ? (
-            <button 
-              onClick={handleBack}
-              className="nav-btn nav-btn-left"
-              style={{ flex: 1, background: 'var(--bg-color)', border: '1px solid var(--surface-border)', padding: '0.8rem', borderRadius: 'var(--radius-md)' }}
-            >
-              <RotateCcw size={18} /> 이전 단계
-            </button>
-          ) : <div style={{ flex: 1 }}></div>}
+        <div className="nav-buttons-container" style={{ display: 'flex', gap: '1rem', alignItems: 'stretch', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', gap: '1rem', flex: 1 }}>
+            {history.length > 0 && (
+              <>
+                <button 
+                  onClick={handleBack}
+                  className="nav-btn nav-btn-left"
+                  style={{ flex: 1, background: 'var(--bg-color)', border: '1px solid var(--surface-border)', padding: '0.8rem', borderRadius: 'var(--radius-md)', justifyContent: 'center' }}
+                >
+                  <RotateCcw size={18} /> 이전
+                </button>
+                <button 
+                  onClick={resetWizard}
+                  className="nav-btn nav-btn-left"
+                  style={{ flex: 1, background: 'var(--ci-primary-light)', border: '1px solid var(--ci-primary-light)', color: 'var(--ci-primary)', padding: '0.8rem', borderRadius: 'var(--radius-md)', justifyContent: 'center' }}
+                >
+                  다시 시작
+                </button>
+              </>
+            )}
+          </div>
 
-          {history.length > 0 ? (
-            <button 
-              onClick={resetWizard}
-              className="nav-btn nav-btn-right"
-              style={{ flex: 1, background: 'var(--ci-primary-light)', border: '1px solid var(--ci-primary-light)', color: 'var(--ci-primary)', padding: '0.8rem', borderRadius: 'var(--radius-md)', justifyContent: 'center' }}
-            >
-              <Home size={18} /> 처음으로
-            </button>
-          ) : <div style={{ flex: 1 }}></div>}
+          <button 
+            onClick={() => setActivePage(null)}
+            className="nav-btn nav-btn-right"
+            style={{ flex: 1, maxWidth: '200px', background: 'var(--ci-primary)', border: '1px solid var(--ci-primary)', color: 'var(--ci-white)', padding: '0.8rem', borderRadius: 'var(--radius-md)', justifyContent: 'center' }}
+          >
+            <Home size={18} /> 홈으로
+          </button>
         </div>
 
       </div>
