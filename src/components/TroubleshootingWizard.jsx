@@ -127,7 +127,7 @@ export default function TroubleshootingWizard({ setActivePage }) {
                 </div>
               )}
               
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
                 {displayOptions.length > 0 ? displayOptions.map((option, idx) => (
                   <button
                     key={idx}
@@ -138,8 +138,7 @@ export default function TroubleshootingWizard({ setActivePage }) {
                       border: '1px solid var(--surface-border)',
                       background: 'var(--bg-color)', cursor: 'pointer',
                       textAlign: 'left', fontSize: '1.05rem', color: 'var(--text-secondary)',
-                      transition: 'all 0.2s', boxShadow: 'var(--shadow-sm)',
-                      minHeight: '70px'
+                      transition: 'all 0.2s', boxShadow: 'var(--shadow-sm)'
                     }}
                     onMouseEnter={e => {
                       e.currentTarget.style.borderColor = 'var(--ci-primary)';
@@ -160,7 +159,7 @@ export default function TroubleshootingWizard({ setActivePage }) {
                     <ChevronRight size={20} style={{ flexShrink: 0, marginLeft: '0.5rem' }} />
                   </button>
                 )) : (
-                  <div style={{ gridColumn: '1 / -1', padding: '4rem 2rem', textAlign: 'center', color: 'var(--text-secondary)', background: 'var(--bg-color)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--surface-border)' }}>
+                  <div style={{ padding: '4rem 2rem', textAlign: 'center', color: 'var(--text-secondary)', background: 'var(--bg-color)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--surface-border)' }}>
                     <p style={{ fontSize: '1.2rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>해당하는 마법재료가 없습니다 😢</p>
                     <p>다른 키워드로 검색하시거나 우측 하단의 퀵 메뉴를 통해 문의해 주세요.</p>
                   </div>
