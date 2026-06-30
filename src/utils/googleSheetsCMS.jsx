@@ -21,6 +21,7 @@ export async function fetchGuidesFromGoogleSheet(csvUrl) {
       Papa.parse(csvText, {
         header: true,
         skipEmptyLines: true,
+        transformHeader: header => header.trim(),
         complete: (results) => {
           const data = results.data;
           const parsedCategories = [];
@@ -90,6 +91,7 @@ export async function fetchWizardFromGoogleSheet(csvUrl) {
       Papa.parse(csvText, {
         header: true,
         skipEmptyLines: true,
+        transformHeader: header => header.trim(),
         complete: (results) => {
           const data = results.data;
           const wizardFlow = {};
