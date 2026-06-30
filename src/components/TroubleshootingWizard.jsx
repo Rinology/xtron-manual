@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronRight, RotateCcw, HelpCircle } from 'lucide-react';
+import { X, ChevronRight, RotateCcw, HelpCircle, Home } from 'lucide-react';
 
 import { useGuides } from '../context/GuideContext';
 
@@ -9,6 +9,14 @@ export default function TroubleshootingWizard({ isOpen, onClose, onResult }) {
   const [currentNode, setCurrentNode] = useState('start');
   const [history, setHistory] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    if (isOpen) {
+      setCurrentNode('start');
+      setHistory([]);
+      setSearchQuery('');
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -251,16 +259,28 @@ export default function TroubleshootingWizard({ isOpen, onClose, onResult }) {
               {/* Footer */}
               <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid var(--surface-border)', display: 'flex', justifyContent: 'space-between' }}>
                 {history.length > 0 ? (
-                  <button
-                    onClick={handleBack}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: '0.5rem',
-                      background: 'transparent', border: 'none', cursor: 'pointer',
-                      color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 600
-                    }}
-                  >
-                    <RotateCcw size={16} /> 이전 질문으로
-                  </button>
+                  <div style={{ display: 'flex', gap: '1rem' }}>
+                    <button
+                      onClick={handleBack}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: '0.4rem',
+                        background: 'transparent', border: 'none', cursor: 'pointer',
+                        color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 600
+                      }}
+                    >
+                      <RotateCcw size={16} /> 이전
+                    </button>
+                    <button
+                      onClick={resetWizard}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: '0.4rem',
+                        background: 'transparent', border: 'none', cursor: 'pointer',
+                        color: 'var(--ci-primary)', fontSize: '0.9rem', fontWeight: 600
+                      }}
+                    >
+                      <Home size={16} /> 처음으로
+                    </button>
+                  </div>
                 ) : <div />}
                 
                 <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center' }}>
