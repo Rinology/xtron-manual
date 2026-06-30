@@ -2,12 +2,10 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Sparkles, X, HelpCircle } from 'lucide-react';
 import { allGuideItems } from '../data/guides';
-import TroubleshootingWizard from './TroubleshootingWizard';
 
 export default function Hero({ setActivePage, onOpenSearch }) {
   const [localSearch, setLocalSearch] = useState('');
   const [isFocused, setIsFocused] = useState(false);
-  const [isWizardOpen, setIsWizardOpen] = useState(false);
 
   const matchedItems = allGuideItems.filter(item => 
     item.title.toLowerCase().includes(localSearch.toLowerCase()) || 
@@ -193,7 +191,7 @@ export default function Hero({ setActivePage, onOpenSearch }) {
         {/* 자가진단 마법사 배너 (검색창 바로 밑으로 이동) */}
         <div style={{ marginBottom: '2.5rem', width: '100%' }}>
           <button
-            onClick={() => setIsWizardOpen(true)}
+            onClick={() => setActivePage('troubleshooting-wizard')}
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem',
               background: 'linear-gradient(135deg, rgba(47, 98, 134, 0.05), rgba(114, 191, 68, 0.05))',
@@ -250,12 +248,6 @@ export default function Hero({ setActivePage, onOpenSearch }) {
             </button>
           ))}
         </div>
-        
-        <TroubleshootingWizard 
-          isOpen={isWizardOpen} 
-          onClose={() => setIsWizardOpen(false)} 
-          onResult={(id) => setActivePage(id)} 
-        />
 
       </div>
     </motion.section>

@@ -7,6 +7,7 @@ import GuideContent from './components/GuideContent';
 import ProgressBar from './components/ProgressBar';
 import BackToTop from './components/BackToTop';
 import SearchModal from './components/SearchModal';
+import TroubleshootingWizard from './components/TroubleshootingWizard';
 import { AnimatePresence } from 'framer-motion';
 import useSecurity from './hooks/useSecurity';
 import { useGuides } from './context/GuideContext';
@@ -16,9 +17,13 @@ function App() {
   
   const { allGuideItems } = useGuides();
 
+  const isValidRoute = (hash, items) => {
+    return hash === 'troubleshooting-wizard' || hash === 'not-found' || items.some(item => item.id === hash);
+  };
+
   const [activePage, setActivePage] = useState(() => {
     const hash = window.location.hash.replace('#', '');
-    return hash && allGuideItems.some(item => item.id === hash) ? hash : null;
+    return hash && isValidRoute(hash, allGuideItems) ? hash : null;
   }); // null means Hero (Home)
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -27,7 +32,7 @@ function App() {
   // 데이터(시트)가 로드되어 allGuideItems가 업데이트 되었을 때 URL 해시 다시 검증
   useEffect(() => {
     const hash = window.location.hash.replace('#', '');
-    if (hash && allGuideItems.some(item => item.id === hash)) {
+    if (hash && isValidRoute(hash, allGuideItems)) {
       setActivePage(hash);
     }
   }, [allGuideItems]);
@@ -57,7 +62,7 @@ function App() {
     // 2. 브라우저 뒤로/앞으로 가기 버튼 리스너
     const handleHashChange = () => {
       const currentHash = window.location.hash.replace('#', '');
-      if (currentHash && allGuideItems.some(item => item.id === currentHash)) {
+      if (currentHash && isValidRoute(currentHash, allGuideItems)) {
         setActivePage(currentHash);
       } else {
         setActivePage(null);
@@ -105,6 +110,8 @@ function App() {
           <AnimatePresence mode="wait">
             {!activePage ? (
               <Hero key="hero" setActivePage={setActivePage} onOpenSearch={() => setIsSearchOpen(true)} />
+            ) : activePage === 'troubleshooting-wizard' ? (
+              <TroubleshootingWizard key="wizard" setActivePage={setActivePage} />
             ) : (
               <GuideContent key={activePage} activePage={activePage} setActivePage={setActivePage} />
             )}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGuides } from '../context/GuideContext';
-import { ChevronDown, ChevronRight, Search, Menu, MessageCircle, ShoppingBag, MapPin, Tag, Plus, Youtube } from 'lucide-react';
+import { ChevronDown, ChevronRight, Search, Menu, MessageCircle, ShoppingBag, MapPin, Tag, Plus, Youtube, Sparkles } from 'lucide-react';
 
 export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch }) {
   const { guidesData } = useGuides();
@@ -176,6 +176,73 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                  <Search size={20} />
               </button>
            )}
+        </div>
+
+        {/* Troubleshooting Wizard Button */}
+        <div style={{ padding: '0 1rem', display: 'flex', justifyContent: 'center' }}>
+          {isOpen ? (
+            <button
+              onClick={() => {
+                setActivePage('troubleshooting-wizard');
+                if (isMobile) setIsOpen(false);
+              }}
+              style={{
+                width: '100%',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem',
+                background: 'linear-gradient(135deg, rgba(47, 98, 134, 0.05), rgba(114, 191, 68, 0.05))',
+                border: '1px solid rgba(47, 98, 134, 0.2)',
+                padding: '0.65rem',
+                borderRadius: 'var(--radius-full)',
+                color: 'var(--ci-primary)',
+                fontWeight: 600,
+                fontSize: '0.9rem',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                boxShadow: 'var(--shadow-sm)'
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(47, 98, 134, 0.1), rgba(114, 191, 68, 0.1))';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(47, 98, 134, 0.05), rgba(114, 191, 68, 0.05))';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+              }}
+            >
+              <Sparkles size={16} color="var(--ci-secondary)" />
+              자가진단 마법사
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                setActivePage('troubleshooting-wizard');
+                if (isMobile) setIsOpen(false);
+              }}
+              title="자가진단 마법사"
+              style={{
+                width: '40px', height: '40px', borderRadius: '50%', border: 'none',
+                background: 'linear-gradient(135deg, rgba(47, 98, 134, 0.08), rgba(114, 191, 68, 0.08))',
+                color: 'var(--ci-primary)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer', margin: '0 auto', boxShadow: 'var(--shadow-sm)',
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={e => {
+                 e.currentTarget.style.background = 'linear-gradient(135deg, rgba(47, 98, 134, 0.15), rgba(114, 191, 68, 0.15))';
+                 e.currentTarget.style.transform = 'translateY(-2px)';
+                 e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+              }}
+              onMouseLeave={e => {
+                 e.currentTarget.style.background = 'linear-gradient(135deg, rgba(47, 98, 134, 0.08), rgba(114, 191, 68, 0.08))';
+                 e.currentTarget.style.transform = 'translateY(0)';
+                 e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+              }}
+            >
+              <Sparkles size={18} color="var(--ci-secondary)" />
+            </button>
+          )}
         </div>
 
         {/* Navigation Categories */}

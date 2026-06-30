@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useGuides } from '../context/GuideContext';
-import { ChevronLeft, ChevronRight, Image as ImageIcon, Video as VideoIcon, Link as LinkIcon, Check, Youtube } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Image as ImageIcon, Video as VideoIcon, Link as LinkIcon, Check, Youtube, MessageCircle } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { sanitizeUrl } from '../utils/security';
@@ -36,7 +36,22 @@ export default function GuideContent({ activePage, setActivePage }) {
     }
   }, [guide]);
 
-  if (!guide) return null;
+  if (!guide) {
+    return (
+      <div className="guide-error-container">
+        <h2 className="guide-error-title">해당 마법서를 찾을 수 없습니다 😢</h2>
+        <p className="guide-error-desc">요청하신 가이드가 존재하지 않거나 준비 중입니다.<br/>문제가 지속되면 카카오톡 채널로 문의해 주세요.</p>
+        <div className="guide-error-actions">
+          <button onClick={() => setActivePage(null)} className="btn-error-action btn-error-home">
+            홈으로 돌아가기
+          </button>
+          <a href="https://pf.kakao.com/_xhxhRZxl" target="_blank" rel="noopener noreferrer" className="btn-error-action btn-error-kakao">
+            카카오톡 상담하기
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   const CustomComponent = guide.customComponent;
   const prevGuide = guideIndex > 0 ? allGuideItems[guideIndex - 1] : null;

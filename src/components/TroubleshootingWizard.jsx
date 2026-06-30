@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronRight, RotateCcw, HelpCircle, Home, MessageCircle } from 'lucide-react';
-
 import { useGuides } from '../context/GuideContext';
 
-export default function TroubleshootingWizard({ isOpen, onClose, onResult }) {
+export default function TroubleshootingWizard({ setActivePage }) {
   const { wizardFlow, isWizardLoading } = useGuides();
   const [currentNode, setCurrentNode] = useState('start');
   const [history, setHistory] = useState([]);
@@ -12,15 +11,11 @@ export default function TroubleshootingWizard({ isOpen, onClose, onResult }) {
   const [showKakaoPopup, setShowKakaoPopup] = useState(false);
 
   useEffect(() => {
-    if (isOpen) {
-      setCurrentNode('start');
-      setHistory([]);
-      setSearchQuery('');
-      setShowKakaoPopup(false);
-    }
-  }, [isOpen]);
-
-  if (!isOpen) return null;
+    setCurrentNode('start');
+    setHistory([]);
+    setSearchQuery('');
+    setShowKakaoPopup(false);
+  }, []);
 
   const resetWizard = () => {
     setCurrentNode('start');
@@ -30,9 +25,7 @@ export default function TroubleshootingWizard({ isOpen, onClose, onResult }) {
 
   const handleOptionClick = (option) => {
     if (option.result) {
-      onResult(option.result);
-      onClose();
-      setTimeout(() => resetWizard(), 300);
+      setActivePage(option.result);
     } else if (option.next) {
       setHistory([...history, currentNode]);
       setCurrentNode(option.next);
@@ -51,143 +44,23 @@ export default function TroubleshootingWizard({ isOpen, onClose, onResult }) {
     }
   };
 
-  // wizardFlow 데이터가 아직 로드되지 않았거나 현재 노드가 없는 경우 처리
   if (!wizardFlow || !wizardFlow[currentNode]) {
     return (
-      <AnimatePresence>
-        {isOpen && (
-          <React.Fragment>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={onClose}
-              style={{
-                position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999
-              }}
-            />
+      <div style={{ padding: '3rem 1.5rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
+        {isWizardLoading ? (
+          <>
             <div style={{
-              position: 'fixed', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000, padding: '1rem', pointerEvents: 'none'
-            }}>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                style={{
-                  width: '100%', maxWidth: '500px',
-                  background: 'var(--surface-color)',
-                  borderRadius: 'var(--radius-lg)',
-                  boxShadow: 'var(--shadow-lg)',
-                  overflow: 'hidden', pointerEvents: 'auto',
-                  display: 'flex', flexDirection: 'column',
-                  position: 'relative'
-                }}
-              >
-                {/* Kakao Popup Overlay */}
-                <AnimatePresence>
-                  {showKakaoPopup && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      style={{
-                        position: 'absolute', inset: 0,
-                        background: 'rgba(255, 255, 255, 0.95)',
-                        backdropFilter: 'blur(2px)',
-                        display: 'flex', flexDirection: 'column',
-                        alignItems: 'center', justifyContent: 'center',
-                        zIndex: 50, padding: '2rem', textAlign: 'center'
-                      }}
-                    >
-                      <div style={{
-                        background: '#FEE500', width: '60px', height: '60px',
-                        borderRadius: '50%', display: 'flex', alignItems: 'center',
-                        justifyContent: 'center', marginBottom: '1.5rem',
-                        color: '#000', boxShadow: 'var(--shadow-md)'
-                      }}>
-                        <MessageCircle size={30} />
-                      </div>
-                      <h4 style={{ fontSize: '1.25rem', color: 'var(--text-primary)', marginBottom: '0.75rem', fontWeight: 700, lineHeight: 1.4 }}>
-                        아직 마법사가 완성되지 못했어요 😢
-                      </h4>
-                      <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', lineHeight: 1.6, fontSize: '0.95rem' }}>
-                        해당 문제에 대한 상세 가이드를 준비 중입니다.<br/>
-                        카카오톡 채널로 문의해 주시면<br/>전문 상담원이 빠르게 도와드리겠습니다.
-                      </p>
-                      
-                      <div style={{ display: 'flex', gap: '0.75rem', width: '100%', maxWidth: '280px' }}>
-                        <button
-                          onClick={() => setShowKakaoPopup(false)}
-                          style={{
-                            flex: 1, padding: '0.85rem', borderRadius: 'var(--radius-md)',
-                            border: '1px solid var(--surface-border)', background: 'var(--ci-white)',
-                            color: 'var(--text-secondary)', fontWeight: 600, cursor: 'pointer',
-                            fontSize: '0.95rem'
-                          }}
-                        >
-                          돌아가기
-                        </button>
-                        <a
-                          href="http://pf.kakao.com/_xnknxkj"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{
-                            flex: 1, padding: '0.85rem', borderRadius: 'var(--radius-md)',
-                            background: '#FEE500', color: '#000', textDecoration: 'none',
-                            fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            fontSize: '0.95rem'
-                          }}
-                        >
-                          상담하기
-                        </a>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                {/* Header */}
-                <div style={{
-                  padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--surface-border)',
-                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                  background: 'var(--ci-primary-light)'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--ci-primary)' }}>
-                    <HelpCircle size={20} />
-                    <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700 }}>자가진단 마법사</h3>
-                  </div>
-                  <button onClick={onClose} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--ci-primary)' }}>
-                    <X size={20} />
-                  </button>
-                </div>
-                {/* Body */}
-                <div style={{ padding: '3rem 1.5rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
-                  {isWizardLoading ? (
-                    <>
-                      <div style={{
-                        display: 'inline-block',
-                        width: '30px', height: '30px',
-                        border: '3px solid var(--surface-border)',
-                        borderTop: '3px solid var(--ci-primary)',
-                        borderRadius: '50%',
-                        animation: 'spin 1s linear infinite',
-                        marginBottom: '1rem'
-                      }} />
-                      <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
-                      <p>자가진단 마법사를 불러오고 있습니다...</p>
-                      <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>잠시만 기다려주세요.</p>
-                    </>
-                  ) : (
-                    <>
-                      <p>로딩 중이거나 데이터를 불러올 수 없습니다...</p>
-                      <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>자가진단마법사 연결상태를 확인해주세요.</p>
-                    </>
-                  )}
-                </div>
-              </motion.div>
-            </div>
-          </React.Fragment>
+              display: 'inline-block', width: '30px', height: '30px',
+              border: '3px solid var(--surface-border)', borderTop: '3px solid var(--ci-primary)',
+              borderRadius: '50%', animation: 'spin 1s linear infinite', marginBottom: '1rem'
+            }} />
+            <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+            <p>자가진단 마법사를 불러오고 있습니다...</p>
+          </>
+        ) : (
+          <p>데이터를 불러올 수 없습니다...</p>
         )}
-      </AnimatePresence>
+      </div>
     );
   }
 
@@ -203,161 +76,224 @@ export default function TroubleshootingWizard({ isOpen, onClose, onResult }) {
   }
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <React.Fragment>
+    <motion.div 
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 15 }}
+      style={{
+        width: '100%', maxWidth: '800px', margin: '2rem auto',
+        background: 'var(--ci-white)',
+        borderRadius: 'var(--radius-lg)',
+        boxShadow: 'var(--shadow-md)',
+        border: '1px solid var(--surface-border)',
+        overflow: 'hidden',
+        display: 'flex', flexDirection: 'column',
+        position: 'relative',
+        minHeight: '60vh'
+      }}
+    >
+      {/* Kakao Popup Overlay */}
+      <AnimatePresence>
+        {showKakaoPopup && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
             style={{
-              position: 'fixed', inset: 0,
-              background: 'rgba(0,0,0,0.5)',
-              backdropFilter: 'blur(4px)',
-              zIndex: 9999
+              position: 'absolute', inset: 0,
+              background: 'rgba(255, 255, 255, 0.95)',
+              backdropFilter: 'blur(2px)',
+              display: 'flex', flexDirection: 'column',
+              alignItems: 'center', justifyContent: 'center',
+              zIndex: 50, padding: '2rem', textAlign: 'center'
             }}
-          />
-          <div style={{
-            position: 'fixed', inset: 0,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            padding: '1rem', zIndex: 10000, pointerEvents: 'none'
-          }}>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              style={{
-                width: '100%', maxWidth: '500px',
-                background: 'var(--surface-color)',
-                borderRadius: 'var(--radius-lg)',
-                boxShadow: 'var(--shadow-lg)',
-                overflow: 'hidden', pointerEvents: 'auto',
-                display: 'flex', flexDirection: 'column'
-              }}
-            >
-              {/* Header */}
-              <div style={{
-                padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--surface-border)',
-                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                background: 'var(--ci-primary-light)'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--ci-primary)' }}>
-                  <HelpCircle size={20} />
-                  <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700 }}>자가진단 마법사</h3>
-                </div>
-                <button onClick={onClose} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--ci-primary)' }}>
-                  <X size={20} />
+          >
+            <div style={{
+              background: '#FEE500', width: '60px', height: '60px',
+              borderRadius: '50%', display: 'flex', alignItems: 'center',
+              justifyContent: 'center', marginBottom: '1.5rem',
+              color: '#000', boxShadow: 'var(--shadow-md)'
+            }}>
+              <MessageCircle size={30} />
+            </div>
+            <h4 style={{ fontSize: '1.25rem', color: 'var(--text-primary)', marginBottom: '0.75rem', fontWeight: 700, lineHeight: 1.4 }}>
+              아직 마법사가 완성되지 못했어요 😢
+            </h4>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', lineHeight: 1.6, fontSize: '0.95rem' }}>
+              해당 문제에 대한 상세 가이드를 준비 중입니다.<br/>
+              카카오톡 채널로 문의해 주시면<br/>전문 상담원이 빠르게 도와드리겠습니다.
+            </p>
+            
+            <div style={{ display: 'flex', gap: '0.75rem', width: '100%', maxWidth: '280px' }}>
+              <button
+                onClick={() => setShowKakaoPopup(false)}
+                style={{
+                  flex: 1, padding: '0.85rem', borderRadius: 'var(--radius-md)',
+                  border: '1px solid var(--surface-border)', background: 'var(--ci-white)',
+                  color: 'var(--text-secondary)', fontWeight: 600, cursor: 'pointer',
+                  fontSize: '0.95rem'
+                }}
+              >
+                돌아가기
+              </button>
+              <a
+                href="https://pf.kakao.com/_xhxhRZxl"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  flex: 1, padding: '0.85rem', borderRadius: 'var(--radius-md)',
+                  background: '#FEE500', color: '#000', textDecoration: 'none',
+                  fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '0.95rem'
+                }}
+              >
+                상담하기
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Header */}
+      <div style={{
+        padding: '1.5rem 2rem', borderBottom: '1px solid var(--surface-border)',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        background: 'var(--ci-primary-light)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--ci-primary)' }}>
+          <HelpCircle size={24} />
+          <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700 }}>자가진단 마법사</h2>
+        </div>
+        <button 
+          onClick={() => setActivePage(null)} 
+          style={{ 
+            background: 'var(--ci-white)', border: '1px solid var(--surface-border)', 
+            cursor: 'pointer', color: 'var(--text-secondary)', padding: '0.5rem 1rem', 
+            borderRadius: 'var(--radius-md)', fontSize: '0.9rem', fontWeight: 600,
+            display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.2s'
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.background = 'var(--surface-border)';
+            e.currentTarget.style.color = 'var(--text-primary)';
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.background = 'var(--ci-white)';
+            e.currentTarget.style.color = 'var(--text-secondary)';
+          }}
+        >
+          <X size={16} /> 홈으로
+        </button>
+      </div>
+
+      {/* Body */}
+      <div style={{ padding: '2.5rem 2rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentNode}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.2 }}
+            style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+          >
+            <h3 style={{ fontSize: '1.5rem', color: 'var(--text-primary)', marginBottom: '1.5rem', lineHeight: 1.4 }}>
+              {currentData.question}
+            </h3>
+            
+            {currentNode === 'start' && (
+              <div style={{ marginBottom: '2rem' }}>
+                <input 
+                  type="text"
+                  placeholder="어떤 문제가 발생했나요? (예: 충전불가, 소음)"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{ 
+                    width: '100%', padding: '1.15rem 1.25rem', 
+                    borderRadius: 'var(--radius-md)', 
+                    border: '1px solid var(--ci-primary)', 
+                    fontSize: '1.05rem', outline: 'none',
+                    boxShadow: '0 0 0 3px rgba(47, 98, 134, 0.1)',
+                    background: 'var(--bg-color)'
+                  }}
+                />
+              </div>
+            )}
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+              {displayOptions.length > 0 ? displayOptions.map((option, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleOptionClick(option)}
+                  style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    padding: '1.25rem 1.5rem', borderRadius: 'var(--radius-md)',
+                    border: '1px solid var(--surface-border)',
+                    background: 'var(--ci-white)', cursor: 'pointer',
+                    textAlign: 'left', fontSize: '1.05rem', color: 'var(--text-secondary)',
+                    transition: 'all 0.2s', boxShadow: 'var(--shadow-sm)'
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.borderColor = 'var(--ci-primary)';
+                    e.currentTarget.style.color = 'var(--ci-primary)';
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.borderColor = 'var(--surface-border)';
+                    e.currentTarget.style.color = 'var(--text-secondary)';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+                  }}
+                >
+                  <span>{option.label}</span>
+                  <ChevronRight size={20} />
                 </button>
-              </div>
+              )) : (
+                <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-secondary)', background: 'var(--bg-color)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--surface-border)' }}>
+                  <p style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>해당하는 마법재료가 없습니다 😢</p>
+                  <p>다른 키워드로 검색하시거나 카카오톡 채널로 문의해 주세요.</p>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
 
-              {/* Body */}
-              <div style={{ padding: '2rem 1.5rem', minHeight: '250px', maxHeight: '60vh', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={currentNode}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.2 }}
-                    style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
-                  >
-                    <h4 style={{ fontSize: '1.25rem', color: 'var(--text-primary)', marginBottom: '1rem', lineHeight: 1.4 }}>
-                      {currentData.question}
-                    </h4>
-                    
-                    {currentNode === 'start' && (
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <input 
-                          type="text"
-                          placeholder="어떤 문제가 발생했나요? (예: 충전불가, 소음)"
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          style={{ 
-                            width: '100%', padding: '0.85rem 1rem', 
-                            borderRadius: 'var(--radius-md)', 
-                            border: '1px solid var(--ci-primary)', 
-                            fontSize: '1rem', outline: 'none',
-                            boxShadow: '0 0 0 2px rgba(47, 98, 134, 0.1)'
-                          }}
-                        />
-                      </div>
-                    )}
-                    
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: 'auto' }}>
-                      {displayOptions.length > 0 ? displayOptions.map((option, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => handleOptionClick(option)}
-                          style={{
-                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                            padding: '1rem', borderRadius: 'var(--radius-md)',
-                            border: '1px solid var(--surface-border)',
-                            background: 'var(--ci-white)', cursor: 'pointer',
-                            textAlign: 'left', fontSize: '1rem', color: 'var(--text-secondary)',
-                            transition: 'all 0.2s', boxShadow: 'var(--shadow-sm)'
-                          }}
-                          onMouseEnter={e => {
-                            e.currentTarget.style.borderColor = 'var(--ci-primary)';
-                            e.currentTarget.style.color = 'var(--ci-primary)';
-                            e.currentTarget.style.transform = 'translateY(-2px)';
-                            e.currentTarget.style.boxShadow = 'var(--shadow-md)';
-                          }}
-                          onMouseLeave={e => {
-                            e.currentTarget.style.borderColor = 'var(--surface-border)';
-                            e.currentTarget.style.color = 'var(--text-secondary)';
-                            e.currentTarget.style.transform = 'translateY(0)';
-                            e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
-                          }}
-                        >
-                          <span>{option.label}</span>
-                          <ChevronRight size={18} />
-                        </button>
-                      )) : (
-                        <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
-                          검색 결과가 없습니다.<br/>다른 키워드로 검색해 보세요.
-                        </div>
-                      )}
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-
-              {/* Footer */}
-              <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid var(--surface-border)', display: 'flex', justifyContent: 'space-between' }}>
-                {history.length > 0 ? (
-                  <div style={{ display: 'flex', gap: '1rem' }}>
-                    <button
-                      onClick={handleBack}
-                      style={{
-                        display: 'flex', alignItems: 'center', gap: '0.4rem',
-                        background: 'transparent', border: 'none', cursor: 'pointer',
-                        color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 600
-                      }}
-                    >
-                      <RotateCcw size={16} /> 이전
-                    </button>
-                    <button
-                      onClick={resetWizard}
-                      style={{
-                        display: 'flex', alignItems: 'center', gap: '0.4rem',
-                        background: 'transparent', border: 'none', cursor: 'pointer',
-                        color: 'var(--ci-primary)', fontSize: '0.9rem', fontWeight: 600
-                      }}
-                    >
-                      <Home size={16} /> 처음으로
-                    </button>
-                  </div>
-                ) : <div />}
-                
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center' }}>
-                  XTRON 스마트 어시스턴트
-                </span>
-              </div>
-            </motion.div>
+      {/* Footer */}
+      <div style={{ padding: '1.25rem 2rem', borderTop: '1px solid var(--surface-border)', display: 'flex', justifyContent: 'space-between', background: 'var(--bg-color)' }}>
+        {history.length > 0 ? (
+          <div style={{ display: 'flex', gap: '1.5rem' }}>
+            <button
+              onClick={handleBack}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                background: 'transparent', border: 'none', cursor: 'pointer',
+                color: 'var(--text-secondary)', fontSize: '0.95rem', fontWeight: 600
+              }}
+              onMouseEnter={e => e.currentTarget.style.color = 'var(--text-primary)'}
+              onMouseLeave={e => e.currentTarget.style.color = 'var(--text-secondary)'}
+            >
+              <RotateCcw size={18} /> 이전 단계
+            </button>
+            <button
+              onClick={resetWizard}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                background: 'transparent', border: 'none', cursor: 'pointer',
+                color: 'var(--ci-primary)', fontSize: '0.95rem', fontWeight: 600
+              }}
+              onMouseEnter={e => e.currentTarget.style.opacity = '0.8'}
+              onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+            >
+              <Home size={18} /> 처음으로
+            </button>
           </div>
-        </React.Fragment>
-      )}
-    </AnimatePresence>
+        ) : <div />}
+        
+        <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', fontWeight: 500 }}>
+          XTRON 스마트 어시스턴트
+        </span>
+      </div>
+    </motion.div>
   );
 }

@@ -410,3 +410,67 @@ mark {
   margin-left: auto;
   padding-right: 0.5rem;
 }
+
+/* Guide Error Page Styles */
+.guide-error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.guide-error-title {
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.guide-error-desc {
+  line-height: 1.6;
+}
+
+.guide-error-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.btn-error-action {
+  flex: 1;
+  max-width: 240px;
+  padding: 0.85rem 1.5rem;
+  border-radius: var(--radius-full);
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap; /* Prevents text wrapping */
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-error-action:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-error-home {
+  background: var(--ci-primary);
+  color: var(--ci-white);
+}
+
+.btn-error-kakao {
+  background: #FEE500;
+  color: #000;
+}
