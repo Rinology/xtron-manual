@@ -47,6 +47,21 @@ export default function Hero({ setActivePage, onOpenSearch }) {
         minHeight: '80vh'
       }}
     >
+      {/* Subtle Blue Glow Background (Gemini Style) */}
+      <div 
+        style={{
+          position: 'absolute',
+          top: '40%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '120vw',
+          height: '120vh',
+          background: 'radial-gradient(ellipse at center, rgba(47, 98, 134, 0.06) 0%, rgba(47, 98, 134, 0.02) 40%, rgba(255, 255, 255, 0) 70%)',
+          pointerEvents: 'none',
+          zIndex: 0
+        }}
+      />
+
       <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '600px' }}>
         
         <h2 className="hero-title" style={{ marginBottom: '3rem', letterSpacing: '-0.02em', color: 'var(--ci-primary)' }}>
@@ -208,29 +223,35 @@ export default function Hero({ setActivePage, onOpenSearch }) {
 
         {/* 추천 퀵 가이드 리뉴얼 */}
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginRight: '0.4rem' }}>자주 찾는 질문:</span>
+          <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 500, marginRight: '0.2rem' }}>자주 찾는 질문:</span>
           {suggestions.map(s => (
             <button
               key={s.id}
               onClick={() => setActivePage(s.id)}
               style={{
-                background: 'var(--surface-border)',
-                border: 'none',
-                padding: '0.4rem 0.85rem',
+                background: 'rgba(255, 255, 255, 0.5)',
+                backdropFilter: 'blur(8px)',
+                border: '1px solid rgba(47, 98, 134, 0.15)',
+                padding: '0.35rem 0.9rem',
                 borderRadius: 'var(--radius-full)',
-                color: 'var(--text-secondary)',
+                color: 'var(--ci-primary)',
                 fontSize: '0.85rem',
-                fontWeight: 500,
+                fontWeight: 600,
                 cursor: 'pointer',
-                transition: 'all 0.2s ease',
+                transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
               }}
               onMouseEnter={(e) => {
-                e.target.style.background = 'rgba(226, 232, 240, 0.8)';
-                e.target.style.color = 'var(--text-primary)';
+                e.target.style.background = 'var(--ci-white)';
+                e.target.style.borderColor = 'rgba(47, 98, 134, 0.3)';
+                e.target.style.transform = 'translateY(-1px)';
+                e.target.style.boxShadow = '0 4px 6px rgba(0,0,0,0.05)';
               }}
               onMouseLeave={(e) => {
-                e.target.style.background = 'var(--surface-border)';
-                e.target.style.color = 'var(--text-secondary)';
+                e.target.style.background = 'rgba(255, 255, 255, 0.5)';
+                e.target.style.borderColor = 'rgba(47, 98, 134, 0.15)';
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.02)';
               }}
             >
               {s.title}
