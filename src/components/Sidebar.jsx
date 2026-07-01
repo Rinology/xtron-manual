@@ -17,9 +17,8 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
   const [isQuickLinksOpen, setIsQuickLinksOpen] = useState(false);
   const quickLinksRef = useRef(null);
   
-  // 툴팁 및 코치마크 상태
+  // 툴팁 상태
   const [hoveredButton, setHoveredButton] = useState(null);
-  const [showCoachMark, setShowCoachMark] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth <= 768);
@@ -27,23 +26,6 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
-
-  useEffect(() => {
-    // 최초 접속 시 코치마크 표시 (데스크톱 환경)
-    if (!isMobile) {
-      const lastSeen = localStorage.getItem('sidebarCoachMark');
-      const today = new Date().toDateString();
-      if (lastSeen !== today && !isOpen) {
-        const timer = setTimeout(() => setShowCoachMark(true), 1500);
-        return () => clearTimeout(timer);
-      }
-    }
-  }, [isMobile, isOpen]);
-
-  const dismissCoachMark = () => {
-    setShowCoachMark(false);
-    localStorage.setItem('sidebarCoachMark', new Date().toDateString());
-  };
 
   // 외부 클릭 시 퀵링크 팝업 닫기
   useEffect(() => {
@@ -94,7 +76,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
     </button>
   );
 
-  const Tooltip = ({ text, visible, isCoachMark = false }) => (
+  const Tooltip = ({ text, visible }) => (
     <AnimatePresence>
       {visible && (
         <motion.div
@@ -102,7 +84,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
           animate={{ opacity: 1, x: 0, y: '-50%' }}
           exit={{ opacity: 0, x: -5, y: '-50%' }}
           transition={{ duration: 0.15 }}
-          className={`gemini-tooltip ${isCoachMark ? 'gemini-tooltip-coach' : ''}`}
+          className="gemini-tooltip"
         >
           <div className="gemini-tooltip-arrow" />
           <span style={{ position: 'relative', zIndex: 2 }}>{text}</span>
@@ -153,7 +135,6 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
         onClick={() => {
           if (!isMobile && !isOpen) {
             setIsOpen(true);
-            dismissCoachMark();
           }
         }}
       >
@@ -207,7 +188,6 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsOpen(true);
-                    dismissCoachMark();
                   }}
                   style={{ 
                      background: 'transparent', border: 'none', cursor: 'pointer', 
@@ -230,8 +210,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                     style={{ width: '24px', height: '24px', objectFit: 'contain' }}
                   />
                 </button>
-                <Tooltip text="사이드바 열기" visible={hoveredButton === 'expand' && !showCoachMark} />
-                <Tooltip text="사이드바를 펼쳐보세요" visible={showCoachMark} isCoachMark={true} />
+                <Tooltip text="사이드바 열기" visible={hoveredButton === 'expand'} />
               </div>
             )}
           </div>
