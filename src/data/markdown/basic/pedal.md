@@ -30,22 +30,22 @@
 크랭크 나사산의 영구적인 파손 방지를 위해 먼저 손으로 가결합을 진행합니다.
 우측은 **시계 방향 회전**으로 결합됩니다.
 
-![오른쪽 페달을 손(시계 방향)으로 돌리는 작업](/images/pedal/pedal-hand-install-r.png)
+![오른쪽 페달을 손(시계 방향)으로 돌리는 작업](/images/pedal/pedal-hand-install-r.webp)
 
 손으로 충분히 결합했다면, **15mm 페달 렌치 또는 육각 렌치**를 사용하여 전륜 방향(시계 방향)으로 강하게 조입니다.
 
-![15mm 렌치로 우측 페달을 강하게 조이는 모습](/images/pedal/pedal-wrench-install-r.png)
+![15mm 렌치로 우측 페달을 강하게 조이는 모습](/images/pedal/pedal-wrench-install-r.webp)
 
 ---
 
 #### 4. 좌측 페달(L) 체결 (많이 실수하는 곳!)
 풀림 방지를 위해 **역방향 나사산**이 적용되어 있습니다. 크랭크 스레드의 손상 방지를 위해 먼저 손으로 **시계 반대 방향 회전**하여 결합하십시오.
 
-![왼쪽 페달을 손(시계 반대 방향)으로 돌리는 작업](/images/pedal/pedal-hand-install-l.png)
+![왼쪽 페달을 손(시계 반대 방향)으로 돌리는 작업](/images/pedal/pedal-hand-install-l.webp)
 
 손으로 충분히 결합했다면, **15mm 페달 렌치 또는 육각 렌치**를 사용하여 전륜 방향(시계 반대 방향)으로 강하게 조입니다.
 
-![15mm 렌치로 좌측 페달을 강하게 조이는 모습](/images/pedal/pedal-wrench-install-l.png)
+![15mm 렌치로 좌측 페달을 강하게 조이는 모습](/images/pedal/pedal-wrench-install-l.webp)
 
 ---
 
