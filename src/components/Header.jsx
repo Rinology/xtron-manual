@@ -30,9 +30,20 @@ export default function Header({ activePage, setActivePage, isOpen, setIsOpen })
               className="mobile-menu-btn"
               onClick={() => setIsOpen(true)}
               title="메뉴 열기"
-              style={{ marginRight: '0.25rem' }}
+              style={{ 
+                marginRight: '0.25rem',
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '0.4rem',
+                borderRadius: '50%'
+              }}
             >
-              <Menu size={24} />
+              <img 
+                src={`${import.meta.env.VITE_CDN_URL}/common/logos/x_logo_black.webp`} 
+                alt="Menu" 
+                style={{ width: '24px', height: '24px', objectFit: 'contain' }}
+              />
             </button>
           )}
           {showBreadcrumb && (
@@ -86,16 +97,6 @@ export default function Header({ activePage, setActivePage, isOpen, setIsOpen })
           )}
         </div>
 
-        {!showBreadcrumb && (
-          <div className="header-logo-container">
-            <img 
-              src={`${import.meta.env.VITE_CDN_URL}/common/logos/Xtron_x_Qualisports_Logo_Black.webp`} 
-              alt="Qualisports Logo" 
-              style={{ height: 'clamp(16px, 4.5vw, 24px)', objectFit: 'contain', cursor: 'pointer' }} 
-              onClick={() => setActivePage(null)} 
-            />
-          </div>
-        )}
       </div>
     </header>
   );

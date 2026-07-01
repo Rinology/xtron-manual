@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGuides } from '../context/GuideContext';
-import { ChevronDown, ChevronRight, Search, Menu, MessageCircle, ShoppingBag, MapPin, Tag, Youtube, Sparkles, Settings } from 'lucide-react';
+import { ChevronDown, ChevronRight, Search, Menu, MessageCircle, ShoppingBag, MapPin, Tag, Youtube, Sparkles, Settings, PanelLeftClose } from 'lucide-react';
 
 export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch }) {
   const { guidesData } = useGuides();
@@ -114,21 +114,65 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
       >
         <div style={{ padding: '1rem 0', display: 'flex', flexDirection: 'column', gap: '1.5rem', flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
           
-          {/* Hamburger */}
-          <div style={{ display: 'flex', alignItems: 'center', height: '40px', padding: '0 1rem' }}>
-            <button 
-              onClick={() => setIsOpen(!isOpen)}
-              style={{ 
-                 background: 'transparent', border: 'none', cursor: 'pointer', 
-                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                 color: 'var(--text-primary)', padding: '0.4rem', borderRadius: '50%',
-                 transition: 'background 0.2s', flexShrink: 0
-              }}
-              onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-border)'}
-              onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-            >
-              <Menu size={24} />
-            </button>
+          {/* Hamburger / Brand Area */}
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: isOpen ? 'space-between' : 'center', 
+            height: '40px', 
+            padding: '0 1rem',
+            width: '100%',
+            boxSizing: 'border-box'
+          }}>
+            {isOpen ? (
+              <>
+                {/* Full Brand Logo */}
+                <img 
+                  src={`${import.meta.env.VITE_CDN_URL}/common/logos/Xtron_x_Qualisports_Logo_Black.webp`} 
+                  alt="Qualisports Logo" 
+                  style={{ height: '20px', objectFit: 'contain', cursor: 'pointer' }} 
+                  onClick={() => {
+                    setActivePage(null);
+                    if (isMobile) setIsOpen(false);
+                  }}
+                />
+                {/* Sidebar Collapse/Close Button */}
+                <button 
+                  onClick={() => setIsOpen(false)}
+                  style={{ 
+                     background: 'transparent', border: 'none', cursor: 'pointer', 
+                     display: 'flex', alignItems: 'center', justifyContent: 'center',
+                     color: 'var(--text-primary)', padding: '0.4rem', borderRadius: '50%',
+                     transition: 'background 0.2s', flexShrink: 0
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-border)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                  title="메뉴 접기"
+                >
+                  <PanelLeftClose size={20} />
+                </button>
+              </>
+            ) : (
+              /* Sidebar Expand Button (X Logo) when collapsed */
+              <button 
+                onClick={() => setIsOpen(true)}
+                style={{ 
+                   background: 'transparent', border: 'none', cursor: 'pointer', 
+                   display: 'flex', alignItems: 'center', justifyContent: 'center',
+                   padding: '0.4rem', borderRadius: '50%',
+                   transition: 'background 0.2s', flexShrink: 0
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-border)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                title="메뉴 펼치기"
+              >
+                <img 
+                  src={`${import.meta.env.VITE_CDN_URL}/common/logos/x_logo_black.webp`} 
+                  alt="Menu" 
+                  style={{ width: '24px', height: '24px', objectFit: 'contain' }}
+                />
+              </button>
+            )}
           </div>
 
           {/* Top Actions: Wizard & Search */}
