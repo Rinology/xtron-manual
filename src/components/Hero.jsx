@@ -49,16 +49,11 @@ export default function Hero({ setActivePage, onOpenSearch }) {
     >
       <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '600px' }}>
         
-        <h2 className="hero-title" style={{ marginBottom: '1rem', letterSpacing: '-0.02em', color: 'var(--ci-primary)' }}>
+        <h2 className="hero-title" style={{ marginBottom: '3rem', letterSpacing: '-0.02em', color: 'var(--ci-primary)' }}>
           무엇을 <span style={{ color: 'var(--ci-secondary)' }}>도와드릴까요?</span>
         </h2>
         
-        <p className="hero-subtitle" style={{ color: 'var(--text-secondary)', margin: '0 auto 3rem auto', lineHeight: 1.6 }}>
-          전기자전거 조립부터 주행 중 발생한 문제 해결까지 <br/>
-          궁금한 점을 검색해 보세요.
-        </p>
-        
-        <form onSubmit={handleSearchSubmit} style={{ position: 'relative', marginBottom: '2rem' }}>
+        <form onSubmit={handleSearchSubmit} style={{ position: 'relative', marginBottom: '1.5rem' }}>
           <Search size={24} color="var(--ci-primary)" style={{ position: 'absolute', left: '1.5rem', top: '50%', transform: 'translateY(-50%)' }} />
           <input 
             type="text"
@@ -68,7 +63,7 @@ export default function Hero({ setActivePage, onOpenSearch }) {
             style={{
               width: '100%',
               padding: '1.05rem 3.5rem 1.05rem 3.5rem',
-              borderRadius: 'var(--radius-lg)',
+              borderRadius: 'var(--radius-full)',
               border: '2px solid var(--ci-primary-light)',
               background: 'var(--ci-white)',
               fontFamily: 'inherit',
@@ -97,10 +92,10 @@ export default function Hero({ setActivePage, onOpenSearch }) {
               onClick={handleClearSearch}
               style={{
                 position: 'absolute',
-                right: '1rem',
+                right: '1.2rem',
                 top: '50%',
                 transform: 'translateY(-50%)',
-                background: 'transparent',
+                background: 'var(--surface-border)',
                 border: 'none',
                 cursor: 'pointer',
                 color: 'var(--text-secondary)',
@@ -111,10 +106,10 @@ export default function Hero({ setActivePage, onOpenSearch }) {
                 borderRadius: '50%',
                 transition: 'background 0.2s'
               }}
-              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.05)'}
-              onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.1)'}
+              onMouseLeave={(e) => e.currentTarget.style.background = 'var(--surface-border)'}
             >
-              <X size={20} />
+              <X size={16} />
             </button>
           )}
           
@@ -188,30 +183,26 @@ export default function Hero({ setActivePage, onOpenSearch }) {
           <button type="submit" style={{ display: 'none' }}>검색</button>
         </form>
 
-        {/* 자가진단 마법사 배너 (검색창 바로 밑으로 이동) */}
-        <div style={{ marginBottom: '2.5rem', width: '100%' }}>
+        {/* 자가진단 마법사 배너 (Premium Sleek Design) */}
+        <div style={{ marginBottom: '3rem', width: '100%', display: 'flex', justifyContent: 'center' }}>
           <button
             onClick={() => setActivePage('troubleshooting-wizard')}
             style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem',
-              background: 'linear-gradient(135deg, rgba(47, 98, 134, 0.05), rgba(114, 191, 68, 0.05))',
-              color: 'var(--ci-primary)',
-              padding: '0.85rem 1.75rem', borderRadius: 'var(--radius-lg)',
-              border: '1px solid var(--ci-primary-light)', fontSize: '1rem', fontWeight: 600,
-              cursor: 'pointer', margin: '0 auto', width: '100%',
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+              background: 'transparent', border: 'none', cursor: 'pointer',
+              padding: '0.5rem 1rem', borderRadius: 'var(--radius-full)',
               transition: 'all var(--transition-fast)'
             }}
             onMouseEnter={e => {
               e.currentTarget.style.background = 'var(--ci-primary-light)';
-              e.currentTarget.style.borderColor = 'var(--ci-primary)';
             }}
             onMouseLeave={e => {
-              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(47, 98, 134, 0.05), rgba(114, 191, 68, 0.05))';
-              e.currentTarget.style.borderColor = 'var(--ci-primary-light)';
+              e.currentTarget.style.background = 'transparent';
             }}
           >
-            <HelpCircle size={18} />
-            어떤 문제가 있는지 잘 모르시겠나요? 자가진단 마법사 시작하기
+            <Sparkles size={18} color="var(--ci-primary)" />
+            <span style={{ fontSize: '0.95rem', fontWeight: 500, color: 'var(--text-secondary)' }}>증상으로 문제 찾기 👉</span>
+            <span className="text-gradient" style={{ fontSize: '0.95rem', fontWeight: 700 }}>자가진단 마법사 시작</span>
           </button>
         </div>
 
