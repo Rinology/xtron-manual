@@ -117,7 +117,7 @@ function App() {
             )}
           </AnimatePresence>
         </main>
-        <Footer />
+        <Footer activePage={activePage} />
         <BackToTop />
       </div>
     </div>

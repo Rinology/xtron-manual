@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-export default function Footer() {
+export default function Footer({ activePage }) {
   const [isAtBottom, setIsAtBottom] = useState(false);
 
   useEffect(() => {
@@ -13,7 +13,7 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="app-footer" style={{
+    <footer className={`app-footer ${!activePage ? 'hero-active' : ''}`} style={{
       padding: '1rem 2rem',
       textAlign: 'center',
       color: 'var(--text-secondary)',
