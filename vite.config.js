@@ -16,7 +16,7 @@ export default defineConfig({
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/cdn\.xtron-guide\.kr\/.*/i,
-            handler: 'CacheFirst',
+            handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'xtron-cdn-image-cache',
               expiration: {
