@@ -36,6 +36,9 @@ export default defineConfig({
               expiration: {
                 maxEntries: 10,
                 maxAgeSeconds: 60 * 60 * 24 * 365 // 1년
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
               }
             }
           }
