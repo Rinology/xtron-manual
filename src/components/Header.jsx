@@ -40,7 +40,7 @@ export default function Header({ activePage, setActivePage, isOpen, setIsOpen })
               }}
             >
               <img 
-                src={`${import.meta.env.VITE_CDN_URL}/common/logos/x_logo_black.webp`} 
+                src={`${import.meta.env.VITE_CDN_URL}/common/logos/X_logo_black_v2.webp`} 
                 alt="Menu" 
                 style={{ width: '24px', height: '24px', objectFit: 'contain' }}
               />
