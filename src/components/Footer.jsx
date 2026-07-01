@@ -13,7 +13,7 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer style={{
+    <footer className="app-footer" style={{
       padding: '1rem 2rem',
       textAlign: 'center',
       color: 'var(--text-secondary)',

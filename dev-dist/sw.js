@@ -67,7 +67,7 @@ if (!self.define) {
     });
   };
 }
-define(['./workbox-afac4cd2'], (function (workbox) { 'use strict';
+define(['./workbox-5ccb27be'], (function (workbox) { 'use strict';
 
   self.skipWaiting();
   workbox.clientsClaim();
@@ -81,13 +81,13 @@ define(['./workbox-afac4cd2'], (function (workbox) { 'use strict';
     "revision": "3ca0b8505b4bec776b69afdba2768812"
   }, {
     "url": "index.html",
-    "revision": "0.lbu3ltj0674"
+    "revision": "0.qpuecaevdps"
   }], {});
   workbox.cleanupOutdatedCaches();
   workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("index.html"), {
     allowlist: [/^\/$/]
   }));
-  workbox.registerRoute(/^https:\/\/cdn\.xtron-guide\.kr\/.*/i, new workbox.CacheFirst({
+  workbox.registerRoute(/^https:\/\/cdn\.xtron-guide\.kr\/.*/i, new workbox.StaleWhileRevalidate({
     "cacheName": "xtron-cdn-image-cache",
     plugins: [new workbox.ExpirationPlugin({
       maxEntries: 500,
@@ -101,6 +101,8 @@ define(['./workbox-afac4cd2'], (function (workbox) { 'use strict';
     plugins: [new workbox.ExpirationPlugin({
       maxEntries: 10,
       maxAgeSeconds: 31536000
+    }), new workbox.CacheableResponsePlugin({
+      statuses: [0, 200]
     })]
   }), 'GET');
 

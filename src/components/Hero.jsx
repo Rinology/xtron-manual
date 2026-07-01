@@ -62,13 +62,13 @@ export default function Hero({ setActivePage, onOpenSearch }) {
         }}
       />
 
-      <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '600px' }}>
+      <div className="hero-content-wrapper" style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '600px', display: 'flex', flexDirection: 'column' }}>
         
         <h2 className="hero-title" style={{ marginBottom: '3rem', letterSpacing: '-0.02em', color: 'var(--ci-primary)' }}>
           무엇을 <span style={{ color: 'var(--ci-secondary)' }}>도와드릴까요?</span>
         </h2>
         
-        <form onSubmit={handleSearchSubmit} style={{ position: 'relative', marginBottom: '1.5rem' }}>
+        <form className="hero-search-form" onSubmit={handleSearchSubmit} style={{ position: 'relative', marginBottom: '1.5rem', width: '100%' }}>
           <Search size={24} color="var(--ci-primary)" style={{ position: 'absolute', left: '1.5rem', top: '50%', transform: 'translateY(-50%)' }} />
           <input 
             type="text"
@@ -132,6 +132,7 @@ export default function Hero({ setActivePage, onOpenSearch }) {
           <AnimatePresence>
             {isFocused && localSearch.trim() && (
               <motion.div
+                className="hero-search-dropdown"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 10 }}
@@ -199,7 +200,7 @@ export default function Hero({ setActivePage, onOpenSearch }) {
         </form>
 
         {/* 자가진단 마법사 배너 (Premium Sleek Design) */}
-        <div style={{ marginBottom: '3rem', width: '100%', display: 'flex', justifyContent: 'center' }}>
+        <div className="hero-wizard-banner" style={{ marginBottom: '3rem', width: '100%', display: 'flex', justifyContent: 'center' }}>
           <button
             onClick={() => setActivePage('troubleshooting-wizard')}
             style={{
@@ -215,14 +216,14 @@ export default function Hero({ setActivePage, onOpenSearch }) {
               e.currentTarget.style.background = 'transparent';
             }}
           >
-            <Sparkles size={18} color="var(--ci-primary)" />
-            <span style={{ fontSize: '0.95rem', fontWeight: 500, color: 'var(--text-secondary)' }}>증상으로 문제 찾기 👉</span>
-            <span className="text-gradient" style={{ fontSize: '0.95rem', fontWeight: 700 }}>자가진단 마법사 시작</span>
+            <Sparkles size={18} color="var(--ci-primary)" style={{ flexShrink: 0 }} />
+            <span style={{ fontSize: '0.95rem', fontWeight: 500, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>증상으로 문제 찾기 👉</span>
+            <span className="text-gradient" style={{ fontSize: '0.95rem', fontWeight: 700, whiteSpace: 'nowrap' }}>자가진단 마법사 시작</span>
           </button>
         </div>
 
         {/* 추천 퀵 가이드 리뉴얼 */}
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
+        <div className="hero-faq-tags" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
           <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 500, marginRight: '0.2rem' }}>자주 찾는 질문:</span>
           {suggestions.map(s => (
             <button
@@ -258,7 +259,6 @@ export default function Hero({ setActivePage, onOpenSearch }) {
             </button>
           ))}
         </div>
-
 
       </div>
     </motion.section>

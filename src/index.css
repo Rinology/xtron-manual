@@ -327,11 +327,43 @@ h1, h2, h3, h4, h5, h6 {
 
 @media (max-width: 768px) {
   .hero-section {
-    padding: 3rem 1rem !important;
-    min-height: 60vh !important;
+    padding: 0 1.2rem !important;
+    height: calc(100dvh - 80px) !important;
+    min-height: auto !important;
+    justify-content: stretch !important;
+  }
+  .hero-content-wrapper {
+    height: 100%;
+    padding-top: 0;
   }
   .hero-title {
-    font-size: 2.25rem !important;
+    order: 1;
+    margin-top: auto !important;
+    font-size: 2.2rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+  .hero-wizard-banner {
+    order: 2;
+    margin-bottom: 1.5rem !important;
+  }
+  .hero-faq-tags {
+    order: 3;
+    margin-bottom: auto !important; /* Pushes the search form to the bottom */
+  }
+  .hero-search-form {
+    order: 4;
+    margin-bottom: 1rem !important;
+    margin-top: 1.5rem;
+  }
+  .hero-search-dropdown {
+    top: auto !important;
+    bottom: 100% !important;
+    margin-top: 0 !important;
+    margin-bottom: 0.5rem !important;
+    transform-origin: bottom center;
+  }
+  .app-footer {
+    display: none !important;
   }
   .hero-subtitle {
     font-size: 1rem !important;
