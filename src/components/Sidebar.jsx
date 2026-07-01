@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGuides } from '../context/GuideContext';
-import { ChevronDown, ChevronRight, Search, Menu, MessageCircle, ShoppingBag, MapPin, Tag, Youtube, Sparkles, Settings, PanelLeftClose } from 'lucide-react';
+import { ChevronDown, ChevronRight, Search, Menu, MessageCircle, ShoppingBag, MapPin, Tag, Youtube, Sparkles, LayoutGrid, PanelLeftClose } from 'lucide-react';
 
 export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch }) {
   const { guidesData } = useGuides();
@@ -16,6 +16,10 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
   // 퀵링크 팝업 상태
   const [isQuickLinksOpen, setIsQuickLinksOpen] = useState(false);
   const quickLinksRef = useRef(null);
+  
+  // 툴팁 및 코치마크 상태
+  const [hoveredButton, setHoveredButton] = useState(null);
+  const [showCoachMark, setShowCoachMark] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth <= 768);
@@ -23,6 +27,23 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  useEffect(() => {
+    // 최초 접속 시 코치마크 표시 (데스크톱 환경)
+    if (!isMobile) {
+      const lastSeen = localStorage.getItem('sidebarCoachMark');
+      const today = new Date().toDateString();
+      if (lastSeen !== today && !isOpen) {
+        const timer = setTimeout(() => setShowCoachMark(true), 1500);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [isMobile, isOpen]);
+
+  const dismissCoachMark = () => {
+    setShowCoachMark(false);
+    localStorage.setItem('sidebarCoachMark', new Date().toDateString());
+  };
 
   // 외부 클릭 시 퀵링크 팝업 닫기
   useEffect(() => {
@@ -73,6 +94,23 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
     </button>
   );
 
+  const Tooltip = ({ text, visible, isCoachMark = false }) => (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          initial={{ opacity: 0, x: -5, y: '-50%' }}
+          animate={{ opacity: 1, x: 0, y: '-50%' }}
+          exit={{ opacity: 0, x: -5, y: '-50%' }}
+          transition={{ duration: 0.15 }}
+          className={`gemini-tooltip ${isCoachMark ? 'gemini-tooltip-coach' : ''}`}
+        >
+          <div className="gemini-tooltip-arrow" />
+          <span style={{ position: 'relative', zIndex: 2 }}>{text}</span>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+
   return (
     <>
       <AnimatePresence>
@@ -109,10 +147,17 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
           flexDirection: 'column',
           overflow: 'visible', // 팝업 메뉴를 위해 visible 유지
           flexShrink: 0,
-          zIndex: 100
+          zIndex: 100,
+          cursor: (!isMobile && !isOpen) ? 'ew-resize' : 'default'
+        }}
+        onClick={() => {
+          if (!isMobile && !isOpen) {
+            setIsOpen(true);
+            dismissCoachMark();
+          }
         }}
       >
-        <div style={{ padding: '1rem 0', display: 'flex', flexDirection: 'column', gap: '1.5rem', flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
+        <div style={{ padding: '1rem 0', display: 'flex', flexDirection: 'column', gap: '1.5rem', flex: 1, overflow: 'visible' }}>
           
           {/* Hamburger / Brand Area */}
           <div style={{ 
@@ -131,14 +176,18 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                   src={`${import.meta.env.VITE_CDN_URL}/common/logos/Xtron_x_Qualisports_Logo_Black.webp`} 
                   alt="Qualisports Logo" 
                   style={{ height: '20px', objectFit: 'contain', cursor: 'pointer' }} 
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     setActivePage(null);
                     if (isMobile) setIsOpen(false);
                   }}
                 />
                 {/* Sidebar Collapse/Close Button */}
                 <button 
-                  onClick={() => setIsOpen(false)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsOpen(false);
+                  }}
                   style={{ 
                      background: 'transparent', border: 'none', cursor: 'pointer', 
                      display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -147,31 +196,43 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                   }}
                   onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-border)'}
                   onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                  title="메뉴 접기"
                 >
                   <PanelLeftClose size={20} />
                 </button>
               </>
             ) : (
               /* Sidebar Expand Button (X Logo) when collapsed */
-              <button 
-                onClick={() => setIsOpen(true)}
-                style={{ 
-                   background: 'transparent', border: 'none', cursor: 'pointer', 
-                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                   padding: '0.4rem', borderRadius: '50%',
-                   transition: 'background 0.2s', flexShrink: 0
-                }}
-                onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-border)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                title="메뉴 펼치기"
-              >
-                <img 
-                  src={`${import.meta.env.VITE_CDN_URL}/common/logos/X_logo_black_v2.webp`} 
-                  alt="Menu" 
-                  style={{ width: '24px', height: '24px', objectFit: 'contain' }}
-                />
-              </button>
+              <div style={{ position: 'relative' }}>
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsOpen(true);
+                    dismissCoachMark();
+                  }}
+                  style={{ 
+                     background: 'transparent', border: 'none', cursor: 'pointer', 
+                     display: 'flex', alignItems: 'center', justifyContent: 'center',
+                     padding: '0.4rem', borderRadius: '50%',
+                     transition: 'background 0.2s', flexShrink: 0
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.background = 'var(--surface-border)';
+                    setHoveredButton('expand');
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.background = 'transparent';
+                    setHoveredButton(null);
+                  }}
+                >
+                  <img 
+                    src={`${import.meta.env.VITE_CDN_URL}/common/logos/X_logo_black_v2.webp`} 
+                    alt="Menu" 
+                    style={{ width: '24px', height: '24px', objectFit: 'contain' }}
+                  />
+                </button>
+                <Tooltip text="사이드바 열기" visible={hoveredButton === 'expand' && !showCoachMark} />
+                <Tooltip text="사이드바를 펼쳐보세요" visible={showCoachMark} isCoachMark={true} />
+              </div>
             )}
           </div>
 
@@ -180,7 +241,8 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
             {isOpen ? (
               <>
                 <button
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     setActivePage('troubleshooting-wizard');
                     if (isMobile) setIsOpen(false);
                   }}
@@ -203,7 +265,10 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                   자가진단 마법사
                 </button>
                 <button
-                  onClick={onOpenSearch}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onOpenSearch();
+                  }}
                   style={{
                     width: '100%', display: 'flex', alignItems: 'center', gap: '0.75rem',
                     padding: '0.65rem 1rem', borderRadius: 'var(--radius-full)',
@@ -220,52 +285,65 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
               </>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-                <button
-                  onClick={() => {
-                    setActivePage('troubleshooting-wizard');
-                    if (isMobile) setIsOpen(false);
-                  }}
-                  title="자가진단 마법사"
-                  style={{
-                    width: '40px', height: '40px', borderRadius: '50%', border: 'none',
-                    background: activePage === 'troubleshooting-wizard' ? 'var(--ci-primary-light)' : 'transparent',
-                    color: activePage === 'troubleshooting-wizard' ? 'var(--ci-primary)' : 'var(--text-secondary)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    cursor: 'pointer', transition: 'all 0.2s'
-                  }}
-                  onMouseEnter={e => {
-                    if (activePage !== 'troubleshooting-wizard') e.currentTarget.style.background = 'var(--surface-border)';
-                  }}
-                  onMouseLeave={e => {
-                    if (activePage !== 'troubleshooting-wizard') e.currentTarget.style.background = 'transparent';
-                  }}
-                >
-                  <Sparkles size={18} />
-                </button>
-                <button 
-                  onClick={onOpenSearch}
-                  title="통합 검색"
-                  style={{
-                     width: '40px', height: '40px', borderRadius: '50%', border: 'none',
-                     background: 'transparent', color: 'var(--text-secondary)',
-                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                     cursor: 'pointer', transition: 'all 0.2s'
-                  }}
-                  onMouseEnter={e => {
-                     e.currentTarget.style.background = 'var(--surface-border)';
-                  }}
-                  onMouseLeave={e => {
-                     e.currentTarget.style.background = 'transparent';
-                  }}
-                >
-                   <Search size={20} />
-                </button>
+                <div style={{ position: 'relative' }}>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActivePage('troubleshooting-wizard');
+                      if (isMobile) setIsOpen(false);
+                    }}
+                    style={{
+                      width: '40px', height: '40px', borderRadius: '50%', border: 'none',
+                      background: activePage === 'troubleshooting-wizard' ? 'var(--ci-primary-light)' : 'transparent',
+                      color: activePage === 'troubleshooting-wizard' ? 'var(--ci-primary)' : 'var(--text-secondary)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      cursor: 'pointer', transition: 'all 0.2s'
+                    }}
+                    onMouseEnter={e => {
+                      if (activePage !== 'troubleshooting-wizard') e.currentTarget.style.background = 'var(--surface-border)';
+                      setHoveredButton('wizard');
+                    }}
+                    onMouseLeave={e => {
+                      if (activePage !== 'troubleshooting-wizard') e.currentTarget.style.background = 'transparent';
+                      setHoveredButton(null);
+                    }}
+                  >
+                    <Sparkles size={18} />
+                  </button>
+                  <Tooltip text="자가진단 마법사" visible={hoveredButton === 'wizard'} />
+                </div>
+
+                <div style={{ position: 'relative' }}>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onOpenSearch();
+                    }}
+                    style={{
+                      width: '40px', height: '40px', borderRadius: '50%', border: 'none',
+                      background: 'transparent', color: 'var(--text-secondary)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      cursor: 'pointer', transition: 'background 0.2s'
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.background = 'var(--surface-border)';
+                      setHoveredButton('search');
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.background = 'transparent';
+                      setHoveredButton(null);
+                    }}
+                  >
+                    <Search size={18} />
+                  </button>
+                  <Tooltip text="가이드 검색" visible={hoveredButton === 'search'} />
+                </div>
               </div>
             )}
           </div>
 
           {/* Navigation Categories */}
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: isOpen ? '1rem' : '0.5rem', flex: 1, padding: '0 1rem', overflowX: 'hidden' }}>
+          <nav style={{ display: 'flex', flexDirection: 'column', gap: isOpen ? '1rem' : '0.5rem', flex: 1, padding: '0 1rem', overflowY: 'auto', overflowX: 'hidden' }}>
             <AnimatePresence mode="popLayout">
               {isOpen && (
                 <motion.div
@@ -370,19 +448,28 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
         {/* Footer Quick Links (Gemini Profile/Settings Icon Popup Style) */}
         <div style={{ position: 'relative', padding: '1rem', display: 'flex', justifyContent: isOpen ? 'flex-start' : 'center' }} ref={quickLinksRef}>
           <button
-            onClick={() => setIsQuickLinksOpen(!isQuickLinksOpen)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsQuickLinksOpen(!isQuickLinksOpen);
+            }}
             style={{
               width: '40px', height: '40px', borderRadius: '50%',
               background: isQuickLinksOpen ? 'var(--surface-border)' : 'transparent',
               border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
               color: 'var(--text-secondary)', transition: 'background 0.2s'
             }}
-            onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-border)'}
-            onMouseLeave={e => e.currentTarget.style.background = isQuickLinksOpen ? 'var(--surface-border)' : 'transparent'}
-            title="QUICK LINKS"
+            onMouseEnter={e => {
+              e.currentTarget.style.background = 'var(--surface-border)';
+              if (!isOpen) setHoveredButton('quicklinks');
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = isQuickLinksOpen ? 'var(--surface-border)' : 'transparent';
+              setHoveredButton(null);
+            }}
           >
-            <Settings size={22} />
+            <LayoutGrid size={22} />
           </button>
+          {!isOpen && <Tooltip text="QUICK LINKS" visible={hoveredButton === 'quicklinks'} />}
 
           <AnimatePresence>
             {isQuickLinksOpen && (
