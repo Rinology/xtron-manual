@@ -13,36 +13,7 @@ export default defineConfig({
         enabled: true, // 로컬 개발 환경에서도 테스트 가능하도록 설정
       },
       workbox: {
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/cdn\.xtron-guide\.kr\/.*/i,
-            handler: 'StaleWhileRevalidate',
-            options: {
-              cacheName: 'xtron-cdn-image-cache',
-              expiration: {
-                maxEntries: 500, // 최대 500개 이미지 캐시
-                maxAgeSeconds: 60 * 60 * 24 * 365 // 1년 (초 단위)
-              },
-              cacheableResponse: {
-                statuses: [0, 200] // Opaque response (CORS) 대응을 위해 0 상태 코드 포함
-              }
-            }
-          },
-          {
-            urlPattern: /^https:\/\/fonts\.(?:googleapis|gstatic)\.com\/.*/i,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'google-fonts-cache',
-              expiration: {
-                maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365 // 1년
-              },
-              cacheableResponse: {
-                statuses: [0, 200]
-              }
-            }
-          }
-        ]
+        // 기본 캐싱 설정만 사용 (네이티브 브라우저 캐시 활용)
       }
     })
   ],
