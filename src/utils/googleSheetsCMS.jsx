@@ -3,6 +3,47 @@ import React from 'react';
 // Lucide 아이콘을 동적으로 렌더링하기 위한 매핑용
 import * as Icons from 'lucide-react';
 
+const CACHE_PREFIX = 'xtron_sheet_cache_';
+// 현재 테스트를 위해 캐시 만료 시간을 0으로 설정 (실시간 반영)
+// 향후 실 서비스 배포 시 1000 * 60 * 5 (5분)으로 변경 예정
+const CACHE_EXPIRATION_MS = 0;
+
+async function fetchWithCache(url) {
+  const cacheKey = CACHE_PREFIX + url;
+  
+  // 1. 캐시 확인
+  try {
+    const cachedItem = sessionStorage.getItem(cacheKey);
+    if (cachedItem) {
+      const { timestamp, data } = JSON.parse(cachedItem);
+      // 유효 시간(10분) 이내인지 확인
+      if (Date.now() - timestamp < CACHE_EXPIRATION_MS) {
+        console.log("Using cached CSV data for:", url);
+        return data; // CSV 텍스트 반환
+      }
+    }
+  } catch (e) {
+    console.warn("Session storage read failed", e);
+  }
+
+  // 2. 캐시가 없거나 만료된 경우 네트워크 요청
+  const response = await fetch(url);
+  if (!response.ok) throw new Error("Network response was not ok");
+  const csvText = await response.text();
+
+  // 3. 캐시에 저장
+  try {
+    sessionStorage.setItem(cacheKey, JSON.stringify({
+      timestamp: Date.now(),
+      data: csvText
+    }));
+  } catch (e) {
+    console.warn("Session storage write failed", e);
+  }
+
+  return csvText;
+}
+
 /**
  * 구글 스프레드시트 CSV 데이터를 파싱하여 guidesData 형식의 JSON으로 변환합니다.
  * 
@@ -14,8 +55,7 @@ import * as Icons from 'lucide-react';
  */
 export async function fetchGuidesFromGoogleSheet(csvUrl) {
   try {
-    const response = await fetch(csvUrl);
-    const csvText = await response.text();
+    const csvText = await fetchWithCache(csvUrl);
 
     return new Promise((resolve, reject) => {
       Papa.parse(csvText, {
@@ -84,8 +124,7 @@ export async function fetchWizardFromGoogleSheet(csvUrl) {
   try {
     if (!csvUrl) return null;
     
-    const response = await fetch(csvUrl);
-    const csvText = await response.text();
+    const csvText = await fetchWithCache(csvUrl);
 
     return new Promise((resolve, reject) => {
       Papa.parse(csvText, {
