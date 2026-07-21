@@ -28,7 +28,7 @@ export default function SearchModal({ isOpen, onClose, onSelect }) {
     const lowerQuery = query.toLowerCase();
     const filtered = allGuideItems.filter(item => {
       const matchTitle = item.title.toLowerCase().includes(lowerQuery);
-      const matchSummary = item.summary && item.summary.some(s => s.toLowerCase().includes(lowerQuery));
+      const matchSummary = item.summary && (Array.isArray(item.summary) ? item.summary.some(s => s.toLowerCase().includes(lowerQuery)) : item.summary.toLowerCase().includes(lowerQuery));
       return matchTitle || matchSummary;
     });
 
@@ -186,12 +186,14 @@ export default function SearchModal({ isOpen, onClose, onSelect }) {
                             <div style={{ fontWeight: 600, color: isSelected ? 'var(--ci-primary)' : 'var(--text-primary)', marginBottom: '0.15rem' }}>
                               {item.title}
                             </div>
-                            {item.summary && Array.isArray(item.summary) && (
+                            {item.summary && (
                               <div style={{
                                 fontSize: '0.8rem', color: 'var(--text-secondary)',
-                                whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
+                                display: 'flex', flexDirection: 'column', gap: '0.15rem'
                               }}>
-                                {item.summary[0]} 
+                                {(Array.isArray(item.summary) ? item.summary : item.summary.split('|')).map((line, i) => (
+                                  <span key={i}>{line.trim()}</span>
+                                ))}
                               </div>
                             )}
                           </div>

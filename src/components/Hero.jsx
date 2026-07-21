@@ -9,7 +9,7 @@ export default function Hero({ setActivePage, onOpenSearch }) {
 
   const matchedItems = allGuideItems.filter(item => 
     item.title.toLowerCase().includes(localSearch.toLowerCase()) || 
-    (item.summary && item.summary.some(text => text.toLowerCase().includes(localSearch.toLowerCase())))
+    (item.summary && (Array.isArray(item.summary) ? item.summary.some(text => text.toLowerCase().includes(localSearch.toLowerCase())) : item.summary.toLowerCase().includes(localSearch.toLowerCase())))
   );
 
   const handleSearchSubmit = (e) => {
@@ -177,9 +177,11 @@ export default function Hero({ setActivePage, onOpenSearch }) {
                       <div style={{ pointerEvents: 'none', display: 'flex', flexDirection: 'column', gap: '0.1rem' }}>
                         <span style={{ fontWeight: 600 }}>{item.title}</span>
                         {item.summary && (
-                          <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                            {item.summary[0]}
-                          </span>
+                          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '0.1rem' }}>
+                            {(Array.isArray(item.summary) ? item.summary : item.summary.split('|')).map((line, i) => (
+                              <span key={i}>{line.trim()}</span>
+                            ))}
+                          </div>
                         )}
                       </div>
                     </div>
