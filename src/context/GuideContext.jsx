@@ -13,7 +13,7 @@ export function GuideProvider({ children }) {
   useEffect(() => {
     async function loadCMS() {
       // 1. 가이드 메뉴 데이터 로딩
-      const baseUrl = import.meta.env.VITE_SHEETS_URL;
+      const baseUrl = false; // import.meta.env.VITE_SHEETS_URL;
       if (baseUrl) {
         const SHEET_URL = baseUrl;
         const remoteData = await fetchGuidesFromGoogleSheet(SHEET_URL);

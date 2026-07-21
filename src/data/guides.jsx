@@ -274,6 +274,8 @@ export const guidesData = {
       ]
     }
     */
+      ]
+    }
   ]
 };
 
