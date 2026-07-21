@@ -18,6 +18,7 @@ export const guidesData = {
               summary: ["좌/우 페달 식별 및 결합 방향 확인", "페달 렌치로 유격 없이 단단히 조임"],
               markdownFile: 'basic/pedal.md'
             },
+            /*
             {
               id: "handlebar",
               title: "핸들/스템 정렬",
@@ -29,7 +30,7 @@ export const guidesData = {
               id: "seat-height",
               title: "안장 높이 조절",
               icon: <Settings size={18} />,
-              summary: ["QR레버를 이용해 안장 높낮이 조절", "배터리 파손 주의 (최저 높이 한계선 확인)"],
+              summary: ["QR레버를 이용해 안장 높낮이 조절", "배터 파손 주의 (최저 높이 한계선 확인)"],
               markdownFile: 'basic/seat-height.md'
             },
             {
@@ -46,8 +47,10 @@ export const guidesData = {
               summary: ["썬투어 싯포스트 구조 이해 및 안장 교체 방법", "체중에 따른 장력(Preload) 조절"],
               markdownFile: 'basic/suntour-seatpost.md'
             }
+            */
           ]
         },
+        /*
         {
           id: "basic-operation",
           title: "주행 및 조작",
@@ -270,6 +273,7 @@ export const guidesData = {
         }
       ]
     }
+    */
   ]
 };
 

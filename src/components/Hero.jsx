@@ -202,7 +202,7 @@ export default function Hero({ setActivePage, onOpenSearch }) {
         {/* 자가진단 마법사 배너 (Premium Sleek Design) */}
         <div className="hero-wizard-banner" style={{ marginBottom: '3rem', width: '100%', display: 'flex', justifyContent: 'center' }}>
           <button
-            onClick={() => setActivePage('troubleshooting-wizard')}
+            onClick={() => setActivePage('not-found')}
             style={{
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
               background: 'transparent', border: 'none', cursor: 'pointer',
