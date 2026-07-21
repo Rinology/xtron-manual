@@ -219,6 +219,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
           <div style={{ padding: '0 1rem', display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
             {isOpen ? (
               <>
+                {/* 자가진단 마법사 - 임시 숨김
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -243,6 +244,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                   <Sparkles size={18} color={activePage === 'not-found' ? 'var(--ci-primary)' : 'var(--text-secondary)'} />
                   자가진단 마법사
                 </button>
+                */}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -264,6 +266,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
               </>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                {/* 자가진단 마법사 버튼 - 임시 숨김
                 <div style={{ position: 'relative' }}>
                   <button
                     onClick={(e) => {
@@ -291,6 +294,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                   </button>
                   <Tooltip text="자가진단 마법사" visible={hoveredButton === 'wizard'} />
                 </div>
+                */}
 
                 <div style={{ position: 'relative' }}>
                   <button

@@ -24,10 +24,7 @@ export default function Hero({ setActivePage, onOpenSearch }) {
   };
 
   const suggestions = [
-    { title: "페달 장착", id: "pedal" },
-    { title: "Error 01", id: "error-power" },
-    { title: "브레이크 소음", id: "error-brake" },
-    { title: "배터리 충전", id: "charging" }
+    { title: "페달 장착", id: "pedal" }
   ];
 
   return (
@@ -199,7 +196,8 @@ export default function Hero({ setActivePage, onOpenSearch }) {
           <button type="submit" style={{ display: 'none' }}>검색</button>
         </form>
 
-        {/* 자가진단 마법사 배너 (Premium Sleek Design) */}
+        {/* 자가진단 마법사 배너 (Premium Sleek Design) - 임시 숨김 */}
+        {/*
         <div className="hero-wizard-banner" style={{ marginBottom: '3rem', width: '100%', display: 'flex', justifyContent: 'center' }}>
           <button
             onClick={() => setActivePage('not-found')}
@@ -221,6 +219,7 @@ export default function Hero({ setActivePage, onOpenSearch }) {
             <span className="text-gradient" style={{ fontSize: '0.95rem', fontWeight: 700, whiteSpace: 'nowrap' }}>자가진단 마법사 시작</span>
           </button>
         </div>
+        */}
 
         {/* 추천 퀵 가이드 리뉴얼 */}
         <div className="hero-faq-tags" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
