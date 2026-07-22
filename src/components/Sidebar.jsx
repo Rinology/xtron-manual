@@ -51,7 +51,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
     setOpenChildCategories(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const renderGuideItem = (item, level = 0) => (
+  const renderGuideItem = (item) => (
     <button 
       key={item.id}
       onClick={() => {
@@ -61,9 +61,8 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
       }}
       style={{
         display: 'flex', alignItems: 'center',
-        gap: '0.75rem', padding: '0.65rem 1rem', 
-        paddingLeft: `${1 + (level * 0.5)}rem`,
-        borderRadius: 'var(--radius-full)',
+        gap: '0.75rem', padding: '0.6rem 0.75rem', 
+        borderRadius: 'var(--radius-md)',
         color: activePage === item.id ? 'var(--ci-primary)' : 'var(--text-primary)',
         background: activePage === item.id ? 'var(--ci-primary-light)' : 'transparent',
         border: 'none', cursor: 'pointer', textAlign: 'left', 
@@ -216,7 +215,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                     style={{ width: '24px', height: '24px', objectFit: 'contain' }}
                   />
                 </button>
-                <Tooltip text="사이드바 열기" visible={hoveredButton === 'expand'} />
+                <Tooltip text="사이드바 열기" visible={!activePage && hoveredButton === 'expand'} />
               </div>
             )}
           </div>
@@ -321,7 +320,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                   >
                     <Search size={18} />
                   </button>
-                  <Tooltip text="가이드 검색" visible={hoveredButton === 'search'} />
+                  <Tooltip text="검색 Ctrl + K" visible={hoveredButton === 'search'} />
                 </div>
               </div>
             )}
@@ -379,9 +378,12 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                               animate={{ opacity: 1, height: 'auto' }}
                               exit={{ opacity: 0, height: 0 }}
                               transition={{ duration: 0.2 }}
-                              style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '0.15rem' }}
+                              style={{ 
+                                overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '0.2rem',
+                                marginLeft: '0.85rem', paddingLeft: '0.85rem', borderLeft: '1px solid #dde3ea'
+                              }}
                             >
-                              {displayItems.map(item => renderGuideItem(item, 1))}
+                              {displayItems.map(item => renderGuideItem(item))}
 
                               {displaySubCats.map(subCat => {
                                 const isSubOpened = openSubCategories[subCat.id];
@@ -391,7 +393,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                                       onClick={() => toggleSubCategory(subCat.id)}
                                       style={{
                                         display: 'flex', alignItems: 'center', gap: '0.5rem',
-                                        padding: '0.6rem 0.5rem 0.6rem 1.25rem', cursor: 'pointer',
+                                        padding: '0.6rem 0.5rem', cursor: 'pointer',
                                         borderRadius: 'var(--radius-md)', transition: 'background 0.2s'
                                       }}
                                       onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-border)'}
@@ -410,10 +412,11 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                                           animate={{ opacity: 1, height: 'auto' }}
                                           exit={{ opacity: 0, height: 0 }}
                                           transition={{ duration: 0.2 }}
-                                          style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '0.1rem' }}
+                                          style={{ 
+                                            overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '0.1rem',
+                                            marginLeft: '0.85rem', paddingLeft: '0.85rem', borderLeft: '1px solid #dde3ea'
+                                          }}
                                         >
-                                          {subCat.items && subCat.items.map(item => renderGuideItem(item, 2))}
-                                          
                                           {subCat.childCategories && subCat.childCategories.map(childCat => {
                                             const isChildOpened = openChildCategories[childCat.id];
                                             return (
@@ -422,7 +425,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                                                   onClick={() => toggleChildCategory(childCat.id)}
                                                   style={{
                                                     display: 'flex', alignItems: 'center', gap: '0.5rem',
-                                                    padding: '0.6rem 0.5rem 0.6rem 1.75rem', cursor: 'pointer',
+                                                    padding: '0.6rem 0.5rem', cursor: 'pointer',
                                                     borderRadius: 'var(--radius-md)', transition: 'background 0.2s'
                                                   }}
                                                   onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-border)'}
@@ -441,15 +444,20 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                                                       animate={{ opacity: 1, height: 'auto' }}
                                                       exit={{ opacity: 0, height: 0 }}
                                                       transition={{ duration: 0.2 }}
-                                                      style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '0.1rem' }}
+                                                      style={{ 
+                                                        overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '0.1rem',
+                                                        marginLeft: '0.85rem', paddingLeft: '0.85rem', borderLeft: '1px solid #dde3ea'
+                                                      }}
                                                     >
-                                                      {childCat.items.map(item => renderGuideItem(item, 3))}
+                                                      {childCat.items.map(item => renderGuideItem(item))}
                                                     </motion.div>
                                                   )}
                                                 </AnimatePresence>
                                               </div>
                                             );
                                           })}
+
+                                          {subCat.items && subCat.items.map(item => renderGuideItem(item))}
                                         </motion.div>
                                       )}
                                     </AnimatePresence>
