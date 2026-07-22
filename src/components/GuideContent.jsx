@@ -4,7 +4,34 @@ import { useGuides } from '../context/GuideContext';
 import { ChevronLeft, ChevronRight, Image as ImageIcon, Video as VideoIcon, Link as LinkIcon, Check, Youtube, MessageCircle } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
+import mermaid from 'mermaid';
 import { sanitizeUrl } from '../utils/security';
+import { Info, Lightbulb, AlertTriangle, ShieldAlert } from 'lucide-react';
+
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'default',
+  securityLevel: 'loose',
+});
+
+const MermaidChart = ({ chart }) => {
+  const [svg, setSvg] = useState('');
+  useEffect(() => {
+    const renderChart = async () => {
+      try {
+        const id = 'mermaid-' + Math.random().toString(36).substr(2, 9);
+        const { svg } = await mermaid.render(id, chart);
+        setSvg(svg);
+      } catch (e) {
+        console.error('Mermaid render error:', e);
+        setSvg(`<div style="color: red; padding: 1rem; border: 1px solid red; border-radius: 8px;">Mermaid Syntax Error</div>`);
+      }
+    };
+    renderChart();
+  }, [chart]);
+  return <div dangerouslySetInnerHTML={{ __html: svg }} style={{ display: 'flex', justifyContent: 'center', margin: '2rem 0' }} />;
+};
 
 // Load all markdown files at build time
 const markdownModules = import.meta.glob('../data/markdown/**/*.md', { query: '?raw', import: 'default' });
@@ -150,17 +177,90 @@ export default function GuideContent({ activePage, setActivePage }) {
   const MarkdownComponents = {
     h3: ({node, ...props}) => <h3 style={{ fontSize: '1.4rem', color: 'var(--ci-primary)', marginTop: '2rem', marginBottom: '1rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--surface-border)' }} {...props} />,
     h4: ({node, ...props}) => <h4 style={{ fontSize: '1.2rem', color: 'var(--text-primary)', marginTop: '1.5rem', marginBottom: '0.5rem' }} {...props} />,
-    p: ({node, ...props}) => <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '1rem' }} {...props} />,
+    p: ({node, children, ...props}) => {
+      let filteredChildren = children;
+      if (node.children?.[0]?.type === 'text') {
+        const textValue = node.children[0].value;
+        const match = textValue.match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/);
+        if (match) {
+          filteredChildren = React.Children.map(children, (child, idx) => {
+            if (idx === 0 && typeof child === 'string') {
+              return child.replace(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/, '');
+            }
+            return child;
+          });
+        }
+      }
+      return <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '1rem' }} {...props}>{filteredChildren}</p>;
+    },
     ul: ({node, ...props}) => <ul style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6, paddingLeft: '1.5rem', marginBottom: '1rem' }} {...props} />,
-    blockquote: ({node, ...props}) => (
-      <blockquote style={{
-        background: 'rgba(47, 98, 134, 0.05)',
-        borderLeft: '4px solid var(--ci-primary)',
-        padding: '1rem 1.5rem',
-        margin: '1.5rem 0',
-        borderRadius: '0 var(--radius-md) var(--radius-md) 0'
-      }} {...props} />
-    ),
+    blockquote: ({node, children, ...props}) => {
+      let type = null;
+      let title = '';
+      let Icon = Info;
+      let color = 'var(--text-secondary)';
+      let bg = 'rgba(0,0,0,0.05)';
+      let borderColor = 'var(--surface-border)';
+
+      const firstChild = node?.children?.[0];
+      if (firstChild?.type === 'paragraph' && firstChild.children?.[0]?.type === 'text') {
+        const textValue = firstChild.children[0].value;
+        const match = textValue.match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/);
+        if (match) {
+          type = match[1].toLowerCase();
+          if (type === 'note') {
+            title = 'Note'; Icon = Info; color = '#0969da'; bg = 'rgba(9, 105, 218, 0.05)'; borderColor = '#0969da';
+          } else if (type === 'tip') {
+            title = 'Tip'; Icon = Lightbulb; color = '#1a7f37'; bg = 'rgba(26, 127, 55, 0.05)'; borderColor = '#1a7f37';
+          } else if (type === 'important') {
+            title = 'Important'; Icon = MessageCircle; color = '#8250df'; bg = 'rgba(130, 80, 223, 0.05)'; borderColor = '#8250df';
+          } else if (type === 'warning') {
+            title = 'Warning'; Icon = AlertTriangle; color = '#9a6700'; bg = 'rgba(154, 103, 0, 0.05)'; borderColor = '#9a6700';
+          } else if (type === 'caution') {
+            title = 'Caution'; Icon = ShieldAlert; color = '#d1242f'; bg = 'rgba(209, 36, 47, 0.05)'; borderColor = '#d1242f';
+          }
+        }
+      }
+
+      if (type) {
+        return (
+          <div className={`markdown-alert markdown-alert-${type}`} style={{
+            borderLeft: `4px solid ${borderColor}`,
+            padding: '1rem 1.5rem',
+            margin: '1.5rem 0',
+            backgroundColor: bg,
+            borderRadius: '0 8px 8px 0',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: color, fontWeight: 'bold', marginBottom: '0.5rem' }}>
+              <Icon size={18} />
+              <span>{title}</span>
+            </div>
+            <div className="markdown-alert-content" style={{ color: 'var(--text-secondary)' }}>
+              {children}
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <blockquote style={{
+          background: 'rgba(47, 98, 134, 0.05)',
+          borderLeft: '4px solid var(--ci-primary)',
+          padding: '1rem 1.5rem',
+          margin: '1.5rem 0',
+          borderRadius: '0 var(--radius-md) var(--radius-md) 0'
+        }} {...props}>
+          {children}
+        </blockquote>
+      );
+    },
+    code: ({node, inline, className, children, ...props}) => {
+      const match = /language-(\w+)/.exec(className || '');
+      if (!inline && match && match[1] === 'mermaid') {
+        return <MermaidChart chart={String(children).replace(/\n$/, '')} />;
+      }
+      return <code className={className} style={inline ? { background: 'rgba(0,0,0,0.05)', padding: '0.2rem 0.4rem', borderRadius: '4px', color: '#d1242f', fontFamily: 'monospace' } : {}} {...props}>{children}</code>;
+    },
     img: ({node, src, ...props}) => {
       const isRelative = src?.startsWith('/');
       const fullSrc = (isRelative && import.meta.env.VITE_CDN_URL) 
@@ -215,6 +315,7 @@ export default function GuideContent({ activePage, setActivePage }) {
           <div className="markdown-body">
             <ReactMarkdown 
               remarkPlugins={[remarkGfm]} 
+              rehypePlugins={[rehypeRaw]}
               components={MarkdownComponents}
             >
               {markdownContent}
@@ -225,7 +326,7 @@ export default function GuideContent({ activePage, setActivePage }) {
             {/* Intro */}
             {guide.jsonData.intro && (
               <div style={{ background: 'var(--ci-primary-light)', border: '1px solid rgba(47, 98, 134, 0.3)', borderRadius: 'var(--radius-md)', padding: '1.5rem', marginBottom: '2rem' }}>
-                <ReactMarkdown remarkPlugins={[remarkGfm]} components={MarkdownComponents}>
+                <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]} components={MarkdownComponents}>
                   {guide.jsonData.intro}
                 </ReactMarkdown>
               </div>
@@ -248,14 +349,14 @@ export default function GuideContent({ activePage, setActivePage }) {
                       {idx + 1}
                     </div>
                     <div style={{ flex: 1 }}>
-                      <h4 style={{ fontSize: '1.2rem', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>
-                        {step.title}
-                      </h4>
-                      <div style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '1rem', lineHeight: 1.6 }}>
-                        <ReactMarkdown remarkPlugins={[remarkGfm]} components={MarkdownComponents}>
-                          {step.text}
-                        </ReactMarkdown>
-                      </div>
+                      <h4 style={{ fontSize: '1.2rem', color: 'var(--text-primary)', marginBottom: '0.8rem', marginTop: 0 }}>{step.title}</h4>
+                      {step.text && (
+                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '1rem', lineHeight: 1.6 }}>
+                          <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]} components={MarkdownComponents}>
+                            {step.text}
+                          </ReactMarkdown>
+                        </div>
+                      )}
                       {step.image && (
                         <img src={step.image} alt={step.title} style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '500px', display: 'block', margin: '1rem auto' }} />
                       )}
