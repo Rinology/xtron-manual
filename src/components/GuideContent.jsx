@@ -181,11 +181,11 @@ export default function GuideContent({ activePage, setActivePage }) {
       let filteredChildren = children;
       if (node.children?.[0]?.type === 'text') {
         const textValue = node.children[0].value;
-        const match = textValue.match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/);
+        const match = textValue.match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/i);
         if (match) {
           filteredChildren = React.Children.map(children, (child, idx) => {
             if (idx === 0 && typeof child === 'string') {
-              return child.replace(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/, '');
+              return child.replace(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/i, '');
             }
             return child;
           });
@@ -202,12 +202,17 @@ export default function GuideContent({ activePage, setActivePage }) {
       let bg = 'rgba(0,0,0,0.05)';
       let borderColor = 'var(--surface-border)';
 
-      const firstChild = node?.children?.[0];
-      if (firstChild?.type === 'paragraph' && firstChild.children?.[0]?.type === 'text') {
-        const textValue = firstChild.children[0].value;
-        const match = textValue.match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/);
-        if (match) {
-          type = match[1].toLowerCase();
+      const getAllText = (n) => {
+        if (n.type === 'text') return n.value;
+        if (n.children) return n.children.map(getAllText).join('');
+        return '';
+      };
+
+      const fullText = getAllText(node);
+      const match = fullText.trim().match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/i);
+      
+      if (match) {
+        type = match[1].toLowerCase();
           if (type === 'note') {
             title = 'Note'; Icon = Info; color = '#0969da'; bg = 'rgba(9, 105, 218, 0.05)'; borderColor = '#0969da';
           } else if (type === 'tip') {

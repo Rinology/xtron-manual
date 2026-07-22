@@ -805,6 +805,30 @@ mark {
   background-color: rgba(148, 163, 184, 0.6);
 }
 
+/* Markdown Table Styles */
+.markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.95rem;
+}
+.markdown-body th {
+  background-color: var(--ci-primary-light);
+  color: var(--ci-primary);
+  font-weight: 700;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid rgba(47, 98, 134, 0.2);
+}
+.markdown-body td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--surface-border);
+  color: var(--text-secondary);
+}
+.markdown-body tr:last-child td {
+  border-bottom: none;
+}
+
 /* Markdown Details / Accordion Styles */
 details {
   border: 1px solid var(--surface-border);
