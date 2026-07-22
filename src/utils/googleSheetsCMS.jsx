@@ -48,7 +48,7 @@ async function fetchWithCache(url) {
  * 구글 스프레드시트 CSV 데이터를 파싱하여 guidesData 형식의 JSON으로 변환합니다.
  * 
  * 스프레드시트 구조 (열 이름):
- * CategoryID | CategoryTitle | SubCategoryID | SubCategoryTitle | ItemID | ItemTitle | IconName | Summary | MarkdownFile
+ * CategoryID | CategoryTitle | SubCategoryID | SubCategoryTitle | ChildCategoryID | ChildCategoryTitle | ItemID | ItemTitle | IconName | Summary | MarkdownFile | YoutubeLink
  * 
  * @param {string} csvUrl 구글 스프레드시트 CSV 웹 게시 URL
  * @returns {Promise<Object>} 변환된 guidesData 구조

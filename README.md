@@ -40,7 +40,7 @@
 | **ChildCategoryTitle** | **[선택]** 화면에 표시될 소분류 이름 (없을 경우 빈칸) | `싯포스트형` |
 | **ItemID** | 개별 가이드를 식별하는 고유 영문 ID | `battery-seatpost` |
 | **ItemTitle** | 화면에 표시될 개별 가이드 제목 | `ㄴ 싯포스트 배터리 탈착` |
-| **Icon** | 사용할 lucide-react 아이콘 이름 | `Key` |
+| **IconName** | 사용할 lucide-react 아이콘 이름 ([전체 목록 보기](https://lucide.dev/icons)) | `Key` |
 | **Summary** | 검색 시 나타날 요약 설명 (여러 줄일 경우 `\|` 구분자 사용) | `싯포스트 일체형...` |
 | **MarkdownFile** | 연결될 마크다운 문서 파일의 경로 | `battery/battery-seatpost.md` |
 | **YoutubeLink** | (선택) 영상이 있는 경우 유튜브 주소 입력 | `https://youtu.be/...` (없으면 빈칸) |
@@ -53,6 +53,12 @@
 
 > **💡 스프레드시트 작성 팁 (3단계 vs 4단계 구조)**
 > 소분류가 필요 없는 일반 항목(예: '페달 장착 방법')은 `ChildCategoryID`와 `ChildCategoryTitle`을 **빈칸**으로 두시면, 기존처럼 3단계(중분류 바로 아래 아이템)로 렌더링됩니다. 이름만 상황에 맞게 잘 지정해두시면 알아서 구조가 잡힙니다!
+
+> **🎨 IconName 작성 가이드**
+> [lucide.dev/icons](https://lucide.dev/icons)에서 원하는 아이콘을 검색한 뒤 **PascalCase** 이름을 그대로 입력합니다. 잘못된 이름이나 빈칸일 경우 자동으로 `HelpCircle`(❓) 아이콘이 표시됩니다.
+>
+> **현재 사용 중인 아이콘 목록:**
+> `Wrench` · `BatteryCharging` · `AlertTriangle` · `Wind` · `ZapOff` · `Settings` · `MonitorPlay` · `ShieldAlert` · `VolumeX` · `Power` · `Activity` · `PersonStanding` · `Gauge` · `Lightbulb` · `ArrowLeftRight` · `Navigation` · `Key` · `Zap` · `CheckCircle`
 
 ### 🛠️ 데이터 연결 및 반영 방법:
 
