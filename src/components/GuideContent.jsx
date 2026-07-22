@@ -225,7 +225,6 @@ export default function GuideContent({ activePage, setActivePage }) {
             title = 'Caution'; Icon = ShieldAlert; color = '#d1242f'; bg = 'rgba(209, 36, 47, 0.05)'; borderColor = '#d1242f';
           }
         }
-      }
 
       if (type) {
         return (
