@@ -138,7 +138,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
           }
         }}
       >
-        <div style={{ padding: '1rem 0', display: 'flex', flexDirection: 'column', gap: '1.5rem', flex: 1, overflow: 'visible' }}>
+        <div style={{ padding: '1rem 0 0.5rem 0', display: 'flex', flexDirection: 'column', gap: '1.25rem', flex: 1, minHeight: 0, overflow: 'hidden' }}>
           
           {/* Hamburger / Brand Area */}
           <div style={{ 
@@ -148,7 +148,8 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
             height: '40px', 
             padding: '0 1rem',
             width: '100%',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            flexShrink: 0
           }}>
             {isOpen ? (
               <>
@@ -216,7 +217,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
           </div>
 
           {/* Top Actions: Wizard & Search */}
-          <div style={{ padding: '0 1rem', display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+          <div style={{ padding: '0 1rem', display: 'flex', flexDirection: 'column', gap: '0.2rem', flexShrink: 0 }}>
             {isOpen ? (
               <>
                 <button
@@ -322,7 +323,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
           </div>
 
           {/* Navigation Categories */}
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: isOpen ? '1rem' : '0.5rem', flex: 1, padding: '0 1rem', overflowY: 'auto', overflowX: 'hidden' }}>
+          <nav className="custom-scrollbar" style={{ display: 'flex', flexDirection: 'column', gap: isOpen ? '1rem' : '0.5rem', flex: 1, padding: '0 1rem', overflowY: 'auto', overflowX: 'hidden' }}>
             <AnimatePresence mode="popLayout">
               {isOpen && (
                 <motion.div
