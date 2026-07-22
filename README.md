@@ -221,13 +221,13 @@ graph TD
     Start["어떤 종류의 문제를 겪고 계신가요?"]
 
     %% 1단계 선택지
-    Start -->|전원이 안 켜지거나 배터리 문제| Power1["충전기를 연결했을 때 어댑터(충전기)의 LED 색상은?"]
-    Start -->|주행 시 소음이나 소리가 남| Noise1["소음이 발생하는 부위가 어디인가요?"]
-    Start -->|자전거가 잘 안 나감| ResultTire(("타이어 가이드 (error-tire)"))
+    Start -- "전원이 안 켜지거나 배터리 문제" --> Power1["충전기를 연결했을 때 어댑터(충전기)의 LED 색상은?"]
+    Start -- "주행 시 소음이나 소리가 남" --> Noise1["소음이 발생하는 부위가 어디인가요?"]
+    Start -- "자전거가 잘 안 나감" --> ResultTire(("타이어 가이드 (error-tire)"))
 
     %% 전원 문제 세부 노드 (Power1)
-    Power1 -->|빨간색 (충전 중 표시)| Power2["충전 후에도 모니터가 켜지지 않나요?"]
-    Power1 -->|초록색 (완충 표시) 이지만 안 켜짐| ResultPower1(("전원 가이드 (error-power)"))
+    Power1 -- "빨간색 (충전 중 표시)" --> Power2["충전 후에도 모니터가 켜지지 않나요?"]
+    Power1 -- "초록색 (완충 표시) 이지만 안 켜짐" --> ResultPower1(("전원 가이드 (error-power)"))
 
     %% 스타일링
     classDef questionNode fill:#f9f9ff,stroke:#3b82f6,stroke-width:2px,color:#1e293b,font-weight:bold
