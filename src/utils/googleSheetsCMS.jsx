@@ -70,6 +70,7 @@ export async function fetchGuidesFromGoogleSheet(csvUrl) {
             const { 
               CategoryID, CategoryTitle, 
               SubCategoryID, SubCategoryTitle, 
+              ChildCategoryID, ChildCategoryTitle,
               ItemID, ItemTitle, IconName, Summary, MarkdownFile, YoutubeLink
             } = row;
 
@@ -83,22 +84,33 @@ export async function fetchGuidesFromGoogleSheet(csvUrl) {
             // 2. 서브카테고리 찾기 또는 생성
             let subCategory = category.subCategories.find(sc => sc.id === SubCategoryID);
             if (!subCategory) {
-              subCategory = { id: SubCategoryID, title: SubCategoryTitle, items: [] };
+              subCategory = { id: SubCategoryID, title: SubCategoryTitle, items: [], childCategories: [] };
               category.subCategories.push(subCategory);
             }
 
             // 3. 아이콘 동적 렌더링 처리
             const IconComponent = Icons[IconName] || Icons.HelpCircle;
 
-            // 4. 아이템 추가
-            subCategory.items.push({
+            const newItem = {
               id: ItemID,
               title: ItemTitle,
               icon: <IconComponent size={18} />,
               summary: Summary ? Summary.split('|').map(s => s.trim()) : [], // | 문자로 줄바꿈 분리
               markdownFile: MarkdownFile,
               youtubeLink: YoutubeLink
-            });
+            };
+
+            // 4. 소분류(ChildCategory) 존재 여부에 따른 아이템 추가
+            if (ChildCategoryID && ChildCategoryID.trim() !== "") {
+              let childCategory = subCategory.childCategories.find(cc => cc.id === ChildCategoryID);
+              if (!childCategory) {
+                childCategory = { id: ChildCategoryID, title: ChildCategoryTitle, items: [] };
+                subCategory.childCategories.push(childCategory);
+              }
+              childCategory.items.push(newItem);
+            } else {
+              subCategory.items.push(newItem);
+            }
           });
 
           resolve({ categories: parsedCategories });

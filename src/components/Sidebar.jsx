@@ -11,6 +11,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
     "troubleshooting": true
   });
   const [openSubCategories, setOpenSubCategories] = useState({});
+  const [openChildCategories, setOpenChildCategories] = useState({});
   const [isMobile, setIsMobile] = useState(false);
   
   // 퀵링크 팝업 상태
@@ -44,6 +45,10 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
 
   const toggleSubCategory = (id) => {
     setOpenSubCategories(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const toggleChildCategory = (id) => {
+    setOpenChildCategories(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
   const renderGuideItem = (item, level = 0) => (
@@ -345,7 +350,8 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                     if (category.subCategories) {
                       displaySubCats = category.subCategories.map(sub => ({
                         ...sub,
-                        items: [...sub.items]
+                        items: sub.items ? [...sub.items] : [],
+                        childCategories: sub.childCategories ? [...sub.childCategories] : []
                       }));
                     }
 
@@ -406,7 +412,44 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                                           transition={{ duration: 0.2 }}
                                           style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '0.1rem' }}
                                         >
-                                          {subCat.items.map(item => renderGuideItem(item, 2))}
+                                          {subCat.items && subCat.items.map(item => renderGuideItem(item, 2))}
+                                          
+                                          {subCat.childCategories && subCat.childCategories.map(childCat => {
+                                            const isChildOpened = openChildCategories[childCat.id];
+                                            return (
+                                              <div key={childCat.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem' }}>
+                                                <div 
+                                                  onClick={() => toggleChildCategory(childCat.id)}
+                                                  style={{
+                                                    display: 'flex', alignItems: 'center', gap: '0.5rem',
+                                                    padding: '0.6rem 0.5rem 0.6rem 1.75rem', cursor: 'pointer',
+                                                    borderRadius: 'var(--radius-md)', transition: 'background 0.2s'
+                                                  }}
+                                                  onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-border)'}
+                                                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                                                >
+                                                  {isChildOpened ? <ChevronDown size={14} color="var(--ci-primary)" /> : <ChevronRight size={14} color="var(--text-secondary)" />}
+                                                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: isChildOpened ? 'var(--ci-primary)' : 'var(--text-primary)' }}>
+                                                    {childCat.title}
+                                                  </span>
+                                                </div>
+                                                
+                                                <AnimatePresence initial={false}>
+                                                  {isChildOpened && (
+                                                    <motion.div
+                                                      initial={{ opacity: 0, height: 0 }}
+                                                      animate={{ opacity: 1, height: 'auto' }}
+                                                      exit={{ opacity: 0, height: 0 }}
+                                                      transition={{ duration: 0.2 }}
+                                                      style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '0.1rem' }}
+                                                    >
+                                                      {childCat.items.map(item => renderGuideItem(item, 3))}
+                                                    </motion.div>
+                                                  )}
+                                                </AnimatePresence>
+                                              </div>
+                                            );
+                                          })}
                                         </motion.div>
                                       )}
                                     </AnimatePresence>

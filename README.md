@@ -32,22 +32,27 @@
 
 | 열 이름 (Column) | 설명 | 작성 예시 |
 | :--- | :--- | :--- |
-| **CategoryID** | 대분류를 식별하는 고유 영문 ID | `basic` |
-| **CategoryTitle** | 화면에 표시될 대분류 이름 | `기본 가이드` |
-| **SubCategoryID** | 중분류를 식별하는 고유 영문 ID | `basic-assembly` |
-| **SubCategoryTitle** | 화면에 표시될 중분류 이름 | `조립 및 피팅` |
-| **ItemID** | 개별 가이드를 식별하는 고유 영문 ID | `pedal` |
-| **ItemTitle** | 화면에 표시될 개별 가이드 제목 | `페달 장착 방법` |
-| **Icon** | 사용할 lucide-react 아이콘 이름 | `Wrench` |
-| **Summary** | 검색 시 나타날 요약 설명 (여러 줄일 경우 `\|` 구분자 사용) | `좌/우 페달 식별... \| 페달 렌치로...` |
-| **MarkdownFile** | 연결될 마크다운 문서 파일의 경로 | `basic/pedal.md` |
-| **YoutubeLink** | (선택) 영상이 있는 경우 유튜브 주소 입력 | `https://youtu.be/T0fKF32Y158` (없으면 빈칸) |
+| **CategoryID** | 대분류를 식별하는 고유 영문 ID | `battery-guide` |
+| **CategoryTitle** | 화면에 표시될 대분류 이름 | `배터리 가이드` |
+| **SubCategoryID** | 중분류를 식별하는 고유 영문 ID | `battery-removal` |
+| **SubCategoryTitle** | 화면에 표시될 중분류 이름 | `배터리 탈착` |
+| **ChildCategoryID** | **[선택]** 소분류를 식별하는 고유 영문 ID (없을 경우 빈칸) | `seatpost` |
+| **ChildCategoryTitle** | **[선택]** 화면에 표시될 소분류 이름 (없을 경우 빈칸) | `싯포스트형` |
+| **ItemID** | 개별 가이드를 식별하는 고유 영문 ID | `battery-seatpost` |
+| **ItemTitle** | 화면에 표시될 개별 가이드 제목 | `ㄴ 싯포스트 배터리 탈착` |
+| **Icon** | 사용할 lucide-react 아이콘 이름 | `Key` |
+| **Summary** | 검색 시 나타날 요약 설명 (여러 줄일 경우 `\|` 구분자 사용) | `싯포스트 일체형...` |
+| **MarkdownFile** | 연결될 마크다운 문서 파일의 경로 | `battery/battery-seatpost.md` |
+| **YoutubeLink** | (선택) 영상이 있는 경우 유튜브 주소 입력 | `https://youtu.be/...` (없으면 빈칸) |
 
 #### 📝 작성 예시 데이터:
-| CategoryID | CategoryTitle | SubCategoryID | SubCategoryTitle | ItemID | ItemTitle | Icon | Summary | MarkdownFile | YoutubeLink |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| basic | 기본 가이드 | basic-assembly | 조립 및 피팅 | pedal | 페달 장착 방법 | Wrench | 좌/우 페달 식별... \| 페달 렌치로... | basic/pedal.md | |
-| basic | 기본 가이드 | basic-parts | 부품 교체 | suntour-seatpost | 썬투어 서스펜션 교체 | Wrench | 안장과 싯포스트를... | basic/suntour-seatpost.md | https://youtu.be/T0fKF32Y158 |
+| CategoryID | CategoryTitle | SubCategoryID | SubCategoryTitle | ChildCategoryID | ChildCategoryTitle | ItemID | ItemTitle | Icon | Summary | MarkdownFile | YoutubeLink |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| battery-guide | 배터리 가이드 | battery-removal | 배터리 탈착 | seatpost | 싯포스트형 | battery-seatpost | ㄴ 싯포스트 배터리 탈착 | Key | 싯포스트 일체형... | battery/battery-seatpost.md | |
+| basic | 기본 가이드 | basic-assembly | 조립 및 피팅 | | | pedal | 페달 장착 방법 | Wrench | 좌/우 페달 식별... | basic/pedal.md | https://youtu.be/... |
+
+> **💡 스프레드시트 작성 팁 (3단계 vs 4단계 구조)**
+> 소분류가 필요 없는 일반 항목(예: '페달 장착 방법')은 `ChildCategoryID`와 `ChildCategoryTitle`을 **빈칸**으로 두시면, 기존처럼 3단계(중분류 바로 아래 아이템)로 렌더링됩니다. 이름만 상황에 맞게 잘 지정해두시면 알아서 구조가 잡힙니다!
 
 ### 🛠️ 데이터 연결 및 반영 방법:
 
