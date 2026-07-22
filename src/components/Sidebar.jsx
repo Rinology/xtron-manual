@@ -138,7 +138,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
           }
         }}
       >
-        <div style={{ padding: '1rem 0 0.5rem 0', display: 'flex', flexDirection: 'column', gap: '1.25rem', flex: 1, minHeight: 0, overflow: 'hidden' }}>
+        <div style={{ padding: '1rem 0 0.5rem 0', display: 'flex', flexDirection: 'column', gap: '1.25rem', flex: 1, minHeight: 0, overflow: 'visible' }}>
           
           {/* Hamburger / Brand Area */}
           <div style={{ 
