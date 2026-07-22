@@ -1,3 +1,12 @@
+# README Update History
+
+## [2026-07-22]
+- CMS 가이드라인 업데이트: 자전거 AS 메뉴얼 예시 적용, 소분류 사용 팁 및 IconName 가이드 추가.
+- Git 충돌 방지 팁 추가: 작업 영역 분리를 통한 깃허브 충돌(Merge Conflict) 방지 팁 작성.
+- 다이어그램 문법 오류 수정: 동작 원리 흐름도(Mermaid)에서 발생하던 Parse Error 완화.
+
+---
+
 commit 8b1f7d1a2c3e4f5g6h7i8j9k0l1m2n3o4p5q6r7s
 Author: taerin <taerin@qualisports.kr>
 Date:   Sun Jun 28 22:45:00 2026 +0900
