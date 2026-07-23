@@ -264,7 +264,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                   onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                 >
                   <Search size={18} color="var(--text-secondary)" />
-                  가이드 검색
+                  검색 Ctrl + K
                 </button>
               </>
             ) : (
