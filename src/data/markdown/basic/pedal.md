@@ -20,7 +20,7 @@
 - **우측 페달(R):** 구동계(체인)가 위치한 방향
 - **좌측 페달(L):** 구동계가 없는 방향
 
-![페달 스핀들 L/R 각인 식별](/project/xtron-guide/basic/pedal-identify-lr.webp)
+![페달 스핀들 L/R 각인 식별](https://placehold.co/600x400?text=%ED%8E%98%EB%8B%AC%20%EC%8A%A4%ED%95%80%EB%93%A4%20L%2FR%20%EA%B0%81%EC%9D%B8%20%EC%8B%9D%EB%B3%84)
 
 ---
 
@@ -28,22 +28,22 @@
 크랭크 나사산의 영구적인 파손 방지를 위해 먼저 손으로 가결합을 진행합니다.
 우측은 **시계 방향 회전**으로 결합됩니다.
 
-![오른쪽 페달을 손(시계 방향)으로 돌리는 작업](/images/pedal/pedal-hand-install-r.webp)
+![오른쪽 페달을 손(시계 방향)으로 돌리는 작업](https://placehold.co/600x400?text=%EC%98%A4%EB%A5%B8%EC%AA%BD%20%ED%8E%98%EB%8B%AC%EC%9D%84%20%EC%86%90(%EC%8B%9C%EA%B3%84%20%EB%B0%A9%ED%96%A5)%EC%9C%BC%EB%A1%9C%20%EB%8F%8C%EB%A6%AC%EB%8A%94%20%EC%9E%91%EC%97%85)
 
 손으로 충분히 결합했다면, **15mm 렌치**를 사용하여 전륜 방향(시계 방향)으로 강하게 조입니다.
 
-![15mm 렌치로 우측 페달을 강하게 조이는 모습](/images/pedal/pedal-wrench-install-r.webp)
+![15mm 렌치로 우측 페달을 강하게 조이는 모습](https://placehold.co/600x400?text=15mm%20%EB%A0%8C%EC%B9%98%EB%A1%9C%20%EC%9A%B0%EC%B8%A1%20%ED%8E%98%EB%8B%AC%EC%9D%84%20%EA%B0%95%ED%95%98%EA%B2%8C%20%EC%A1%B0%EC%9D%B4%EB%8A%94%20%EB%AA%A8%EC%8A%B5)
 
 ---
 
 #### 4. 좌측 페달(L) 체결 (많이 실수하는 곳!)
 풀림 방지를 위해 **역방향 나사산**이 적용되어 있습니다. 크랭크 스레드의 손상 방지를 위해 먼저 손으로 **시계 반대 방향 회전**하여 결합하십시오.
 
-![왼쪽 페달을 손(시계 반대 방향)으로 돌리는 작업](/images/pedal/pedal-hand-install-l.webp)
+![왼쪽 페달을 손(시계 반대 방향)으로 돌리는 작업](https://placehold.co/600x400?text=%EC%99%BC%EC%AA%BD%20%ED%8E%98%EB%8B%AC%EC%9D%84%20%EC%86%90(%EC%8B%9C%EA%B3%84%20%EB%B0%98%EB%8C%80%20%EB%B0%A9%ED%96%A5)%EC%9C%BC%EB%A1%9C%20%EB%8F%8C%EB%A6%AC%EB%8A%94%20%EC%9E%91%EC%97%85)
 
 손으로 충분히 결합했다면, **15mm 렌치**를 사용하여 전륜 방향(시계 반대 방향)으로 강하게 조입니다.
 
-![15mm 렌치로 좌측 페달을 강하게 조이는 모습](/images/pedal/pedal-wrench-install-l.webp)
+![15mm 렌치로 좌측 페달을 강하게 조이는 모습](https://placehold.co/600x400?text=15mm%20%EB%A0%8C%EC%B9%98%EB%A1%9C%20%EC%A2%8C%EC%B8%A1%20%ED%8E%98%EB%8B%AC%EC%9D%84%20%EA%B0%95%ED%95%98%EA%B2%8C%20%EC%A1%B0%EC%9D%B4%EB%8A%94%20%EB%AA%A8%EC%8A%B5)
 
 ---
 

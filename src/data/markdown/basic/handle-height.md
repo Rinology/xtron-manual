@@ -6,7 +6,7 @@
 #### 1. QR 레버 열기
 핸들포스트(기둥) 위쪽에 있는 퀵 릴리즈(QR) 레버를 바깥쪽으로 완전히 젖혀서 열어줍니다.
 
-![QR레버 열어주는 이미지](/images/pedal/pedal-hand-install-r.webp)
+![QR레버 열어주는 이미지](https://placehold.co/600x400?text=Open+QR+Lever)
 
 ---
 
@@ -14,14 +14,14 @@
 - 핸들을 잡고 위아래로 움직여 본인에게 편안한 높이로 맞춥니다.
 - 핸들바가 틀어지지 않고 앞바퀴와 완벽한 일직선(+모양)이 되도록 방향을 반듯하게 정렬합니다.
 
-![높이와 일직선으로 맞추는 이미지](/images/pedal/pedal-hand-install-r.webp)
+![높이와 일직선으로 맞추는 이미지](https://placehold.co/600x400?text=Adjust+Height+and+Alignment)
 
 ---
 
 #### 3. QR 레버 단단히 닫기
 정렬이 끝났다면 열어두었던 레버를 다시 꾹 눌러서 닫아줍니다.
 
-![QR레버 닫주는 이미지](/images/pedal/pedal-hand-install-r.webp)
+![QR레버 닫아주는 이미지](https://placehold.co/600x400?text=Close+QR+Lever)
 
 ---
 

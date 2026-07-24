@@ -24,7 +24,7 @@
 
 완전 탈거: 볼트를 풀어 락(고정)이 해제되었다면, 관절을 열어 핸들바에서 기존 키박스를 완전히 탈거해 줍니다.
 
-![해체해야하는 볼트 위치 이미지](/images/pedal/pedal-hand-install-r.webp)
+![해체해야하는 볼트 위치 이미지](https://placehold.co/600x400?text=%ED%95%B4%EC%B2%B4%ED%95%B4%EC%95%BC%ED%95%98%EB%8A%94%20%EB%B3%BC%ED%8A%B8%20%EC%9C%84%EC%B9%98%20%EC%9D%B4%EB%AF%B8%EC%A7%80)
 
 ---
 
@@ -36,7 +36,7 @@
 
 고정 상태 확인: 조립 후 키박스를 손으로 잡고 흔들어 보아, 주행 중 돌아가거나 흔들리지 않고 단단히 고정되었는지 체크합니다.
 
-![신규키박스 핸들바에 위치한 이미지](/images/pedal/pedal-hand-install-r.webp)
+![신규키박스 핸들바에 위치한 이미지](https://placehold.co/600x400?text=%EC%8B%A0%EA%B7%9C%ED%82%A4%EB%B0%95%EC%8A%A4%20%ED%95%B8%EB%93%A4%EB%B0%94%EC%97%90%20%EC%9C%84%EC%B9%98%ED%95%9C%20%EC%9D%B4%EB%AF%B8%EC%A7%80)
 
 ---
 
@@ -47,7 +47,7 @@
 > 케이블을 연결할 때는 내부 핀이 휘어지지 않도록 주의해야 합니다. 케이블 연결 부위 외부에 있는 
 두 케이블의 화살표(▲)가 서로 마주 보도록 정확히 맞춘 상태에서 밀어 넣어 장착해 주십시오.
 
-![케이블의 화살표가 서로마주보는 이미지](/images/pedal/pedal-hand-install-r.webp)
+![케이블의 화살표가 서로마주보는 이미지](https://placehold.co/600x400?text=%EC%BC%80%EC%9D%B4%EB%B8%94%EC%9D%98%20%ED%99%94%EC%82%B4%ED%91%9C%EA%B0%80%20%EC%84%9C%EB%A1%9C%EB%A7%88%EC%A3%BC%EB%B3%B4%EB%8A%94%20%EC%9D%B4%EB%AF%B8%EC%A7%80)
 
 ---
 
