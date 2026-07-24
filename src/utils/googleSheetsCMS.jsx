@@ -71,8 +71,11 @@ export async function fetchGuidesFromGoogleSheet(csvUrl) {
               CategoryID, CategoryTitle, 
               SubCategoryID, SubCategoryTitle, 
               ChildCategoryID, ChildCategoryTitle,
-              ItemID, ItemTitle, IconName, Summary, MarkdownFile, YoutubeLink
+              ItemID, ItemTitle, IconName, Summary, MarkdownFile, YoutubeLink, Status
             } = row;
+
+            // 0. 상태(Status) 필터링 (Deploy가 아니면 무시)
+            if (Status !== 'Deploy') return;
 
             // 1. 카테고리 찾기 또는 생성
             let category = parsedCategories.find(c => c.id === CategoryID);
@@ -149,8 +152,11 @@ export async function fetchWizardFromGoogleSheet(csvUrl) {
 
           data.forEach(row => {
             const { 
-              RowID, NodeID, Question, OptionLabel, NextNodeID, ResultItemID, Keywords 
+              RowID, NodeID, Question, OptionLabel, NextNodeID, ResultItemID, Keywords, Status 
             } = row;
+
+            // 상태(Status) 필터링 (Deploy가 아니면 무시)
+            if (Status !== 'Deploy') return;
 
             if (!NodeID) return; // NodeID가 없으면 무시
 
