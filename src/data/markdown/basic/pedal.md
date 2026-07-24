@@ -20,7 +20,7 @@
 - **우측 페달(R):** 구동계(체인)가 위치한 방향
 - **좌측 페달(L):** 구동계가 없는 방향
 
-![페달 스핀들 L/R 각인 식별](https://placehold.co/600x400?text=%ED%8E%98%EB%8B%AC%20%EC%8A%A4%ED%95%80%EB%93%A4%20L%2FR%20%EA%B0%81%EC%9D%B8%20%EC%8B%9D%EB%B3%84)
+![페달 스핀들 L/R 각인 식별](/project/xtron-guide/basic/pedal-identify-lr.webp)
 
 ---
 
