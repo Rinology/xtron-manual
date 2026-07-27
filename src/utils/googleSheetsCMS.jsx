@@ -66,6 +66,8 @@ export async function fetchGuidesFromGoogleSheet(csvUrl) {
           const data = results.data;
           const parsedCategories = [];
 
+          const isLive = window.location.hostname.includes('xtron-guide.kr');
+
           data.forEach(row => {
             const { 
               CategoryID, CategoryTitle, 
@@ -74,8 +76,13 @@ export async function fetchGuidesFromGoogleSheet(csvUrl) {
               ItemID, ItemTitle, IconName, Summary, MarkdownFile, YoutubeLink, Status
             } = row;
 
-            // 0. 상태(Status) 필터링 (Deploy가 아니면 무시)
-            if (Status !== 'Deploy') return;
+            // 0. 상태(Status) 필터링 (라이브/테스트 서버 분리)
+            if (isLive) {
+              if (Status !== 'Deploy') return; // 라이브 서버: Deploy만 노출
+            } else {
+              // 테스트 서버(브랜치): Deploy 및 BranchDeploy 노출
+              if (Status !== 'BranchDeploy' && Status !== 'Deploy') return;
+            }
 
             // 1. 카테고리 찾기 또는 생성
             let category = parsedCategories.find(c => c.id === CategoryID);
@@ -150,13 +157,20 @@ export async function fetchWizardFromGoogleSheet(csvUrl) {
           const data = results.data;
           const wizardFlow = {};
 
+          const isLive = window.location.hostname.includes('xtron-guide.kr');
+
           data.forEach(row => {
             const { 
               RowID, NodeID, Question, OptionLabel, NextNodeID, ResultItemID, Keywords, Status 
             } = row;
 
-            // 상태(Status) 필터링 (Deploy가 아니면 무시)
-            if (Status !== 'Deploy') return;
+            // 상태(Status) 필터링 (라이브/테스트 서버 분리)
+            if (isLive) {
+              if (Status !== 'Deploy') return; // 라이브 서버: Deploy만 노출
+            } else {
+              // 테스트 서버(브랜치): Deploy 및 BranchDeploy 노출
+              if (Status !== 'BranchDeploy' && Status !== 'Deploy') return;
+            }
 
             if (!NodeID) return; // NodeID가 없으면 무시
 
