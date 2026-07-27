@@ -76,12 +76,14 @@ export async function fetchGuidesFromGoogleSheet(csvUrl) {
               ItemID, ItemTitle, IconName, Summary, MarkdownFile, YoutubeLink, Status
             } = row;
 
+            const safeStatus = (Status || '').trim().toLowerCase();
+
             // 0. 상태(Status) 필터링 (라이브/테스트 서버 분리)
             if (isLive) {
-              if (Status !== 'Deploy') return; // 라이브 서버: Deploy만 노출
+              if (safeStatus !== 'deploy') return; // 라이브 서버: Deploy만 노출
             } else {
               // 테스트 서버(브랜치): Deploy 및 BranchDeploy 노출
-              if (Status !== 'BranchDeploy' && Status !== 'Deploy') return;
+              if (safeStatus !== 'branchdeploy' && safeStatus !== 'deploy') return;
             }
 
             // 1. 카테고리 찾기 또는 생성
@@ -164,12 +166,14 @@ export async function fetchWizardFromGoogleSheet(csvUrl) {
               RowID, NodeID, Question, OptionLabel, NextNodeID, ResultItemID, Keywords, Status 
             } = row;
 
+            const safeStatus = (Status || '').trim().toLowerCase();
+
             // 상태(Status) 필터링 (라이브/테스트 서버 분리)
             if (isLive) {
-              if (Status !== 'Deploy') return; // 라이브 서버: Deploy만 노출
+              if (safeStatus !== 'deploy') return; // 라이브 서버: Deploy만 노출
             } else {
               // 테스트 서버(브랜치): Deploy 및 BranchDeploy 노출
-              if (Status !== 'BranchDeploy' && Status !== 'Deploy') return;
+              if (safeStatus !== 'branchdeploy' && safeStatus !== 'deploy') return;
             }
 
             if (!NodeID) return; // NodeID가 없으면 무시
