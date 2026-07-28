@@ -28,22 +28,22 @@
 크랭크 나사산의 영구적인 파손 방지를 위해 먼저 손으로 가결합을 진행합니다.
 우측은 **시계 방향 회전**으로 결합됩니다.
 
-![오른쪽 페달을 손(시계 방향)으로 돌리는 작업](project/xtron-guide/basic/pedal_install_3_right.webp)
+![오른쪽 페달을 손(시계 방향)으로 돌리는 작업](/project/xtron-guide/basic/pedal_install_3_right.webp)
 
 손으로 충분히 결합했다면, **15mm 렌치**를 사용하여 전륜 방향(시계 방향)으로 강하게 조입니다.
 
-![15mm 렌치로 우측 페달을 강하게 조이는 모습](project/xtron-guide/basic/pedal_install_4_right.webp)
+![15mm 렌치로 우측 페달을 강하게 조이는 모습](/project/xtron-guide/basic/pedal_install_4_right.webp)
 
 ---
 
 #### 4. 좌측 페달(L) 체결 (많이 실수하는 곳!)
 풀림 방지를 위해 **역방향 나사산**이 적용되어 있습니다. 크랭크 스레드의 손상 방지를 위해 먼저 손으로 **시계 반대 방향 회전**하여 결합하십시오.
 
-![왼쪽 페달을 손(시계 반대 방향)으로 돌리는 작업](project/xtron-guide/basic/pedal_install_6_left.webp)
+![왼쪽 페달을 손(시계 반대 방향)으로 돌리는 작업](/project/xtron-guide/basic/pedal_install_6_left.webp)
 
 손으로 충분히 결합했다면, **15mm 렌치**를 사용하여 전륜 방향(시계 반대 방향)으로 강하게 조입니다.
 
-![15mm 렌치로 좌측 페달을 강하게 조이는 모습](project/xtron-guide/basic/pedal_install_7_left.webp)
+![15mm 렌치로 좌측 페달을 강하게 조이는 모습](/project/xtron-guide/basic/pedal_install_7_left.webp)
 
 ---
 
@@ -59,15 +59,20 @@
 
 ---
 
-### 🔍 추가 정보 및 문제 해결 (고급 마크다운 적용 예시)
+### 🔍 추가 정보 및 문제 해결
 
 <details>
-  <summary><b>🛠️ 크랭크 나사선이 이미 망가져서 헛도는 경우 대처법 (클릭하여 펴기)</b></summary>
+  <summary><b>🛠️ 크랭크 나사선이 이미 망가져서 헛도는 경우 대처법 (자세히 보기)</b></summary>
   <br>
   페달을 무리하게 역방향이나 비스듬하게 힘으로 억지로 조이다가 크랭크 암의 나사선(야마)이 뭉개졌다면 페달이 헛돌거나 빠질 수 있습니다.
   
   * **해결책 1:** 손상이 심하지 않다면 자전거 샵에서 **탭핑(Tapping) 공구**를 이용해 나사선을 다시 살릴 수 있습니다.
   * **해결책 2:** 손상이 심각하다면 **크랭크 암 전체를 새 부품으로 교체**해야 합니다. (고객센터에 부품 주문)
+  
+  <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
+    <a href="https://pf.kakao.com/_xhxhRZxl" target="_blank" style="display:inline-block; padding:10px 18px; background-color:#FEE500; color:#000000; font-weight:600; border-radius:8px; text-decoration:none; font-size:14px;">카카오톡 채널 상담하기</a>
+    <a href="https://qualisports.kr/board/free/agency_list_with_map.html" target="_blank" style="display:inline-block; padding:10px 18px; background-color:#2563eb; color:#ffffff; font-weight:600; border-radius:8px; text-decoration:none; font-size:14px;">전국 대리점 위치 보기</a>
+  </div>
 </details>
 
 <br>
@@ -75,20 +80,20 @@
 #### 📊 페달 조립 표준 순서도 (Mermaid)
 
 ```mermaid
-graph TD
+graph LR
     Start["페달 조립 시작"]
-    CheckLR["페달 축의 L/R 각인 확인"]
+    CheckLR["페달 축의<br>L/R 각인 확인"]
     
     Start --> CheckLR
     
-    CheckLR -- "R 각인" --> Right["우측(체인 있는 쪽) 크랭크에 결합"]
-    CheckLR -- "L 각인" --> Left["좌측 크랭크에 결합"]
+    CheckLR -- "R 각인" --> Right["우측 크랭크<br>(체인 쪽) 결합"]
+    CheckLR -- "L 각인" --> Left["좌측 크랭크<br>결합"]
     
-    Right --> RightTurn["손으로 시계 방향 회전 (가결합)"]
-    Left --> LeftTurn["손으로 시계 반대 방향 회전 (가결합)"]
+    Right --> RightTurn["손으로 시계 방향<br>회전 (가결합)"]
+    Left --> LeftTurn["손으로 반시계 방향<br>회전 (가결합)"]
     
-    RightTurn --> Wrench["15mm 렌치로 전륜 방향으로 꽉 조임"]
+    RightTurn --> Wrench["15mm 렌치로<br>전륜 방향 꽉 조임"]
     LeftTurn --> Wrench
     
-    Wrench --> Done(("조립 완료 및 구름성 테스트"))
+    Wrench --> Done(("조립 완료 및<br>구름성 테스트"))
 ```

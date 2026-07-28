@@ -30,7 +30,11 @@ const MermaidChart = ({ chart }) => {
     };
     renderChart();
   }, [chart]);
-  return <div dangerouslySetInnerHTML={{ __html: svg }} style={{ display: 'flex', justifyContent: 'center', margin: '2rem 0' }} />;
+  return (
+    <div style={{ width: '100%', overflowX: 'auto', margin: '2rem 0', paddingBottom: '1rem' }}>
+      <div dangerouslySetInnerHTML={{ __html: svg }} style={{ display: 'flex', justifyContent: 'center', minWidth: '600px' }} />
+    </div>
+  );
 };
 
 // Load all markdown files at build time
