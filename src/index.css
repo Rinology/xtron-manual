@@ -85,7 +85,7 @@
   --text-secondary: #475569;
 
   /* Typography */
-  --font-body: 'Paperozi', 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-body: 'Paperozi', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 
   /* Spacing */
   --space-1: 0.25rem;
