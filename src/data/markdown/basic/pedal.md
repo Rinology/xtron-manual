@@ -56,10 +56,16 @@
 
 <div class="md-cta-container">
   <a href="https://pf.kakao.com/_xhxhRZxl" target="_blank" class="md-btn md-btn-kakao">
-    <span class="md-btn-icon-circle">💬</span>카카오톡 상담
+    <span class="md-btn-icon-circle">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+    </span>
+    카카오톡 상담
   </a>
   <a href="https://qualisports.kr/board/free/agency_list_with_map.html" target="_blank" class="md-btn md-btn-dealer">
-    <span class="md-btn-icon-circle">📍</span>전국 대리점
+    <span class="md-btn-icon-circle">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ci-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+    </span>
+    전국 대리점
   </a>
 </div>
 
