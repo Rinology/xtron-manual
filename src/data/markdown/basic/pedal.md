@@ -55,7 +55,7 @@
 * **심각한 손상:** 크랭크 암 전체 새 부품으로 교체 필요
 
 <div class="md-cta-container">
-  <a href="https://pf.kakao.com/_xhxhRZxl" target="_blank" class="md-btn md-btn-kakao">
+  <a href="http://pf.kakao.com/_xhxhRZxl/chat" target="_blank" class="md-btn md-btn-kakao">
     <span class="md-btn-icon-circle">
       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
     </span>

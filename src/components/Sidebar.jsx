@@ -528,7 +528,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                 }}
               >
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', padding: '0.5rem 1rem', fontWeight: 600 }}>QUICK LINKS</span>
-                <PopupLinkButton icon={<MessageCircle size={16} color="#eab308" />} text="카카오톡 채널 상담하기" url="https://pf.kakao.com/_xhxhRZxl" />
+                <PopupLinkButton icon={<MessageCircle size={16} color="#eab308" />} text="카카오톡 채널 상담하기" url="https://pf.kakao.com/_xhxhRZxl/chat" />
                 <PopupLinkButton icon={<ShoppingBag size={16} color="#03C75A" />} text="브랜드스토어" url="https://brand.naver.com/qualisports" />
                 <PopupLinkButton icon={<MapPin size={16} color="var(--ci-primary)" />} text="전국 대리점안내" url="https://xtronmap.kr" />
                 <PopupLinkButton icon={<Tag size={16} color="var(--ci-primary)" />} text="제품등록센터" url="https://xtroncare.kr" />
