@@ -1,60 +1,85 @@
-### 자전거 페달 장착 기본 가이드 수정본
-
----
-
 > [!CAUTION]
 > **안전 안내 사항**
-> - 자전거가 전도되지 않도록 **킥스탠드나 벽면에 안정적으로 거치**하십시오.
-> - **전기자전거:** 예기치 않은 모터 작동(PAS 센서 인식) 방지를 위해 반드시 전원을 차단하고 배터리를 분리하십시오.
+> - 자전거가 넘어지지 않도록 **안정적으로 거치**하세요.
+> - 예기치 않은 모터 작동 방지를 위해 **반드시 전원을 끄고 배터리를 분리**하세요.
 
----
+<br>
 
-#### 1. 필요한 준비물
-페달을 안전하고 견고하게 조립하기 위해 사전 준비 도구를 마련해 주십시오.
-- **15mm 페달 렌치** 또는 육각 렌치 (페달 축 규격에 맞게 사용)
-- 작업용 장갑 (손 보호용)
-- 그리스(Grease) (나사선 도포용, 권장 사항)
-
----
-
-#### 2. 좌우 페달 식별
-페달 중심축(스핀들)에 각인된 알파벳을 확인하여 좌우를 명확히 분류하십시오.
-- **우측 페달(R):** 구동계(체인)가 위치한 방향
-- **좌측 페달(L):** 구동계가 없는 방향
+### 🛠️ 1. 준비물 및 좌우 페달 식별
+- **준비물:** 15mm 렌치, 작업용 장갑, 그리스(Grease, 선택)
+- **페달 식별:** 스핀들에 각인된 알파벳(L/R)을 확인하세요. **좌우가 바뀌면 조립이 안 되고 부품이 망가집니다.**
+  - **우측(R):** 체인이 있는 방향
+  - **좌측(L):** 체인이 없는 방향
 
 ![페달 스핀들 L/R 각인 식별](/project/xtron-guide/basic/pedal-identify-lr.webp)
 
----
+<br>
 
-#### 3. 우측 페달(R) 체결
-크랭크 나사산의 영구적인 파손 방지를 위해 먼저 손으로 가결합을 진행합니다.
-우측은 **시계 방향 회전**으로 결합됩니다.
+### 🔧 2. 페달 장착 (손으로 먼저 가결합!)
 
-![오른쪽 페달을 손(시계 방향)으로 돌리는 작업](/images/pedal/pedal-hand-install-r.webp)
+> [!IMPORTANT]
+> 공구를 쓰기 전 **반드시 손으로 부드럽게 3~4회전 가결합**을 진행해 주세요. (나사선 파손 방지)
 
-손으로 충분히 결합했다면, **15mm 페달 렌치 또는 육각 렌치**를 사용하여 전륜 방향(시계 방향)으로 강하게 조입니다.
+#### 👉 우측 페달(R): 시계 방향 회전
+우측은 일반 나사선이므로 **시계 방향(오른쪽)**으로 돌려 결합합니다.
 
-![15mm 렌치로 우측 페달을 강하게 조이는 모습](/images/pedal/pedal-wrench-install-r.webp)
+![우측 가결합](/project/xtron-guide/basic/pedal_install_3_right.webp)
 
----
+<br>
 
-#### 4. 좌측 페달(L) 체결 (많이 실수하는 곳!)
-풀림 방지를 위해 **역방향 나사산**이 적용되어 있습니다. 크랭크 스레드의 손상 방지를 위해 먼저 손으로 **시계 반대 방향 회전**하여 결합하십시오.
+#### 👉 좌측 페달(L): 반시계 방향 회전 (주의 구간)
+풀림 방지를 위해 <span style="color: #ef4444; font-weight: bold;">역방향 나사산</span>이 적용되어 있습니다. 우측과 반대인 **반시계 방향(왼쪽)**으로 결합하세요.
 
-![왼쪽 페달을 손(시계 반대 방향)으로 돌리는 작업](/images/pedal/pedal-hand-install-l.webp)
+![좌측 가결합](/project/xtron-guide/basic/pedal_install_6_left.webp)
 
-손으로 충분히 결합했다면, **15mm 페달 렌치 또는 육각 렌치**를 사용하여 전륜 방향(시계 반대 방향)으로 강하게 조입니다.
+<br>
 
-![15mm 렌치로 좌측 페달을 강하게 조이는 모습](/images/pedal/pedal-wrench-install-l.webp)
+### ✅ 3. 렌치 고정 및 최종 점검
 
----
+손 결합이 끝났다면, 15mm 렌치를 사용하여 유격이 없을 때까지 아주 단단히 조여줍니다. 
+*(불완전한 체결은 주행 중 대형 사고를 유발할 수 있습니다)*
 
-#### 5. 안전 경고 및 최종 점검
+> [!TIP]
+> **💡 공통 조임 팁:** 양쪽 페달 모두 렌치를 쥔 상태에서 **자전거 앞바퀴(전륜) 방향**으로 돌리면 꽉 조여집니다.
 
-> **💡 공통 지침:** 양쪽 페달 모두 **자전거 전륜(앞바퀴) 방향**으로 돌리면 결합됩니다. 저항 없이 3~4회전 이상 부드럽게 손으로 결합된 후 공구를 사용하는 것이 정상입니다.
+![우측 렌치 고정](/project/xtron-guide/basic/pedal_install_4_right.webp)
+![좌측 렌치 고정](/project/xtron-guide/basic/pedal_install_7_left.webp)
 
-> [!WARNING]
-> **유격 및 체결 불량 경고**
-> 불완전한 체결은 주행 중 크랭크 파손 및 페달 이탈을 유발하여 심각한 사고로 이어질 수 있습니다. **반드시 유격이 없도록 견고히 조이십시오.**
+**마무리:** 페달을 뒤로 헛돌려 쇳소리나 뻑뻑함이 없는지 확인하세요.
 
-**최종 구름성 점검:** 페달을 역방향으로 회전시켜 구름성에 이상이 없고 마찰음이 발생하지 않는지 확인하십시오.
+<br>
+
+### 🚑 크랭크 나사선 훼손 시 대처법
+조립 실수로 나사선(야마)이 뭉개졌다면 즉시 조립을 중단하세요.
+* **경미한 손상:** 자전거 샵에서 **탭핑(Tapping)**으로 나사선 복원 가능
+* **심각한 손상:** 크랭크 암 전체 새 부품으로 교체 필요
+
+<div class="md-cta-container">
+  <a href="https://pf.kakao.com/_xhxhRZxl" target="_blank" class="md-btn md-btn-kakao">
+    <span class="md-btn-icon-circle">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+    </span>
+    카카오톡 상담
+  </a>
+  <a href="https://qualisports.kr/board/free/agency_list_with_map.html" target="_blank" class="md-btn md-btn-dealer">
+    <span class="md-btn-icon-circle">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ci-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+    </span>
+    전국 대리점
+  </a>
+</div>
+
+<br>
+
+### 📊 페달 조립 한눈에 보기
+```mermaid
+graph LR
+    Start["L/R 각인 확인"] --> Right["우측(R) 페달"]
+    Start --> Left["좌측(L) 페달"]
+    
+    Right --> RightTurn["시계 방향 가결합"]
+    Left --> LeftTurn["반시계 방향 가결합"]
+    
+    RightTurn --> Wrench["렌치로 앞바퀴 방향 꽉 조임"]
+    LeftTurn --> Wrench
+```

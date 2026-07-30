@@ -85,7 +85,7 @@
   --text-secondary: #475569;
 
   /* Typography */
-  --font-body: 'Paperozi', 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-body: 'Paperozi', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 
   /* Spacing */
   --space-1: 0.25rem;
@@ -583,4 +583,338 @@ mark {
 .btn-error-kakao {
   background: #FEE500;
   color: #000;
+}
+
+/* Custom Thin Scrollbar */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  .guide-item-panel {
+    padding: 1.25rem !important;
+  }
+  .guide-step-panel {
+    padding: 1.25rem !important;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .guide-grid-2 {
+    grid-template-columns: 1fr;
+  }
+  .nav-btn {
+    font-size: 0.85rem;
+  }
+  .nav-buttons-container {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+  }
+}
+
+/* Search Highlighting */
+mark {
+  background-color: var(--ci-secondary-light);
+  color: var(--ci-primary);
+  padding: 0 0.125rem;
+  border-radius: 4px;
+}
+
+/* Beautiful Scrollbar Design */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(47, 98, 134, 0.2); /* CI Primary with low opacity */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(47, 98, 134, 0.4);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(47, 98, 134, 0.2) transparent;
+}
+
+/* Print / PDF Export Utilities */
+@media print {
+  /* Hide UI Elements */
+  header, footer, .sidebar, .mobile-menu-btn, button, .app-header, .top-actions-container, .nav-buttons-container, .BackToTop, #back-to-top, #search-modal {
+    display: none !important;
+  }
+  
+  /* Reset Layouts for Paper */
+  body, .app-layout, .main-content, .page-container {
+    height: auto !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    color: black !important;
+    background: white !important;
+  }
+  
+  /* Panel Adjustments */
+  .glass-panel {
+    border: 1px solid #ccc !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  
+  /* Text adjustments */
+  h1, h2, h3, h4, i {
+    color: black !important;
+  }
+  
+  .text-gradient {
+    background: none !important;
+    -webkit-text-fill-color: black !important;
+    color: black !important;
+  }
+}
+
+/* Header Layout Classes */
+.header-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.header-nav-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  overflow: hidden;
+}
+
+.header-logo-container {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  padding-right: 0.5rem;
+}
+
+/* Guide Error Page Styles */
+.guide-error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.guide-error-title {
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.guide-error-desc {
+  line-height: 1.6;
+}
+
+.guide-error-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.btn-error-action {
+  flex: 1;
+  max-width: 240px;
+  padding: 0.85rem 1.5rem;
+  border-radius: var(--radius-full);
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap; /* Prevents text wrapping */
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-error-action:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-error-home {
+  background: var(--ci-primary);
+  color: var(--ci-white);
+}
+
+.btn-error-kakao {
+  background: #FEE500;
+  color: #000;
+}
+
+/* Markdown CTA Buttons (Quick Links Style - Side by Side) */
+.md-cta-container {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.md-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border: 1px solid var(--surface-border);
+  border-radius: 12px;
+  background: var(--ci-white);
+  text-decoration: none !important;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text-primary) !important;
+  transition: background 0.2s ease;
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(0,0,0,0.05));
+}
+
+.md-btn:hover {
+  background: var(--surface-border);
+}
+
+.md-btn-icon-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+/* Custom Thin Scrollbar */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.3);
+  border-radius: 9999px;
+  transition: background-color 0.2s;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(148, 163, 184, 0.6);
+}
+
+/* Markdown Table Styles */
+.markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.95rem;
+}
+.markdown-body th {
+  background-color: var(--ci-primary-light);
+  color: var(--ci-primary);
+  font-weight: 700;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid rgba(47, 98, 134, 0.2);
+}
+.markdown-body td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--surface-border);
+  color: var(--text-secondary);
+}
+.markdown-body tr:last-child td {
+  border-bottom: none;
+}
+
+/* Markdown Details / Accordion Styles */
+details {
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  padding: 0.5rem 1rem;
+  background: var(--surface-color);
+  margin-bottom: 1rem;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+details[open] {
+  padding-bottom: 1rem;
+  border-color: rgba(47, 98, 134, 0.3);
+  box-shadow: var(--shadow-md);
+}
+
+summary {
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  list-style: none; /* Hide default arrow */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--ci-primary);
+  outline: none;
+}
+
+summary::-webkit-details-marker {
+  display: none; /* Hide default arrow in Safari */
+}
+
+summary::before {
+  content: '▶';
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  transition: transform 0.2s ease;
+  display: inline-block;
+}
+
+details[open] summary::before {
+  transform: rotate(90deg);
+  color: var(--ci-primary);
+}
+
+details[open] summary {
+  border-bottom: 1px solid var(--surface-border);
+  margin-bottom: 1rem;
+  padding-bottom: 0.8rem;
 }

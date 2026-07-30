@@ -5,6 +5,17 @@
 
 ---
 
+## 📌 빠른 링크 (Quick Links)
+깃허브(GitHub) 메인 페이지에서는 현재 보고 계신 `README.md` 파일만 자동으로 열립니다. 
+다른 핵심 문서들을 보시려면 아래 링크를 클릭해 주세요!
+
+* 🛠️ **[관리자용 마크다운 종합 예시 (admin.md)](./src/data/markdown/admin.md)** : 표, 다이어그램, 알림 박스 등 웹페이지에 적용되는 모든 시각적 마크다운 예시 모음
+* 📝 **[마크다운 기본 문법 가이드 (MARKDOWN_GUIDE.md)](./MARKDOWN_GUIDE.md)** : 글씨 굵게, 링크, 리스트 등 기본적인 마크다운 작성법
+* 🆕 **[업데이트 패치 노트 (PATCH_NOTES.md)](./PATCH_NOTES.md)** : 시스템 개선 및 기능 추가 내역
+* 📜 **[README 히스토리 (readme_history.md)](./readme_history.md)** : 본 가이드 문서의 수정 내역
+
+---
+
 ## 🚀 실시간으로 수정 내용 확인하기 (라이브 뷰 - 초보자용)
 
 내 컴퓨터(IDE)에서 수정한 내용을 실시간으로 확인하려면 아래 명령어를 사용하세요.
@@ -32,22 +43,33 @@
 
 | 열 이름 (Column) | 설명 | 작성 예시 |
 | :--- | :--- | :--- |
-| **CategoryID** | 대분류를 식별하는 고유 영문 ID | `basic` |
-| **CategoryTitle** | 화면에 표시될 대분류 이름 | `기본 가이드` |
-| **SubCategoryID** | 중분류를 식별하는 고유 영문 ID | `basic-assembly` |
-| **SubCategoryTitle** | 화면에 표시될 중분류 이름 | `조립 및 피팅` |
-| **ItemID** | 개별 가이드를 식별하는 고유 영문 ID | `pedal` |
-| **ItemTitle** | 화면에 표시될 개별 가이드 제목 | `페달 장착 방법` |
-| **Icon** | 사용할 lucide-react 아이콘 이름 | `Wrench` |
-| **Summary** | 검색 시 나타날 요약 설명 (여러 줄일 경우 `\|` 구분자 사용) | `좌/우 페달 식별... \| 페달 렌치로...` |
-| **MarkdownFile** | 연결될 마크다운 문서 파일의 경로 | `basic/pedal.md` |
-| **YoutubeLink** | (선택) 영상이 있는 경우 유튜브 주소 입력 | `https://youtu.be/T0fKF32Y158` (없으면 빈칸) |
+| **CategoryID** | 대분류를 식별하는 고유 영문 ID | `battery-guide` |
+| **CategoryTitle** | 화면에 표시될 대분류 이름 | `배터리 가이드` |
+| **SubCategoryID** | 중분류를 식별하는 고유 영문 ID | `battery-removal` |
+| **SubCategoryTitle** | 화면에 표시될 중분류 이름 | `배터리 탈착` |
+| **ChildCategoryID** | **[선택]** 소분류를 식별하는 고유 영문 ID (없을 경우 빈칸) | `seatpost` |
+| **ChildCategoryTitle** | **[선택]** 화면에 표시될 소분류 이름 (없을 경우 빈칸) | `싯포스트형` |
+| **ItemID** | 개별 가이드를 식별하는 고유 영문 ID | `battery-seatpost` |
+| **ItemTitle** | 화면에 표시될 개별 가이드 제목 | `ㄴ 싯포스트 배터리 탈착` |
+| **IconName** | 사용할 lucide-react 아이콘 이름 ([전체 목록 보기](https://lucide.dev/icons)) | `Key` |
+| **Summary** | 검색 시 나타날 요약 설명 (여러 줄일 경우 `\|` 구분자 사용) | `싯포스트 일체형...` |
+| **MarkdownFile** | 연결될 마크다운 문서 파일의 경로 | `battery/battery-seatpost.md` |
+| **YoutubeLink** | (선택) 영상이 있는 경우 유튜브 주소 입력 | `https://youtu.be/...` (없으면 빈칸) |
 
 #### 📝 작성 예시 데이터:
-| CategoryID | CategoryTitle | SubCategoryID | SubCategoryTitle | ItemID | ItemTitle | Icon | Summary | MarkdownFile | YoutubeLink |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| basic | 기본 가이드 | basic-assembly | 조립 및 피팅 | pedal | 페달 장착 방법 | Wrench | 좌/우 페달 식별... \| 페달 렌치로... | basic/pedal.md | |
-| basic | 기본 가이드 | basic-parts | 부품 교체 | suntour-seatpost | 썬투어 서스펜션 교체 | Wrench | 안장과 싯포스트를... | basic/suntour-seatpost.md | https://youtu.be/T0fKF32Y158 |
+| CategoryID | CategoryTitle | SubCategoryID | SubCategoryTitle | ChildCategoryID | ChildCategoryTitle | ItemID | ItemTitle | Icon | Summary | MarkdownFile | YoutubeLink |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| battery-guide | 배터리 가이드 | battery-removal | 배터리 탈착 | seatpost | 싯포스트형 | battery-seatpost | ㄴ 싯포스트 배터리 탈착 | Key | 싯포스트 일체형... | battery/battery-seatpost.md | |
+| basic | 기본 가이드 | basic-assembly | 조립 및 피팅 | | | pedal | 페달 장착 방법 | Wrench | 좌/우 페달 식별... | basic/pedal.md | https://youtu.be/... |
+
+> **💡 스프레드시트 작성 팁 (3단계 vs 4단계 구조)**
+> 소분류가 필요 없는 일반 항목(예: '페달 장착 방법')은 `ChildCategoryID`와 `ChildCategoryTitle`을 **빈칸**으로 두시면, 기존처럼 3단계(중분류 바로 아래 아이템)로 렌더링됩니다. 이름만 상황에 맞게 잘 지정해두시면 알아서 구조가 잡힙니다!
+
+> **🎨 IconName 작성 가이드**
+> [lucide.dev/icons](https://lucide.dev/icons)에서 원하는 아이콘을 검색한 뒤 **PascalCase** 이름을 그대로 입력합니다. 잘못된 이름이나 빈칸일 경우 자동으로 `HelpCircle`(❓) 아이콘이 표시됩니다.
+>
+> **현재 사용 중인 아이콘 목록:**
+> `Wrench` · `BatteryCharging` · `AlertTriangle` · `Wind` · `ZapOff` · `Settings` · `MonitorPlay` · `ShieldAlert` · `VolumeX` · `Power` · `Activity` · `PersonStanding` · `Gauge` · `Lightbulb` · `ArrowLeftRight` · `Navigation` · `Key` · `Zap` · `CheckCircle`
 
 ### 🛠️ 데이터 연결 및 반영 방법:
 
@@ -84,6 +106,14 @@
 > **스프레드시트 목차 등록 시 주의사항!**
 > 1. **목차 등록 필수:** GitHub에 `.md` 파일을 작성했다면 반드시 구글 스프레드시트(목차)에 행을 추가해 파일명을 등록해야 홈페이지 메뉴에 나타납니다.
 > 2. **⚠️ 파일명 중복 주의:** 시스템이 파일명만으로 전체 폴더를 뒤져서 알아서 문서를 찾아오기 때문에, 다른 폴더에 있더라도 **마크다운 파일명은 절대 중복되지 않게 고유한 이름**으로 지어주셔야 오류가 발생하지 않습니다!
+
+> [!TIP]
+> **🚀 깃허브 충돌(Conflict) 방지를 위한 꿀팁 (작업 영역 분리)**
+> 브랜치(Branch)나 PR(Pull Request) 같은 복잡한 깃허브 기능 없이도, 여러 명이 충돌(에러) 없이 안전하게 동시 작업하는 가장 확실한 방법은 **'작업 영역을 완벽하게 나누는 것'**입니다.
+> - **👨‍💻 개발자 (로컬 IDE 사용):** 사이트 기능과 뼈대가 되는 `src/components`, `src/utils` 등의 '코드 파일'만 수정합니다.
+> - **📝 콘텐츠 작성자 (웹사이트 사용):** 매뉴얼 본문이 들어있는 `src/data/markdown` 안의 **`.md` 파일들만 수정**합니다.
+> 
+> 서로 수정하는 '폴더와 파일'이 겹치지만 않는다면, 복잡한 절차 없이 웹에서 곧바로 초록색 **[Commit changes]** 버튼을 눌러도 충돌 없이 알아서 병합(Merge)되어 사이트에 반영됩니다!
 
 ---
 
@@ -199,16 +229,16 @@
 ```mermaid
 graph TD
     %% 시작 노드
-    Start("어떤 종류의 문제를 겪고 계신가요?")
+    Start["어떤 종류의 문제를 겪고 계신가요?"]
 
     %% 1단계 선택지
-    Start -->|전원이 안 켜지거나 배터리 문제| Power1("충전기를 연결했을 때<br/>어댑터(충전기)의 LED 색상은?")
-    Start -->|주행 시 소음이나 소리가 남| Noise1("소음이 발생하는 부위가 어디인가요?")
-    Start -->|자전거가 잘 안 나감| ResultTire((타이어 가이드<br/>`error-tire`))
+    Start -- "전원이 안 켜지거나 배터리 문제" --> Power1["충전기를 연결했을 때 어댑터(충전기)의 LED 색상은?"]
+    Start -- "주행 시 소음이나 소리가 남" --> Noise1["소음이 발생하는 부위가 어디인가요?"]
+    Start -- "자전거가 잘 안 나감" --> ResultTire(("타이어 가이드 (error-tire)"))
 
     %% 전원 문제 세부 노드 (Power1)
-    Power1 -->|빨간색 (충전 중 표시)| Power2("충전 후에도 모니터가 켜지지 않나요?")
-    Power1 -->|초록색 (완충 표시) 이지만 안 켜짐| ResultPower1((전원 가이드<br/>`error-power`))
+    Power1 -- "빨간색 (충전 중 표시)" --> Power2["충전 후에도 모니터가 켜지지 않나요?"]
+    Power1 -- "초록색 (완충 표시) 이지만 안 켜짐" --> ResultPower1(("전원 가이드 (error-power)"))
 
     %% 스타일링
     classDef questionNode fill:#f9f9ff,stroke:#3b82f6,stroke-width:2px,color:#1e293b,font-weight:bold

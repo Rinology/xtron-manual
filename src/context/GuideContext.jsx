@@ -22,7 +22,17 @@ export function GuideProvider({ children }) {
           
           const flatItems = remoteData.categories.reduce((acc, cat) => {
             if (cat.subCategories) {
-              const subItems = cat.subCategories.reduce((subAcc, subCat) => [...subAcc, ...(subCat.items || [])], []);
+              const subItems = cat.subCategories.reduce((subAcc, subCat) => {
+                let items = subCat.items ? [...subCat.items] : [];
+                if (subCat.childCategories) {
+                  subCat.childCategories.forEach(childCat => {
+                    if (childCat.items) {
+                      items = [...items, ...childCat.items];
+                    }
+                  });
+                }
+                return [...subAcc, ...items];
+              }, []);
               return [...acc, ...subItems];
             }
             return acc;

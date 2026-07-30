@@ -11,6 +11,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
     "troubleshooting": true
   });
   const [openSubCategories, setOpenSubCategories] = useState({});
+  const [openChildCategories, setOpenChildCategories] = useState({});
   const [isMobile, setIsMobile] = useState(false);
   
   // 퀵링크 팝업 상태
@@ -46,7 +47,11 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
     setOpenSubCategories(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const renderGuideItem = (item, level = 0) => (
+  const toggleChildCategory = (id) => {
+    setOpenChildCategories(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const renderGuideItem = (item) => (
     <button 
       key={item.id}
       onClick={() => {
@@ -56,9 +61,8 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
       }}
       style={{
         display: 'flex', alignItems: 'center',
-        gap: '0.75rem', padding: '0.65rem 1rem', 
-        paddingLeft: `${1 + (level * 0.5)}rem`,
-        borderRadius: 'var(--radius-full)',
+        gap: '0.75rem', padding: '0.6rem 0.75rem', 
+        borderRadius: 'var(--radius-md)',
         color: activePage === item.id ? 'var(--ci-primary)' : 'var(--text-primary)',
         background: activePage === item.id ? 'var(--ci-primary-light)' : 'transparent',
         border: 'none', cursor: 'pointer', textAlign: 'left', 
@@ -138,7 +142,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
           }
         }}
       >
-        <div style={{ padding: '1rem 0', display: 'flex', flexDirection: 'column', gap: '1.5rem', flex: 1, overflow: 'visible' }}>
+        <div style={{ padding: '1rem 0 0.5rem 0', display: 'flex', flexDirection: 'column', gap: '1.25rem', flex: 1, minHeight: 0, overflow: 'visible' }}>
           
           {/* Hamburger / Brand Area */}
           <div style={{ 
@@ -148,7 +152,8 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
             height: '40px', 
             padding: '0 1rem',
             width: '100%',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            flexShrink: 0
           }}>
             {isOpen ? (
               <>
@@ -210,13 +215,13 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                     style={{ width: '24px', height: '24px', objectFit: 'contain' }}
                   />
                 </button>
-                <Tooltip text="사이드바 열기" visible={hoveredButton === 'expand'} />
+                <Tooltip text="사이드바 열기" visible={!activePage && hoveredButton === 'expand'} />
               </div>
             )}
           </div>
 
           {/* Top Actions: Wizard & Search */}
-          <div style={{ padding: '0 1rem', display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+          <div style={{ padding: '0 1rem', display: 'flex', flexDirection: 'column', gap: '0.2rem', flexShrink: 0 }}>
             {isOpen ? (
               <>
                 {/* 자가진단 마법사 - 임시 숨김
@@ -261,7 +266,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                   onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                 >
                   <Search size={18} color="var(--text-secondary)" />
-                  가이드 검색
+                  검색 Ctrl + K
                 </button>
               </>
             ) : (
@@ -319,14 +324,14 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                   >
                     <Search size={18} />
                   </button>
-                  <Tooltip text="가이드 검색" visible={hoveredButton === 'search'} />
+                  <Tooltip text="검색 Ctrl + K" visible={hoveredButton === 'search'} />
                 </div>
               </div>
             )}
           </div>
 
           {/* Navigation Categories */}
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: isOpen ? '1rem' : '0.5rem', flex: 1, padding: '0 1rem', overflowY: 'auto', overflowX: 'hidden' }}>
+          <nav className="custom-scrollbar" style={{ display: 'flex', flexDirection: 'column', gap: isOpen ? '1rem' : '0.5rem', flex: 1, padding: '0 1rem', overflowY: 'auto', overflowX: 'hidden' }}>
             <AnimatePresence mode="popLayout">
               {isOpen && (
                 <motion.div
@@ -348,7 +353,8 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                     if (category.subCategories) {
                       displaySubCats = category.subCategories.map(sub => ({
                         ...sub,
-                        items: [...sub.items]
+                        items: sub.items ? [...sub.items] : [],
+                        childCategories: sub.childCategories ? [...sub.childCategories] : []
                       }));
                     }
 
@@ -376,9 +382,12 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                               animate={{ opacity: 1, height: 'auto' }}
                               exit={{ opacity: 0, height: 0 }}
                               transition={{ duration: 0.2 }}
-                              style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '0.15rem' }}
+                              style={{ 
+                                overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '0.2rem',
+                                marginLeft: '0.85rem', paddingLeft: '0.85rem', borderLeft: '1px solid #dde3ea'
+                              }}
                             >
-                              {displayItems.map(item => renderGuideItem(item, 1))}
+                              {displayItems.map(item => renderGuideItem(item))}
 
                               {displaySubCats.map(subCat => {
                                 const isSubOpened = openSubCategories[subCat.id];
@@ -388,7 +397,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                                       onClick={() => toggleSubCategory(subCat.id)}
                                       style={{
                                         display: 'flex', alignItems: 'center', gap: '0.5rem',
-                                        padding: '0.6rem 0.5rem 0.6rem 1.25rem', cursor: 'pointer',
+                                        padding: '0.6rem 0.5rem', cursor: 'pointer',
                                         borderRadius: 'var(--radius-md)', transition: 'background 0.2s'
                                       }}
                                       onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-border)'}
@@ -407,9 +416,52 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                                           animate={{ opacity: 1, height: 'auto' }}
                                           exit={{ opacity: 0, height: 0 }}
                                           transition={{ duration: 0.2 }}
-                                          style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '0.1rem' }}
+                                          style={{ 
+                                            overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '0.1rem',
+                                            marginLeft: '0.85rem', paddingLeft: '0.85rem', borderLeft: '1px solid #dde3ea'
+                                          }}
                                         >
-                                          {subCat.items.map(item => renderGuideItem(item, 2))}
+                                          {subCat.childCategories && subCat.childCategories.map(childCat => {
+                                            const isChildOpened = openChildCategories[childCat.id];
+                                            return (
+                                              <div key={childCat.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem' }}>
+                                                <div 
+                                                  onClick={() => toggleChildCategory(childCat.id)}
+                                                  style={{
+                                                    display: 'flex', alignItems: 'center', gap: '0.5rem',
+                                                    padding: '0.6rem 0.5rem', cursor: 'pointer',
+                                                    borderRadius: 'var(--radius-md)', transition: 'background 0.2s'
+                                                  }}
+                                                  onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-border)'}
+                                                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                                                >
+                                                  {isChildOpened ? <ChevronDown size={14} color="var(--ci-primary)" /> : <ChevronRight size={14} color="var(--text-secondary)" />}
+                                                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: isChildOpened ? 'var(--ci-primary)' : 'var(--text-primary)' }}>
+                                                    {childCat.title}
+                                                  </span>
+                                                </div>
+                                                
+                                                <AnimatePresence initial={false}>
+                                                  {isChildOpened && (
+                                                    <motion.div
+                                                      initial={{ opacity: 0, height: 0 }}
+                                                      animate={{ opacity: 1, height: 'auto' }}
+                                                      exit={{ opacity: 0, height: 0 }}
+                                                      transition={{ duration: 0.2 }}
+                                                      style={{ 
+                                                        overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '0.1rem',
+                                                        marginLeft: '0.85rem', paddingLeft: '0.85rem', borderLeft: '1px solid #dde3ea'
+                                                      }}
+                                                    >
+                                                      {childCat.items.map(item => renderGuideItem(item))}
+                                                    </motion.div>
+                                                  )}
+                                                </AnimatePresence>
+                                              </div>
+                                            );
+                                          })}
+
+                                          {subCat.items && subCat.items.map(item => renderGuideItem(item))}
                                         </motion.div>
                                       )}
                                     </AnimatePresence>

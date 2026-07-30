@@ -168,27 +168,40 @@ export const guidesData = {
         {
           id: "battery-removal",
           title: "배터리 탈착",
-          items: [
+          items: [],
+          childCategories: [
             {
-              id: "battery-seatpost",
-              title: "싯포스트 배터리 탈착",
-              icon: <Key size={18} />,
-              summary: ["싯포스트 일체형 배터리의 장착 및 분리 방법"],
-              markdownFile: 'battery/battery-seatpost.md'
+              id: "seatpost",
+              title: "싯포스트형",
+              items: [
+                {
+                  id: "battery-seatpost",
+                  title: "ㄴ 싯포스트 배터리 탈착",
+                  icon: <Key size={18} />,
+                  summary: ["싯포스트 일체형 배터리의 장착 및 분리 방법"],
+                  markdownFile: 'battery/battery-seatpost.md'
+                }
+              ]
             },
             {
-              id: "battery-ktx-4pin",
-              title: "KTX 배터리 탈착 (4핀)",
-              icon: <BatteryCharging size={18} />,
-              summary: ["KTX 외장 배터리 4핀 커넥터 모델의 탈착 방법"],
-              markdownFile: 'battery/battery-ktx-4pin.md'
-            },
-            {
-              id: "battery-ktx-6pin",
-              title: "KTX 배터리 탈착 (6핀)",
-              icon: <BatteryCharging size={18} />,
-              summary: ["KTX 외장 배터리 6핀 커넥터 모델의 탈착 방법"],
-              markdownFile: 'battery/battery-ktx-6pin.md'
+              id: "ktx",
+              title: "KTX 외장형",
+              items: [
+                {
+                  id: "battery-ktx-4pin",
+                  title: "ㄴ 4핀 커넥터 모델",
+                  icon: <BatteryCharging size={18} />,
+                  summary: ["KTX 외장 배터리 4핀 커넥터 모델의 탈착 방법"],
+                  markdownFile: 'battery/battery-ktx-4pin.md'
+                },
+                {
+                  id: "battery-ktx-6pin",
+                  title: "ㄴ 6핀 커넥터 모델",
+                  icon: <BatteryCharging size={18} />,
+                  summary: ["KTX 외장 배터리 6핀 커넥터 모델의 탈착 방법"],
+                  markdownFile: 'battery/battery-ktx-6pin.md'
+                }
+              ]
             }
           ]
         },
@@ -281,7 +294,17 @@ export const guidesData = {
 
 export const allGuideItems = guidesData.categories.reduce((acc, cat) => {
   if (cat.subCategories) {
-    const subItems = cat.subCategories.reduce((subAcc, subCat) => [...subAcc, ...subCat.items], []);
+    const subItems = cat.subCategories.reduce((subAcc, subCat) => {
+      let items = subCat.items ? [...subCat.items] : [];
+      if (subCat.childCategories) {
+        subCat.childCategories.forEach(childCat => {
+          if (childCat.items) {
+            items = [...items, ...childCat.items];
+          }
+        });
+      }
+      return [...subAcc, ...items];
+    }, []);
     return [...acc, ...subItems];
   }
   return acc;

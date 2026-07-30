@@ -48,7 +48,7 @@ async function fetchWithCache(url) {
  * 구글 스프레드시트 CSV 데이터를 파싱하여 guidesData 형식의 JSON으로 변환합니다.
  * 
  * 스프레드시트 구조 (열 이름):
- * CategoryID | CategoryTitle | SubCategoryID | SubCategoryTitle | ItemID | ItemTitle | IconName | Summary | MarkdownFile
+ * CategoryID | CategoryTitle | SubCategoryID | SubCategoryTitle | ChildCategoryID | ChildCategoryTitle | ItemID | ItemTitle | IconName | Summary | MarkdownFile | YoutubeLink
  * 
  * @param {string} csvUrl 구글 스프레드시트 CSV 웹 게시 URL
  * @returns {Promise<Object>} 변환된 guidesData 구조
@@ -66,12 +66,25 @@ export async function fetchGuidesFromGoogleSheet(csvUrl) {
           const data = results.data;
           const parsedCategories = [];
 
+          const isLive = window.location.hostname.includes('xtron-guide.kr');
+
           data.forEach(row => {
             const { 
               CategoryID, CategoryTitle, 
               SubCategoryID, SubCategoryTitle, 
-              ItemID, ItemTitle, IconName, Summary, MarkdownFile, YoutubeLink
+              ChildCategoryID, ChildCategoryTitle,
+              ItemID, ItemTitle, IconName, Summary, MarkdownFile, YoutubeLink, Status
             } = row;
+
+            const safeStatus = (Status || '').trim().toLowerCase();
+
+            // 0. 상태(Status) 필터링 (라이브/테스트 서버 분리)
+            if (isLive) {
+              if (safeStatus !== 'deploy') return; // 라이브 서버: Deploy만 노출
+            } else {
+              // 테스트 서버(브랜치): Deploy 및 BranchDeploy 노출
+              if (safeStatus !== 'branchdeploy' && safeStatus !== 'deploy') return;
+            }
 
             // 1. 카테고리 찾기 또는 생성
             let category = parsedCategories.find(c => c.id === CategoryID);
@@ -83,22 +96,33 @@ export async function fetchGuidesFromGoogleSheet(csvUrl) {
             // 2. 서브카테고리 찾기 또는 생성
             let subCategory = category.subCategories.find(sc => sc.id === SubCategoryID);
             if (!subCategory) {
-              subCategory = { id: SubCategoryID, title: SubCategoryTitle, items: [] };
+              subCategory = { id: SubCategoryID, title: SubCategoryTitle, items: [], childCategories: [] };
               category.subCategories.push(subCategory);
             }
 
             // 3. 아이콘 동적 렌더링 처리
             const IconComponent = Icons[IconName] || Icons.HelpCircle;
 
-            // 4. 아이템 추가
-            subCategory.items.push({
+            const newItem = {
               id: ItemID,
               title: ItemTitle,
               icon: <IconComponent size={18} />,
               summary: Summary ? Summary.split('|').map(s => s.trim()) : [], // | 문자로 줄바꿈 분리
               markdownFile: MarkdownFile,
               youtubeLink: YoutubeLink
-            });
+            };
+
+            // 4. 소분류(ChildCategory) 존재 여부에 따른 아이템 추가
+            if (ChildCategoryID && ChildCategoryID.trim() !== "") {
+              let childCategory = subCategory.childCategories.find(cc => cc.id === ChildCategoryID);
+              if (!childCategory) {
+                childCategory = { id: ChildCategoryID, title: ChildCategoryTitle, items: [] };
+                subCategory.childCategories.push(childCategory);
+              }
+              childCategory.items.push(newItem);
+            } else {
+              subCategory.items.push(newItem);
+            }
           });
 
           resolve({ categories: parsedCategories });
@@ -135,10 +159,22 @@ export async function fetchWizardFromGoogleSheet(csvUrl) {
           const data = results.data;
           const wizardFlow = {};
 
+          const isLive = window.location.hostname.includes('xtron-guide.kr');
+
           data.forEach(row => {
             const { 
-              RowID, NodeID, Question, OptionLabel, NextNodeID, ResultItemID, Keywords 
+              RowID, NodeID, Question, OptionLabel, NextNodeID, ResultItemID, Keywords, Status 
             } = row;
+
+            const safeStatus = (Status || '').trim().toLowerCase();
+
+            // 상태(Status) 필터링 (라이브/테스트 서버 분리)
+            if (isLive) {
+              if (safeStatus !== 'deploy') return; // 라이브 서버: Deploy만 노출
+            } else {
+              // 테스트 서버(브랜치): Deploy 및 BranchDeploy 노출
+              if (safeStatus !== 'branchdeploy' && safeStatus !== 'deploy') return;
+            }
 
             if (!NodeID) return; // NodeID가 없으면 무시
 
