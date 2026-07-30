@@ -76,7 +76,8 @@ export async function fetchGuidesFromGoogleSheet(csvUrl) {
               ItemID, ItemTitle, IconName, Summary, MarkdownFile, YoutubeLink, Status
             } = row;
 
-            const safeStatus = (Status || '').trim().toLowerCase();
+            // Status 값이 비어있을 경우 기본값을 'deploy'로 간주
+            const safeStatus = (Status || 'deploy').trim().toLowerCase();
 
             // 0. 상태(Status) 필터링 (라이브/테스트 서버 분리)
             if (isLive) {
@@ -166,7 +167,8 @@ export async function fetchWizardFromGoogleSheet(csvUrl) {
               RowID, NodeID, Question, OptionLabel, NextNodeID, ResultItemID, Keywords, Status 
             } = row;
 
-            const safeStatus = (Status || '').trim().toLowerCase();
+            // Status 값이 비어있을 경우 기본값을 'deploy'로 간주
+            const safeStatus = (Status || 'deploy').trim().toLowerCase();
 
             // 상태(Status) 필터링 (라이브/테스트 서버 분리)
             if (isLive) {
