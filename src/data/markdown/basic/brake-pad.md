@@ -2,9 +2,6 @@
 
 안전한 제동력을 유지하기 위해 브레이크 패드와 로터의 마모 상태를 정기적으로 점검하고 적절한 시기에 교체해야 합니다.
 
-<div p align="center">  
-[교체가 필요한 패드 및 로터 상태]
-</div>
 <br/>
 
 <div align="center" style="margin: 20px 0;">
@@ -12,6 +9,10 @@
     <img src="https://placehold.co/500x290?text=Brake+Pad+Check" alt="브레이크 패드 점검" style="width: 48%; max-width: 450px; height: auto; display: inline-block;" />
     <img src="https://placehold.co/500x290?text=Brake+Rotor+Check" alt="브레이크 로터 점검" style="width: 48%; max-width: 450px; height: auto; display: inline-block;" />
   </div>
+</div>
+
+<div p align="center">  
+[교체가 필요한 패드 및 로터 상태]
 </div>
 
 ---
