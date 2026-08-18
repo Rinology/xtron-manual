@@ -22,9 +22,17 @@
 리어랙 위에 장착할 때는 원하는 방향으로 바구니를 배치하여 설치할 수 있습니다.
 
 1\. **위치 선정**: 리어랙에 있는 3개의 홈 위에 바구니를 원하는 방향으로 올려놓습니다.
+![리어랙에 장착, 위치 선정](https://placehold.co/600x400?text=%EB%B8%8C%EB%9D%BC%EC%BC%93%20%EC%9E%A5%EC%B0%A9%EC%9C%84%EC%B9%98%20%EC%9D%B4%EB%AF%B8%EC%A7%80%201%EC%9E%A5%EC%9D%B8%EB%8D%B0%203%EC%BB%B7%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B4%20%EC%A2%8B%EC%9D%84%EB%93%AF)
+
 <br>2\. **정렬**: 리어랙의 고정 홈이 잘 보이도록 바구니의 위치를 반듯하게 정렬합니다.
+![리어랙에 장착, 정렬](https://placehold.co/600x400?text=%EB%B8%8C%EB%9D%BC%EC%BC%93%20%EC%9E%A5%EC%B0%A9%EC%9C%84%EC%B9%98%20%EC%9D%B4%EB%AF%B8%EC%A7%80%201%EC%9E%A5%EC%9D%B8%EB%8D%B0%203%EC%BB%B7%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B4%20%EC%A2%8B%EC%9D%84%EB%93%AF)
+
 <br>3\. **임시 고정**: 동봉된 볼트와 와셔를 홈에 꽂은 후, 손으로 가볍게 돌려 살짝만 고정해 줍니다.
+![리어랙에 장착, 임시 고정](https://placehold.co/600x400?text=%EB%B8%8C%EB%9D%BC%EC%BC%93%20%EC%9E%A5%EC%B0%A9%EC%9C%84%EC%B9%98%20%EC%9D%B4%EB%AF%B8%EC%A7%80%201%EC%9E%A5%EC%9D%B8%EB%8D%B0%203%EC%BB%B7%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B4%20%EC%A2%8B%EC%9D%84%EB%93%AF)
+
 <br>4\. **완전 고정**: 바구니를 움직여 원하는 최종 위치에 맞춘 뒤, 육각 렌치를 사용하여 볼트를 단단히 조여 고정합니다.
+![리어랙에 장착, 완전 고정](https://placehold.co/600x400?text=%EB%B8%8C%EB%9D%BC%EC%BC%93%20%EC%9E%A5%EC%B0%A9%EC%9C%84%EC%B9%98%20%EC%9D%B4%EB%AF%B8%EC%A7%80%201%EC%9E%A5%EC%9D%B8%EB%8D%B0%203%EC%BB%B7%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B4%20%EC%A2%8B%EC%9D%84%EB%93%AF)
+
 <br>
 
 ---
@@ -34,13 +42,21 @@
 
 **Step 1. L자 브라켓 장착하기**
 <br>1\. **위치 맞추기**: L자 브라켓의 정면 홀과 자전거 핸들 포스트의 나사 홀 위치를 알맞게 맞춥니다.
+![앞에 장착, 브라켓 위치 맞추기](https://placehold.co/600x400?text=%EB%B8%8C%EB%9D%BC%EC%BC%93%20%EC%9E%A5%EC%B0%A9%EC%9C%84%EC%B9%98%20%EC%9D%B4%EB%AF%B8%EC%A7%80%201%EC%9E%A5%EC%9D%B8%EB%8D%B0%203%EC%BB%B7%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B4%20%EC%A2%8B%EC%9D%84%EB%93%AF)
+
 <br>2\. **브라켓 고정**: 위치를 맞춘 후, 볼트를 손으로 가볍게 돌려 임시로 고정합니다. 자리를 올바르게 잡아가며 육각 렌치를 이용해 단단히 조여줍니다.
    - *주의:* 브라켓 장착 후 손으로 흔들었을 때 유격이나 흔들림이 없어야 합니다.
+![앞에 장착, 브라켓 고정](https://placehold.co/600x400?text=%EB%B8%8C%EB%9D%BC%EC%BC%93%20%EC%9E%A5%EC%B0%A9%EC%9C%84%EC%B9%98%20%EC%9D%B4%EB%AF%B8%EC%A7%80%201%EC%9E%A5%EC%9D%B8%EB%8D%B0%203%EC%BB%B7%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B4%20%EC%A2%8B%EC%9D%84%EB%93%AF)
 
 **Step 2. 브라켓에 바구니 고정하기**
 <br>1\. **바구니 안착**: L자 브라켓에 있는 총 4곳의 볼트 고정 홀에 맞춰 바구니를 올리고 위치를 잡아줍니다.
+![앞에 장착, 바구니 안착](https://placehold.co/600x400?text=%EB%B8%8C%EB%9D%BC%EC%BC%93%20%EC%9E%A5%EC%B0%A9%EC%9C%84%EC%B9%98%20%EC%9D%B4%EB%AF%B8%EC%A7%80%201%EC%9E%A5%EC%9D%B8%EB%8D%B0%203%EC%BB%B7%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B4%20%EC%A2%8B%EC%9D%84%EB%93%AF)
+
 <br>2\. **하단 고정**: 바구니 뚜껑을 열고 바구니 바닥 부분 홀에 볼트를 꽂아 손으로 살짝 고정합니다. 정확한 위치를 맞춘 후 육각 렌치로 강하게 조여줍니다.
+![앞에 장착, 하단 고정](https://placehold.co/600x400?text=%EB%B8%8C%EB%9D%BC%EC%BC%93%20%EC%9E%A5%EC%B0%A9%EC%9C%84%EC%B9%98%20%EC%9D%B4%EB%AF%B8%EC%A7%80%201%EC%9E%A5%EC%9D%B8%EB%8D%B0%203%EC%BB%B7%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B4%20%EC%A2%8B%EC%9D%84%EB%93%AF)
+
 <br>3\. **상단 고정**: 바구니 위쪽 부분의 홀에도 볼트를 꽂아 손으로 먼저 살짝 조여준 후, 마지막으로 육각 렌치를 이용해 강하게 조여 장착을 마무리합니다.
+![앞에 장착, 상단 고정 ](https://placehold.co/600x400?text=%EB%B8%8C%EB%9D%BC%EC%BC%93%20%EC%9E%A5%EC%B0%A9%EC%9C%84%EC%B9%98%20%EC%9D%B4%EB%AF%B8%EC%A7%80%201%EC%9E%A5%EC%9D%B8%EB%8D%B0%203%EC%BB%B7%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B4%20%EC%A2%8B%EC%9D%84%EB%93%AF)
 
 <br>
 
