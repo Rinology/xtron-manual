@@ -63,3 +63,4 @@
 ---
 
 > ⚠️ **설치 확인**: 장착이 완료되었다면 바구니 뚜껑을 닫고 손으로 흔들어 보며 단단히 고정되었는지 반드시 확인해 주세요.
+![마지막 확인](https://placehold.co/600x400?text=%EB%B8%8C%EB%9D%BC%EC%BC%93%20%EC%9E%A5%EC%B0%A9%EC%9C%84%EC%B9%98%20%EC%9D%B4%EB%AF%B8%EC%A7%80%201%EC%9E%A5%EC%9D%B8%EB%8D%B0%203%EC%BB%B7%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B4%20%EC%A2%8B%EC%9D%84%EB%93%AF)
