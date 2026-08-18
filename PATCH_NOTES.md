@@ -4,6 +4,26 @@
 
 ---
 
+## 📅 [2026-08-18] 부품 관련 마크다운 파일 parts 디렉토리 정리
+
+### 📁 파일 구조 개편 (Refactoring & Organization)
+- **부품 관련 MD 파일 `src/data/markdown/parts/` 디렉토리로 이동 및 경로 분리**
+  - 기존 `src/data/markdown/basic/`에 위치하던 부품 관련 마크다운 문서 9종을 새로 생성된 `src/data/markdown/parts/` 디렉토리로 이동하여 체계적으로 분리 정리했습니다.
+  - 이동된 파일:
+    - `pedal.md`
+    - `kickstand-TypeA.md`
+    - `kickstand-TypeB.md`
+    - `battery-braket.md`
+    - `Frontrack-TypeC.md`
+    - `suntour-seatpost.md`
+    - `brake-pad.md`
+    - `lcd-display-replacement.md`
+    - `keybox-replacement.md`
+- **가이드 데이터 참조 경로 업데이트 (`src/data/guides.jsx`)**
+  - 이동된 파일(`pedal.md`, `suntour-seatpost.md` 등)의 `markdownFile` 참조 경로를 `parts/...`로 일치하도록 업데이트했습니다.
+
+---
+
 ## 📅 [2026-07-28] 영문 및 한글 폰트 단일화 (페이퍼로지 전면 적용)
 
 ### ✨ 기능 추가 및 문서화 (Features & Documentation)

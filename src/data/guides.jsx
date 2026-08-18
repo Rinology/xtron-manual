@@ -16,7 +16,7 @@ export const guidesData = {
               title: "페달 장착 방법",
               icon: <Wrench size={18} />,
               summary: ["좌/우 페달 식별 및 결합 방향 확인", "페달 렌치로 유격 없이 단단히 조임"],
-              markdownFile: 'basic/pedal.md'
+              markdownFile: 'parts/pedal.md'
             },
             /*
             {
@@ -45,7 +45,7 @@ export const guidesData = {
               title: "썬투어 서스펜션 안장",
               icon: <Settings size={18} />,
               summary: ["썬투어 싯포스트 구조 이해 및 안장 교체 방법", "체중에 따른 장력(Preload) 조절"],
-              markdownFile: 'basic/suntour-seatpost.md'
+              markdownFile: 'parts/suntour-seatpost.md'
             }
             */
           ]
@@ -95,7 +95,7 @@ export const guidesData = {
               icon: <Wrench size={18} />,
               youtubeLink: "https://youtu.be/T0fKF32Y158",
               summary: ["안장과 싯포스트를 분리하고 썬투어 싯포스트를 결합합니다."],
-              markdownFile: 'basic/suntour-seatpost.md'
+              markdownFile: 'parts/suntour-seatpost.md'
             }
           ]
         }
