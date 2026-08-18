@@ -22,8 +22,8 @@
 
 자전거 프레임의 킥스탠드 장착부에 나사선이 가공되어 있는지 확인 후, 알맞은 방법으로 장착을 진행하세요.
 
-![나사선 있는것과 없는것](project/xtron-guide/parts/kickstand_install_type_B_1.webp)
-![나사선 있는것과 없는것](project/xtron-guide/parts/kickstand_install_type_B_2.webp)
+![나사선 있는것과 없는것](/project/xtron-guide/parts/kickstand_install_type_B_1.webp)
+![나사선 있는것과 없는것](/project/xtron-guide/parts/kickstand_install_type_B_2.webp)
 
 
 ---
@@ -36,17 +36,17 @@
 **❶ 위치 맞추기**
 <br>프레임 장착부 뒤쪽으로 킥스탠드 본품을 위치시킵니다.
 
-![프레임 위에 킥스탠드](project/xtron-guide/parts/kickstand_install_type_B_3.webp)
+![프레임 위에 킥스탠드](/project/xtron-guide/parts/kickstand_install_type_B_3.webp)
 
 **❷ 임시 고정하기 (가결합)**
 <br>**볼트에 와셔**를 끼운 뒤, 프레임의 나사선 구멍에 맞춰 **손으로 부드럽게 돌려 가결합**합니다.
 
-![볼트 와셔 끼우기](project/xtron-guide/parts/kickstand_install_type_B_4.webp)
+![볼트 와셔 끼우기](/project/xtron-guide/parts/kickstand_install_type_B_4.webp)
 
 **❸ 단단히 고정하기 (공구 사용)**
 <br>양쪽 볼트를 모두 가결합하여 위치를 잡은 후, **5mm 육각렌치**와 **10mm 스패너**를 사용하여 흔들리지 않도록 단단히 고정시킵니다.
 
-![조여주기](project/xtron-guide/parts/kickstand_install_type_B_5.webp)
+![조여주기](/project/xtron-guide/parts/kickstand_install_type_B_5.webp)
 
 ---
 

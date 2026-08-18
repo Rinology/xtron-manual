@@ -43,12 +43,12 @@
 <br>프레임 뒤쪽으로 튀어나온 볼트에 **와셔 ➞ 너트**를 순서대로 끼운 뒤, 부품이 빠지지 않도록 **손으로만 살짝 조여줍니다.** 
 <br>*(나머지 한쪽 구멍도 동일하게 진행합니다.)*
 
-![너트조이기](project/xtron-guide/parts/kickstand_install_type_A_5_hand.webp)
+![너트조이기](/project/xtron-guide/parts/kickstand_install_type_A_5_hand.webp)
 
 **❸ 단단히 고정하기 (공구 사용)**
 <br>킥스탠드의 위치를 정확히 맞춘 후, **5mm 육각렌치**와 **10mm 스패너**를 양쪽에 맞물려 흔들리지 않도록 단단하게 꽉 조여 마무리합니다.
 
-![단단히 고정](project/xtron-guide/parts/kickstand_install_type_A_6_wrench.webp)
+![단단히 고정](/project/xtron-guide/parts/kickstand_install_type_A_6_wrench.webp)
 
 ---
 
