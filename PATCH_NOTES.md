@@ -21,6 +21,7 @@
     - `keybox-replacement.md`
 - **가이드 데이터 참조 경로 업데이트 (`src/data/guides.jsx`)**
   - 이동된 파일(`pedal.md`, `suntour-seatpost.md` 등)의 `markdownFile` 참조 경로를 `parts/...`로 일치하도록 업데이트했습니다.
+  - `lcd/`에서 `lcd-manual/`로 변경된 LCD 가이드 마크다운 파일들의 참조 경로(`lcd-manual/...`)를 업데이트했습니다.
 
 ---
 

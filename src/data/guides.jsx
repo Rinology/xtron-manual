@@ -114,21 +114,21 @@ export const guidesData = {
               title: "전원 켜기/끄기",
               icon: <Power size={18} />,
               summary: ["가운데 전원 버튼(M)을 3초간 길게 누르면 전원이 켜지고 꺼집니다."],
-              markdownFile: 'lcd/lcd-power.md'
+              markdownFile: 'lcd-manual/lcd-power.md'
             },
             {
               id: "lcd-display-mode",
               title: "화면 모드 변경",
               icon: <MonitorPlay size={18} />,
               summary: ["가운데 전원 버튼(M)을 짧게 누를 때마다 화면 정보가 전환됩니다."],
-              markdownFile: 'lcd/lcd-display-mode.md'
+              markdownFile: 'lcd-manual/lcd-display-mode.md'
             },
             {
               id: "lcd-light",
               title: "전조등/백라이트 켜기",
               icon: <Lightbulb size={18} />,
               summary: ["▲ 버튼을 길게 누르면 라이트가 점등됩니다."],
-              markdownFile: 'lcd/lcd-light.md'
+              markdownFile: 'lcd-manual/lcd-light.md'
             }
           ]
         },
@@ -141,21 +141,21 @@ export const guidesData = {
               title: "PAS 단계 설정",
               icon: <Activity size={18} />,
               summary: ["상/하단 버튼을 짧게 눌러 모터 어시스트 0~5단계를 세팅합니다."],
-              markdownFile: 'lcd/lcd-pas-mode.md'
+              markdownFile: 'lcd-manual/lcd-pas-mode.md'
             },
             {
               id: "lcd-walk-mode",
               title: "도보 모드 (끌바)",
               icon: <PersonStanding size={18} />,
               summary: ["정지 상태에서 ▼ 버튼을 길게 누르면 사람 걷는 속도로 밀어줍니다."],
-              markdownFile: 'lcd/lcd-walk-mode.md'
+              markdownFile: 'lcd-manual/lcd-walk-mode.md'
             },
             {
               id: "lcd-cruise-mode",
               title: "크루즈 모드",
               icon: <Gauge size={18} />,
               summary: ["기능 작동 시 스로틀이나 페달 조작 없이도 정속 주행합니다."],
-              markdownFile: 'lcd/lcd-cruise-mode.md'
+              markdownFile: 'lcd-manual/lcd-cruise-mode.md'
             }
           ]
         }
