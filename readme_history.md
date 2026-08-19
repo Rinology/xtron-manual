@@ -4,6 +4,7 @@
 - CDN 기본 URL 폴백 적용 (`VITE_CDN_URL` 미지정 환경에서도 CDN 주소 `https://cdn.xtron-guide.kr` 자동 적용).
 - 킥스탠드 타입 A(`kickstand-TypeA.md`) 및 타입 B(`kickstand-TypeB.md`) 이미지 미출력 이슈 해결.
 - 로컬 오프라인 메뉴(`src/data/guides.jsx`)에 킥스탠드(타입 A, B) 항목 추가.
+- 썬투어 싯포스트 마크다운 파일 위치 확인 및 `src/data/markdown/parts/suntour-seatpost.md` 이미지 최신화.
 - CMS `MarkdownFile` 컬럼에 하위 경로 없이 `filename.md`만 입력 시 하위 폴더 자동 검색 렌더링 검증 완료.
 
 ---

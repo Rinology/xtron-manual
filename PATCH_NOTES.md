@@ -14,7 +14,8 @@
 ### 📋 가이드 데이터 및 로컬 메뉴 보완 (`src/data/guides.jsx`)
 - **로컬 가이드 메뉴에 킥스탠드(타입 A, B) 항목 추가**
   - CMS(구글 스프레드시트) 외 오프라인/로컬 폴백 메뉴 데이터(`guidesData`)에도 `kickstand-TypeA` 및 `kickstand-TypeB` 항목을 추가하여 연결성을 보장했습니다.
-  - CMS에서 `MarkdownFile` 컬럼에 `parts/` 경로 없이 `kickstand-TypeA.md`와 같이 파일명만 지정해도 `src/data/markdown/parts/` 하위 경로를 자동 검색하여 렌더링하는 기능을 지원하고 유지했습니다.
+- **썬투어 싯포스트 가이드(`src/data/markdown/parts/suntour-seatpost.md`) 이미지 정보 반영**
+  - 기존 `basic/`에서 `parts/`로 이동된 `parts/suntour-seatpost.md` 파일에 사용자의 최신 이미지 마크다운 수정본을 즉시 업데이트 반영했습니다.
 
 ---
 

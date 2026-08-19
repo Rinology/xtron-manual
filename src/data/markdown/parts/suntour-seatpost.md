@@ -24,9 +24,14 @@
 
 #### 3. 썬투어 싯포스트에 안장 레일 결합
 분리한 안장의 하단 레일을 썬투어 싯포스트의 마운트에 맞추어 올립니다.
+
+![썬투어 싯포스트 끼우기](https://placehold.co/600x400?text=%EB%B8%8C%EB%9D%BC%EC%BC%93%20%EC%9E%A5%EC%B0%A9%EC%9C%84%EC%B9%98%20%EC%9D%B4%EB%AF%B8%EC%A7%80%201%EC%9E%A5%EC%9D%B8%EB%8D%B0%203%EC%BB%B7%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B4%20%EC%A2%8B%EC%9D%84%EB%93%AF)
+
 이후 측면의 육각 볼트를 이용하여 안장의 **수평 각도**를 맞추고 강하게 체결해 줍니다.
 
-![썬투어 싯포스트 안장 결합](https://placehold.co/600x337?text=Install+Suntour+Saddle)
+![썬투어 싯포스트 육각 볼트 열기](https://placehold.co/600x400?text=%EB%B8%8C%EB%9D%BC%EC%BC%93%20%EC%9E%A5%EC%B0%A9%EC%9C%84%EC%B9%98%20%EC%9D%B4%EB%AF%B8%EC%A7%80%201%EC%9E%A5%EC%9D%B8%EB%8D%B0%203%EC%BB%B7%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B4%20%EC%A2%8B%EC%9D%84%EB%93%AF)
+![썬투어 싯포스트 수평 맞추기](https://placehold.co/600x400?text=%EB%B8%8C%EB%9D%BC%EC%BC%93%20%EC%9E%A5%EC%B0%A9%EC%9C%84%EC%B9%98%20%EC%9D%B4%EB%AF%B8%EC%A7%80%201%EC%9E%A5%EC%9D%B8%EB%8D%B0%203%EC%BB%B7%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B4%20%EC%A2%8B%EC%9D%84%EB%93%AF)
+![썬투어 싯포스트 육각 볼트 체결](https://placehold.co/600x400?text=%EB%B8%8C%EB%9D%BC%EC%BC%93%20%EC%9E%A5%EC%B0%A9%EC%9C%84%EC%B9%98%20%EC%9D%B4%EB%AF%B8%EC%A7%80%201%EC%9E%A5%EC%9D%B8%EB%8D%B0%203%EC%BB%B7%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B4%20%EC%A2%8B%EC%9D%84%EB%93%AF)
 
 ---
 
