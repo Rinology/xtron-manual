@@ -20,11 +20,11 @@
 
 1\. **케이블 분리**: 기존 계기판에 연결된 케이블을 양손으로 잡고 조심스럽게 당겨 분리합니다.
 
-![분리해야하는 케이블 이미지](https://placehold.co/600x400?text=%EB%B6%84%EB%A6%AC%ED%95%B4%EC%95%BC%ED%95%98%EB%8A%94%20%EC%BC%80%EC%9D%B4%EB%B8%94%20%EC%9D%B4%EB%AF%B8%EC%A7%80)
+![분리해야하는 케이블 이미지](project/xtron-guide/parts/LCD/color_lcd_display_replace_1.webp)
 
 2\. **볼트 해체**: 계기판 아래쪽 홈에 있는 고정 볼트를 2.5mm 육각렌치를 사용하여 풀어줍니다.
 
-![아래 홈 위치 이미지(볼트위치)](https://placehold.co/600x400?text=%EC%95%84%EB%9E%98%20%ED%99%88%20%EC%9C%84%EC%B9%98%20%EC%9D%B4%EB%AF%B8%EC%A7%80(%EB%B3%BC%ED%8A%B8%EC%9C%84%EC%B9%98))
+![아래 홈 위치 이미지(볼트위치)](project/xtron-guide/parts/LCD/color_lcd_display_replace_2.webp)
 
 3\. **완전 탈거**: 볼트를 다 푼 후, 거치대(클램프) 관절을 열어 핸들바에서 계기판을 완전히 탈거해 줍니다.
 
@@ -36,12 +36,12 @@
 
 2\. **볼트 삽입**: 볼트를 홀에 넣어 관절을 닫아주며, 위치 조정을 위해 볼트를 꽉 조이지 않고 적당히 가결합해 줍니다.
 
-![계기판 핸들바에 가결합되어있는 이미지](https://placehold.co/600x400?text=%EA%B3%84%EA%B8%B0%ED%8C%90%20%ED%95%B8%EB%93%A4%EB%B0%94%EC%97%90%20%EA%B0%80%EA%B2%B0%ED%95%A9%EB%90%98%EC%96%B4%EC%9E%88%EB%8A%94%20%EC%9D%B4%EB%AF%B8%EC%A7%80)
+![계기판 핸들바에 가결합되어있는 이미지](project/xtron-guide/parts/LCD/color_lcd_display_replace_3.webp)
 
 3\. **위치 고정**: 계기판을 잡고 키박스 옆으로 최대한 밀어 밀착시킵니다. <br>&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;이후 주행 중 흔들리거나 돌아가지 않도록 육각렌치로 볼트를 꽉 조여 단단히 고정해 줍니다.
 
-![키박스옆으로 최대한 옆으로 이동](https://placehold.co/600x400?text=%ED%82%A4%EB%B0%95%EC%8A%A4%20%EC%98%86%EC%9C%BC%EB%A1%9C%20%EC%B5%9C%EB%8C%80%ED%95%9C%20%EB%B0%80%EC%B0%A9%EB%90%98%EC%96%B4%EC%9E%88%EB%8A%94%20%EC%9D%B4%EB%AF%B8%EC%A7%80)
-![볼트로 고정](https://placehold.co/600x400?text=%ED%82%A4%EB%B0%95%EC%8A%A4%20%EC%98%86%EC%9C%BC%EB%A1%9C%20%EC%B5%9C%EB%8C%80%ED%95%9C%20%EB%B0%80%EC%B0%A9%EB%90%98%EC%96%B4%EC%9E%88%EB%8A%94%20%EC%9D%B4%EB%AF%B8%EC%A7%80)
+![키박스옆으로 최대한 옆으로 이동](project/xtron-guide/parts/LCD/color_lcd_display_replace_4.webp)
+![볼트로 고정](project/xtron-guide/parts/LCD/color_lcd_display_replace_5.webp)
 
 ---
 
@@ -51,8 +51,8 @@
 <span style="color:red">**케이블 연결 시 주의사항 (핀 파손 주의)**</span>
 케이블을 연결할 때는 내부 핀이 휘어지지 않도록 주의해야 합니다. <br>케이블 연결 부위 외부에 있는 **두 케이블의 화살표(▲)가 서로 마주 보도록** 정확히 맞춘 상태에서 밀어 넣어 장착해 주세요.
 
-![케이블을 꼽으려는 손](https://placehold.co/600x400?text=%EB%91%90%20%EC%BC%80%EC%9D%B4%EB%B8%94%EC%9D%98%20%ED%99%94%EC%82%B4%ED%91%9C%EA%B0%80%20%EB%A7%88%EC%A3%BC%EB%B3%B4%EA%B3%A0%EC%9E%88%EB%8A%94%20%EC%9D%B4%EB%AF%B8%EC%A7%80)
-![두 케이블의 화살표가 마주보고있는 이미지](https://placehold.co/600x400?text=%EB%91%90%20%EC%BC%80%EC%9D%B4%EB%B8%94%EC%9D%98%20%ED%99%94%EC%82%B4%ED%91%9C%EA%B0%80%20%EB%A7%88%EC%A3%BC%EB%B3%B4%EA%B3%A0%EC%9E%88%EB%8A%94%20%EC%9D%B4%EB%AF%B8%EC%A7%80)
+![케이블을 꼽으려는 손](project/xtron-guide/parts/LCD/color_lcd_display_replace_6_insert.webp)
+![두 케이블의 화살표가 마주보고있는 이미지](project/xtron-guide/parts/LCD/color_lcd_display_replace_7_connect.webp)
 
 ---
 
@@ -66,4 +66,4 @@
 
 3\. **세부 기능 확인**: 화면이 켜졌다면 조작 버튼을 사용하여 라이트 점등, 워킹 모드(도보 지원) 등 <br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;계기판에서 지원하는 모든 기능이 정상적으로 작동하는지 꼼꼼히 점검해 보세요.
 
-![계기판이 작동하는 모습](https://placehold.co/600x400?text=%EB%91%90%20%EC%BC%80%EC%9D%B4%EB%B8%94%EC%9D%98%20%ED%99%94%EC%82%B4%ED%91%9C%EA%B0%80%20%EB%A7%88%EC%A3%BC%EB%B3%B4%EA%B3%A0%EC%9E%88%EB%8A%94%20%EC%9D%B4%EB%AF%B8%EC%A7%80)
+![계기판이 작동하는 모습](project/xtron-guide/parts/LCD/color_lcd_display_replace_8_final.webp)
