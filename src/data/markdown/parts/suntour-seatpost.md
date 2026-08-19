@@ -49,5 +49,5 @@
 #### 5. 조립 완료 및 최종 점검
 탑승하여 체중을 실었을 때 서스펜션이 부드럽게 작동하는지 확인하세요. <br>안장이 앞뒤나 좌우로 흔들림이 있다면 하단 마운트 볼트를 다시 한 번 강하게 조여주어야 합니다.
 
-![장착 후 무게 실어서 확인](project/xtron-guide/parts/suntour/suntour-seatpost_install_9.webp)
+![장착 후 무게 실어서 확인](project/xtron-guide/parts/suntour/suntour-seatpost_install_9_check.webp)
 
