@@ -37,16 +37,16 @@ function App() {
     }
   }, [allGuideItems]);
 
-  // Cmd+K 단축키 리스너
+  // Cmd+K / Ctrl+K 단축키 리스너 (한글 IME, Caps Lock, e.code 지원)
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      if ((e.metaKey || e.ctrlKey) && (e.code === 'KeyK' || e.key?.toLowerCase() === 'k' || e.keyCode === 75)) {
         e.preventDefault();
         setIsSearchOpen(true);
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown, true);
+    return () => window.removeEventListener('keydown', handleKeyDown, true);
   }, []);
 
   // URL 해시 동기화 로직
