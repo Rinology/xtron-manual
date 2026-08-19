@@ -40,7 +40,8 @@
 
 3\. **위치 고정**: 계기판을 잡고 키박스 옆으로 최대한 밀어 밀착시킵니다. <br>&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;이후 주행 중 흔들리거나 돌아가지 않도록 육각렌치로 볼트를 꽉 조여 단단히 고정해 줍니다.
 
-![키박스 옆으로 최대한 밀착되어있는 이미지](https://placehold.co/600x400?text=%ED%82%A4%EB%B0%95%EC%8A%A4%20%EC%98%86%EC%9C%BC%EB%A1%9C%20%EC%B5%9C%EB%8C%80%ED%95%9C%20%EB%B0%80%EC%B0%A9%EB%90%98%EC%96%B4%EC%9E%88%EB%8A%94%20%EC%9D%B4%EB%AF%B8%EC%A7%80)
+![키박스옆으로 최대한 옆으로 이동](https://placehold.co/600x400?text=%ED%82%A4%EB%B0%95%EC%8A%A4%20%EC%98%86%EC%9C%BC%EB%A1%9C%20%EC%B5%9C%EB%8C%80%ED%95%9C%20%EB%B0%80%EC%B0%A9%EB%90%98%EC%96%B4%EC%9E%88%EB%8A%94%20%EC%9D%B4%EB%AF%B8%EC%A7%80)
+![볼트로 고정](https://placehold.co/600x400?text=%ED%82%A4%EB%B0%95%EC%8A%A4%20%EC%98%86%EC%9C%BC%EB%A1%9C%20%EC%B5%9C%EB%8C%80%ED%95%9C%20%EB%B0%80%EC%B0%A9%EB%90%98%EC%96%B4%EC%9E%88%EB%8A%94%20%EC%9D%B4%EB%AF%B8%EC%A7%80)
 
 ---
 
@@ -50,6 +51,7 @@
 <span style="color:red">**케이블 연결 시 주의사항 (핀 파손 주의)**</span>
 케이블을 연결할 때는 내부 핀이 휘어지지 않도록 주의해야 합니다. <br>케이블 연결 부위 외부에 있는 **두 케이블의 화살표(▲)가 서로 마주 보도록** 정확히 맞춘 상태에서 밀어 넣어 장착해 주세요.
 
+![케이블을 꼽으려는 손](https://placehold.co/600x400?text=%EB%91%90%20%EC%BC%80%EC%9D%B4%EB%B8%94%EC%9D%98%20%ED%99%94%EC%82%B4%ED%91%9C%EA%B0%80%20%EB%A7%88%EC%A3%BC%EB%B3%B4%EA%B3%A0%EC%9E%88%EB%8A%94%20%EC%9D%B4%EB%AF%B8%EC%A7%80)
 ![두 케이블의 화살표가 마주보고있는 이미지](https://placehold.co/600x400?text=%EB%91%90%20%EC%BC%80%EC%9D%B4%EB%B8%94%EC%9D%98%20%ED%99%94%EC%82%B4%ED%91%9C%EA%B0%80%20%EB%A7%88%EC%A3%BC%EB%B3%B4%EA%B3%A0%EC%9E%88%EB%8A%94%20%EC%9D%B4%EB%AF%B8%EC%A7%80)
 
 ---
@@ -63,3 +65,5 @@
 2\. **전원 인가**: 키박스에 열쇠를 꽂고 전원을 켰을 때, 컬러 계기판 화면이 정상적으로 켜지는지 확인합니다.
 
 3\. **세부 기능 확인**: 화면이 켜졌다면 조작 버튼을 사용하여 라이트 점등, 워킹 모드(도보 지원) 등 <br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;계기판에서 지원하는 모든 기능이 정상적으로 작동하는지 꼼꼼히 점검해 보세요.
+
+![계기판이 작동하는 모습](https://placehold.co/600x400?text=%EB%91%90%20%EC%BC%80%EC%9D%B4%EB%B8%94%EC%9D%98%20%ED%99%94%EC%82%B4%ED%91%9C%EA%B0%80%20%EB%A7%88%EC%A3%BC%EB%B3%B4%EA%B3%A0%EC%9E%88%EB%8A%94%20%EC%9D%B4%EB%AF%B8%EC%A7%80)
