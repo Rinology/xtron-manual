@@ -1,6 +1,12 @@
 # README Update History
 
-## [2026-07-22]
+## [2026-08-19]
+- CDN 기본 URL 폴백 적용 (`VITE_CDN_URL` 미지정 환경에서도 CDN 주소 `https://cdn.xtron-guide.kr` 자동 적용).
+- 킥스탠드 타입 A(`kickstand-TypeA.md`) 및 타입 B(`kickstand-TypeB.md`) 이미지 미출력 이슈 해결.
+- 로컬 오프라인 메뉴(`src/data/guides.jsx`)에 킥스탠드(타입 A, B) 항목 추가.
+- CMS `MarkdownFile` 컬럼에 하위 경로 없이 `filename.md`만 입력 시 하위 폴더 자동 검색 렌더링 검증 완료.
+
+---
 - CMS 가이드라인 업데이트: 자전거 AS 메뉴얼 예시 적용, 소분류 사용 팁 및 IconName 가이드 추가.
 - Git 충돌 방지 팁 추가: 작업 영역 분리를 통한 깃허브 충돌(Merge Conflict) 방지 팁 작성.
 - 다이어그램 문법 오류 수정: 동작 원리 흐름도(Mermaid)에서 발생하던 Parse Error 완화.

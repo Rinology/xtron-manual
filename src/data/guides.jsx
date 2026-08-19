@@ -16,7 +16,23 @@ export const guidesData = {
               title: "페달 장착 방법",
               icon: <Wrench size={18} />,
               summary: ["좌/우 페달 식별 및 결합 방향 확인", "페달 렌치로 유격 없이 단단히 조임"],
-              markdownFile: 'parts/pedal.md'
+              markdownFile: 'pedal.md'
+            },
+            {
+              id: "kickstand-TypeA",
+              title: "타입A_나사선 없는 킥스탠드",
+              icon: <Wrench size={18} />,
+              summary: ["킥스탠드 장착 방법(타입A)"],
+              markdownFile: 'kickstand-TypeA.md',
+              youtubeLink: "https://youtu.be/N_LmToDGdXg?si=TAvREB5CsvYxEvCx"
+            },
+            {
+              id: "kickstand-TypeB",
+              title: "타입B_나사선 있는 킥스탠드",
+              icon: <Wrench size={18} />,
+              summary: ["킥스탠드 장착 방법(타입B)"],
+              markdownFile: 'kickstand-TypeB.md',
+              youtubeLink: "https://youtu.be/N_LmToDGdXg?si=TAvREB5CsvYxEvCx"
             },
             /*
             {

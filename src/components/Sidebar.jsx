@@ -159,7 +159,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
               <>
                 {/* Full Brand Logo */}
                 <img 
-                  src={`${import.meta.env.VITE_CDN_URL}/common/logos/Xtron_x_Qualisports_Logo_Black.webp`} 
+                  src={`${import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr'}/common/logos/Xtron_x_Qualisports_Logo_Black.webp`} 
                   alt="Qualisports Logo" 
                   style={{ height: '20px', objectFit: 'contain', cursor: 'pointer' }} 
                   onClick={(e) => {
@@ -210,7 +210,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                   }}
                 >
                   <img 
-                    src={`${import.meta.env.VITE_CDN_URL}/common/logos/X_logo_black_v2.webp`} 
+                    src={`${import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr'}/common/logos/X_logo_black_v2.webp`} 
                     alt="Menu" 
                     style={{ width: '24px', height: '24px', objectFit: 'contain' }}
                   />

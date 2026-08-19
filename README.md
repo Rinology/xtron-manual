@@ -53,7 +53,7 @@
 | **ItemTitle** | 화면에 표시될 개별 가이드 제목 | `ㄴ 싯포스트 배터리 탈착` |
 | **IconName** | 사용할 lucide-react 아이콘 이름 ([전체 목록 보기](https://lucide.dev/icons)) | `Key` |
 | **Summary** | 검색 시 나타날 요약 설명 (여러 줄일 경우 `\|` 구분자 사용) | `싯포스트 일체형...` |
-| **MarkdownFile** | 연결될 마크다운 문서 파일의 경로 | `battery/battery-seatpost.md` |
+| **MarkdownFile** | 연결될 마크다운 문서 파일명 (예: `kickstand-TypeA.md` 또는 `parts/kickstand-TypeA.md`. 파일명만 적어도 자동 연결됨) | `kickstand-TypeA.md` |
 | **YoutubeLink** | (선택) 영상이 있는 경우 유튜브 주소 입력 | `https://youtu.be/...` (없으면 빈칸) |
 
 #### 📝 작성 예시 데이터:

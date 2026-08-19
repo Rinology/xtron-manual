@@ -270,10 +270,13 @@ export default function GuideContent({ activePage, setActivePage }) {
       return <code className={className} style={inline ? { background: 'rgba(0,0,0,0.05)', padding: '0.2rem 0.4rem', borderRadius: '4px', color: '#d1242f', fontFamily: 'monospace' } : {}} {...props}>{children}</code>;
     },
     img: ({node, src, ...props}) => {
-      const isRelative = src?.startsWith('/');
-      const fullSrc = (isRelative && import.meta.env.VITE_CDN_URL) 
-        ? `${import.meta.env.VITE_CDN_URL}${src}` 
-        : src;
+      const cdnBase = import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr';
+      const isExternal = src?.startsWith('http://') || src?.startsWith('https://') || src?.startsWith('data:');
+      let fullSrc = src;
+      if (!isExternal && src) {
+        const cleanPath = src.startsWith('/') ? src : `/${src}`;
+        fullSrc = `${cdnBase}${cleanPath}`;
+      }
       return (
         <img 
           src={fullSrc}

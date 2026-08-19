@@ -4,6 +4,20 @@
 
 ---
 
+## 📅 [2026-08-19] CDN 기본 URL 폴백 및 킥스탠드(타입 A, B) 이미지/로컬 메뉴 보완
+
+### 🐛 버그 수정 및 안정성 향상 (Bug Fixes & Stability)
+- **CDN 이미지 경로 폴백 추가 (`src/components/GuideContent.jsx`, `Header.jsx`, `Sidebar.jsx`)**
+  - 환경변수 `VITE_CDN_URL`이 설정되어 있지 않은 환경에서도 상대 경로 이미지(`/project/xtron-guide/...`) 및 로고가 정상적으로 CDN(`https://cdn.xtron-guide.kr`) 주소를 바라보도록 기본값(Fallback) 처리를 구현했습니다.
+  - 이로 인해 킥스탠드 타입 A(`kickstand-TypeA.md`) 및 타입 B(`kickstand-TypeB.md`)를 포함한 모든 마크다운 내부 이미지 렌더링 미출력 현상을 해결했습니다.
+
+### 📋 가이드 데이터 및 로컬 메뉴 보완 (`src/data/guides.jsx`)
+- **로컬 가이드 메뉴에 킥스탠드(타입 A, B) 항목 추가**
+  - CMS(구글 스프레드시트) 외 오프라인/로컬 폴백 메뉴 데이터(`guidesData`)에도 `kickstand-TypeA` 및 `kickstand-TypeB` 항목을 추가하여 연결성을 보장했습니다.
+  - CMS에서 `MarkdownFile` 컬럼에 `parts/` 경로 없이 `kickstand-TypeA.md`와 같이 파일명만 지정해도 `src/data/markdown/parts/` 하위 경로를 자동 검색하여 렌더링하는 기능을 지원하고 유지했습니다.
+
+---
+
 ## 📅 [2026-08-18] 부품 관련 마크다운 파일 parts 디렉토리 정리
 
 ### 📁 파일 구조 개편 (Refactoring & Organization)
