@@ -274,7 +274,10 @@ export default function GuideContent({ activePage, setActivePage }) {
       const isExternal = src?.startsWith('http://') || src?.startsWith('https://') || src?.startsWith('data:');
       let fullSrc = src;
       if (!isExternal && src) {
-        const cleanPath = src.startsWith('/') ? src : `/${src}`;
+        let cleanPath = src.startsWith('/') ? src : `/${src}`;
+        if (!cleanPath.startsWith('/project/xtron-guide/')) {
+          cleanPath = `/project/xtron-guide${cleanPath}`;
+        }
         fullSrc = `${cdnBase}${cleanPath}`;
       }
       return (

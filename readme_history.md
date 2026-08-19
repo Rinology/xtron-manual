@@ -1,6 +1,7 @@
 # README Update History
 
 ## [2026-08-19]
+- S3 키 복사 시 `/` 미포함 및 프로젝트 경로 미포함 경로 자동 정규화 로직 추가.
 - CDN 기본 URL 폴백 적용 (`VITE_CDN_URL` 미지정 환경에서도 CDN 주소 `https://cdn.xtron-guide.kr` 자동 적용).
 - 킥스탠드 타입 A(`kickstand-TypeA.md`) 및 타입 B(`kickstand-TypeB.md`) 이미지 미출력 이슈 해결.
 - 로컬 오프라인 메뉴(`src/data/guides.jsx`)에 킥스탠드(타입 A, B) 항목 추가.

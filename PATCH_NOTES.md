@@ -7,6 +7,8 @@
 ## 📅 [2026-08-19] CDN 기본 URL 폴백 및 킥스탠드(타입 A, B) 이미지/로컬 메뉴 보완
 
 ### 🐛 버그 수정 및 안정성 향상 (Bug Fixes & Stability)
+- **S3 키 경로(`/` 유무 및 프로젝트 경로 포함 여부) 자동 정규화 (`src/components/GuideContent.jsx`)**
+  - AWS S3 콘솔에서 키를 복사할 때 맨 앞 슬래시(`/`)가 없거나 (`project/xtron-guide/...`), 프로젝트 폴더 경로가 없는 형태 (`parts/...`)로 복사되더라도 자동으로 `/project/xtron-guide/...` 주소를 붙여 CDN(`https://cdn.xtron-guide.kr`)에서 정상 로드되도록 정규화 로직을 강화했습니다.
 - **CDN 이미지 경로 폴백 추가 (`src/components/GuideContent.jsx`, `Header.jsx`, `Sidebar.jsx`)**
   - 환경변수 `VITE_CDN_URL`이 설정되어 있지 않은 환경에서도 상대 경로 이미지(`/project/xtron-guide/...`) 및 로고가 정상적으로 CDN(`https://cdn.xtron-guide.kr`) 주소를 바라보도록 기본값(Fallback) 처리를 구현했습니다.
   - 이로 인해 킥스탠드 타입 A(`kickstand-TypeA.md`) 및 타입 B(`kickstand-TypeB.md`)를 포함한 모든 마크다운 내부 이미지 렌더링 미출력 현상을 해결했습니다.
