@@ -51,8 +51,8 @@
 <span style="color:red">**케이블 연결 시 주의사항 (핀 파손 주의)**</span>
 케이블을 연결할 때는 내부 핀이 휘어지지 않도록 주의해야 합니다. <br>케이블 연결 부위 외부에 있는 **두 케이블의 화살표(▲)가 서로 마주 보도록** 정확히 맞춘 상태에서 밀어 넣어 장착해 주세요.
 
-![케이블을 꼽으려는 손](project/xtron-guide/parts/LCD/color_lcd_display_replace_6_insert.webp)
-![두 케이블의 화살표가 마주보고있는 이미지](project/xtron-guide/parts/LCD/color_lcd_display_replace_7_connect.webp)
+![케이블을 꼽으려는 손](project/xtron-guide/parts/LCD/color_lcd_display_replace_6.webp)
+![두 케이블의 화살표가 마주보고있는 이미지](project/xtron-guide/parts/LCD/color_lcd_display_replace_7.webp)
 
 ---
 
@@ -66,4 +66,4 @@
 
 3\. **세부 기능 확인**: 화면이 켜졌다면 조작 버튼을 사용하여 라이트 점등, 워킹 모드(도보 지원) 등 <br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;계기판에서 지원하는 모든 기능이 정상적으로 작동하는지 꼼꼼히 점검해 보세요.
 
-![계기판이 작동하는 모습](project/xtron-guide/parts/LCD/color_lcd_display_replace_8_final.webp)
+![계기판이 작동하는 모습](project/xtron-guide/parts/LCD/color_lcd_display_replace_8.webp)
