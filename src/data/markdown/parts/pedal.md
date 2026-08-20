@@ -11,7 +11,8 @@
   - **우측(R):** 체인이 **있는** 방향
   - **좌측(L):** 체인이 **없는** 방향
 
-![페달 스핀들 L/R 각인 식별](/project/xtron-guide/basic/pedal-identify-lr.webp)
+![페달 스핀들 L/R 각인 식별](project/xtron-guide/parts/Pedal/pedal_install_1.webp)
+![자전거 L/R식별](project/xtron-guide/parts/Pedal/pedal_install_2.webp)
 
 <br>
 
@@ -23,14 +24,14 @@
 #### 👉 우측 페달(R): 시계 방향 회전
 우측은 일반 나사선이므로 **시계 방향(오른쪽)** 으로 돌려 결합합니다.
 
-![우측 가결합](/project/xtron-guide/basic/pedal_install_3_right.webp)
+![우측 가결합](project/xtron-guide/parts/Pedal/pedal_install_3.webp)
 
 <br>
 
 #### 👉 좌측 페달(L): 반시계 방향 회전 (주의 구간)
 풀림 방지를 위해 <span style="color: #ef4444; font-weight: bold;">역방향 나사산</span>이 적용되어 있습니다. 우측과 반대인 **반시계 방향(왼쪽)** 으로 결합하세요.
 
-![좌측 가결합](/project/xtron-guide/basic/pedal_install_6_left.webp)
+![좌측 가결합](project/xtron-guide/parts/Pedal/pedal_install_4.webp)
 
 <br>
 
@@ -42,8 +43,8 @@
 > [!TIP]
 > **💡 공통 조임 팁:** 양쪽 페달 모두 렌치를 쥔 상태에서 **자전거 앞바퀴(전륜) 방향** 으로 돌리면 꽉 조여집니다.
 
-![우측 렌치 고정](/project/xtron-guide/basic/pedal_install_4_right.webp)
-![좌측 렌치 고정](/project/xtron-guide/basic/pedal_install_7_left.webp)
+![우측 렌치 고정](project/xtron-guide/parts/Pedal/pedal_install_5.webp)
+![좌측 렌치 고정](project/xtron-guide/parts/Pedal/pedal_install_6.webp)
 
 **마무리:** 페달을 뒤로 헛돌려 뻑뻑함이 없는지 확인하세요.
 
