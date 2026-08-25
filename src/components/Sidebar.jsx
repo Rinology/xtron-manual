@@ -54,6 +54,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
   const renderGuideItem = (item) => (
     <button 
       key={item.id}
+      title={item.title}
       onClick={() => {
         setActivePage(item.id);
         window.scrollTo({ top: 0, behavior: 'instant' });
