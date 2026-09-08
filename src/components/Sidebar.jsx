@@ -361,6 +361,39 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
 
                     const isOpened = openCategories[category.id];
 
+                    // 서브카테고리가 없고 직속 아이템이 딱 1개인 경우: 아코디언 폴더 대신 바로 클릭 가능한 본문 링크로 렌더링
+                    if (displaySubCats.length === 0 && displayItems.length === 1) {
+                      const item = displayItems[0];
+                      return (
+                        <div key={category.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                          <button 
+                            onClick={() => {
+                              setActivePage(item.id);
+                              window.scrollTo({ top: 0, behavior: 'instant' });
+                              if (isMobile) setIsOpen(false);
+                            }}
+                            style={{ 
+                               display: 'flex', alignItems: 'center', justifyContent: 'space-between', 
+                               cursor: 'pointer', padding: '0.5rem',
+                               background: activePage === item.id ? 'var(--ci-primary-light)' : 'transparent',
+                               border: 'none', borderRadius: 'var(--radius-md)',
+                               width: '100%', textAlign: 'left', transition: 'all 0.2s'
+                            }}
+                            onMouseEnter={e => {
+                               if(activePage !== item.id) e.currentTarget.style.background = 'var(--surface-border)';
+                            }}
+                            onMouseLeave={e => {
+                               if(activePage !== item.id) e.currentTarget.style.background = 'transparent';
+                            }}
+                          >
+                            <h3 style={{ fontSize: '0.8rem', color: activePage === item.id ? 'var(--ci-primary)' : 'var(--text-secondary)', margin: 0, fontWeight: 700, whiteSpace: 'nowrap', letterSpacing: '0.02em' }}>
+                              {category.title}
+                            </h3>
+                          </button>
+                        </div>
+                      );
+                    }
+
                     return (
                       <div key={category.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                         <div 

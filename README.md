@@ -62,8 +62,9 @@
 | battery-guide | 배터리 가이드 | battery-removal | 배터리 탈착 | seatpost | 싯포스트형 | battery-seatpost | ㄴ 싯포스트 배터리 탈착 | Key | 싯포스트 일체형... | battery/battery-seatpost.md | |
 | basic | 기본 가이드 | basic-assembly | 조립 및 피팅 | | | pedal | 페달 장착 방법 | Wrench | 좌/우 페달 식별... | basic/pedal.md | https://youtu.be/... |
 
-> **💡 스프레드시트 작성 팁 (3단계 vs 4단계 구조)**
-> 소분류가 필요 없는 일반 항목(예: '페달 장착 방법')은 `ChildCategoryID`와 `ChildCategoryTitle`을 **빈칸**으로 두시면, 기존처럼 3단계(중분류 바로 아래 아이템)로 렌더링됩니다. 이름만 상황에 맞게 잘 지정해두시면 알아서 구조가 잡힙니다!
+> **💡 스프레드시트 작성 팁 (3단계 vs 4단계 구조 및 직통 링크)**
+> - **소분류 생략 (3단계)**: 소분류가 필요 없는 일반 항목은 `ChildCategoryID`와 `ChildCategoryTitle`을 **빈칸**으로 두시면, 기존처럼 3단계(중분류 바로 아래 아이템)로 렌더링됩니다.
+> - **폴더 생략 (직통 링크)**: '설명서 다운로드'처럼 하위 폴더 없이 클릭 시 바로 본문으로 이동하게 하려면, **`SubCategoryTitle`과 `ChildCategoryTitle`을 모두 빈칸으로** 두세요. 빈 폴더 없이 깔끔한 직통 링크 버튼으로 생성됩니다!
 
 > **🎨 IconName 작성 가이드**
 > [lucide.dev/icons](https://lucide.dev/icons)에서 원하는 아이콘을 검색한 뒤 **PascalCase** 이름을 그대로 입력합니다. 잘못된 이름이나 빈칸일 경우 자동으로 `HelpCircle`(❓) 아이콘이 표시됩니다.

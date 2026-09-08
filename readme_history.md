@@ -1,5 +1,8 @@
 # README Update History
 
+## [2026-09-08]
+- 사이드바 빈 폴더 생략 및 직통 링크(Direct Link) 설정을 위한 스프레드시트 작성 가이드라인(SubCategoryTitle, ChildCategoryTitle 빈칸 활용법) 추가.
+
 ## [2026-08-19]
 - S3 키 복사 시 `/` 미포함 및 프로젝트 경로 미포함 경로 자동 정규화 로직 추가.
 - CDN 기본 URL 폴백 적용 (`VITE_CDN_URL` 미지정 환경에서도 CDN 주소 `https://cdn.xtron-guide.kr` 자동 적용).

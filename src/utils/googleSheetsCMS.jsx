@@ -90,15 +90,8 @@ export async function fetchGuidesFromGoogleSheet(csvUrl) {
             // 1. 카테고리 찾기 또는 생성
             let category = parsedCategories.find(c => c.id === CategoryID);
             if (!category) {
-              category = { id: CategoryID, title: CategoryTitle, subCategories: [] };
+              category = { id: CategoryID, title: CategoryTitle, subCategories: [], items: [] };
               parsedCategories.push(category);
-            }
-
-            // 2. 서브카테고리 찾기 또는 생성
-            let subCategory = category.subCategories.find(sc => sc.id === SubCategoryID);
-            if (!subCategory) {
-              subCategory = { id: SubCategoryID, title: SubCategoryTitle, items: [], childCategories: [] };
-              category.subCategories.push(subCategory);
             }
 
             // 3. 아이콘 동적 렌더링 처리
@@ -113,16 +106,29 @@ export async function fetchGuidesFromGoogleSheet(csvUrl) {
               youtubeLink: YoutubeLink
             };
 
-            // 4. 소분류(ChildCategory) 존재 여부에 따른 아이템 추가
-            if (ChildCategoryID && ChildCategoryID.trim() !== "") {
-              let childCategory = subCategory.childCategories.find(cc => cc.id === ChildCategoryID);
-              if (!childCategory) {
-                childCategory = { id: ChildCategoryID, title: ChildCategoryTitle, items: [] };
-                subCategory.childCategories.push(childCategory);
-              }
-              childCategory.items.push(newItem);
+            // 2. 서브카테고리 존재 여부에 따른 분기 처리
+            if (!SubCategoryID || SubCategoryID.trim() === "") {
+              // 서브카테고리가 없으면 카테고리 직속 아이템으로 추가
+              category.items.push(newItem);
             } else {
-              subCategory.items.push(newItem);
+              // 서브카테고리가 있으면 서브카테고리 찾기 또는 생성
+              let subCategory = category.subCategories.find(sc => sc.id === SubCategoryID);
+              if (!subCategory) {
+                subCategory = { id: SubCategoryID, title: SubCategoryTitle, items: [], childCategories: [] };
+                category.subCategories.push(subCategory);
+              }
+
+              // 4. 소분류(ChildCategory) 존재 여부에 따른 아이템 추가
+              if (ChildCategoryID && ChildCategoryID.trim() !== "") {
+                let childCategory = subCategory.childCategories.find(cc => cc.id === ChildCategoryID);
+                if (!childCategory) {
+                  childCategory = { id: ChildCategoryID, title: ChildCategoryTitle, items: [] };
+                  subCategory.childCategories.push(childCategory);
+                }
+                childCategory.items.push(newItem);
+              } else {
+                subCategory.items.push(newItem);
+              }
             }
           });
 
