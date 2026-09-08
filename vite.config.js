@@ -14,6 +14,22 @@ export default defineConfig({
       },
       workbox: {
         // 기본 캐싱 설정만 사용 (네이티브 브라우저 캐시 활용)
+        runtimeCaching: [
+          {
+            urlPattern: /\.pdf$/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'pdf-cache',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+        ]
       }
     })
   ],

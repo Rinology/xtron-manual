@@ -8,6 +8,7 @@ import rehypeRaw from 'rehype-raw';
 import mermaid from 'mermaid';
 import { sanitizeUrl } from '../utils/security';
 import { Info, Lightbulb, AlertTriangle, ShieldAlert } from 'lucide-react';
+import Downloads from './Downloads';
 
 mermaid.initialize({
   startOnLoad: false,
@@ -302,6 +303,22 @@ export default function GuideContent({ activePage, setActivePage }) {
       >
         <TopActions />
         <CustomComponent />
+        <NavigationButtons />
+      </motion.div>
+    );
+  }
+
+  if (guide.id === 'downloads') {
+    return (
+      <motion.div
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -20 }}
+        transition={{ duration: 0.4 }}
+        style={{ paddingBottom: '4rem', paddingTop: '1rem' }}
+      >
+        <TopActions />
+        <Downloads />
         <NavigationButtons />
       </motion.div>
     );
