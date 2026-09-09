@@ -7,8 +7,7 @@ import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import mermaid from 'mermaid';
 import { sanitizeUrl } from '../utils/security';
-import { Info, Lightbulb, AlertTriangle, ShieldAlert } from 'lucide-react';
-import Downloads from './Downloads';
+import { Info, Lightbulb, AlertTriangle, ShieldAlert, BookOpen, FileDown } from 'lucide-react';
 
 mermaid.initialize({
   startOnLoad: false,
@@ -270,6 +269,59 @@ export default function GuideContent({ activePage, setActivePage }) {
       }
       return <code className={className} style={inline ? { background: 'rgba(0,0,0,0.05)', padding: '0.2rem 0.4rem', borderRadius: '4px', color: '#d1242f', fontFamily: 'monospace' } : {}} {...props}>{children}</code>;
     },
+    a: ({node, href, children, ...props}) => {
+      if (href && href.endsWith('.pdf')) {
+        const r2Url = import.meta.env.VITE_R2_PDF_URL || 'https://cdn.xtron-guide.kr/pdf';
+        const fullHref = href.startsWith('http') ? href : `${r2Url}/${href.replace(/^\//, '')}`;
+        
+        let title = '';
+        let desc = '';
+        const text = String(children);
+        if (text.includes('|')) {
+          const parts = text.split('|');
+          title = parts[0].trim();
+          desc = parts[1].trim();
+        } else {
+          title = text;
+        }
+
+        return (
+          <a
+            href={fullHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            download
+            style={{
+              display: 'flex', flexDirection: 'column', gap: '0.75rem',
+              background: 'var(--ci-white)', border: '1px solid var(--surface-border)',
+              borderRadius: '12px', padding: '1.25rem', textDecoration: 'none',
+              boxShadow: 'var(--shadow-sm)', marginBottom: '1rem',
+              transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <div style={{ padding: '0.5rem', background: 'var(--ci-primary-light)', borderRadius: '8px', color: 'var(--ci-primary)' }}>
+                <BookOpen size={20} />
+              </div>
+              <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)' }}>{title}</h3>
+            </div>
+            {desc && <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: '1.4' }}>{desc}</p>}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--ci-primary)', fontWeight: '600', fontSize: '0.9rem', marginTop: '0.5rem' }}>
+              <FileDown size={16} /> PDF 다운로드
+            </div>
+          </a>
+        );
+      }
+      return <a href={href} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--ci-primary)', textDecoration: 'underline' }} {...props}>{children}</a>;
+    },
     img: ({node, src, ...props}) => {
       const cdnBase = import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr';
       const isExternal = src?.startsWith('http://') || src?.startsWith('https://') || src?.startsWith('data:');
@@ -308,23 +360,6 @@ export default function GuideContent({ activePage, setActivePage }) {
     );
   }
 
-  if (guide.id === 'downloads') {
-    return (
-      <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -20 }}
-        transition={{ duration: 0.4 }}
-        style={{ paddingBottom: '4rem', paddingTop: '1rem' }}
-      >
-        <TopActions />
-        <Downloads />
-        <NavigationButtons />
-      </motion.div>
-    );
-  }
-
-  // Unified Rendering (Markdown or Fallback)
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}
