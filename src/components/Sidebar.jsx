@@ -361,6 +361,15 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
 
                     const isOpened = openCategories[category.id];
 
+                    if (category.id === 'downloads') {
+                      console.log('DEBUG DOWNLOADS CAT:', {
+                        displaySubCatsLen: displaySubCats.length,
+                        displayItemsLen: displayItems.length,
+                        displaySubCats,
+                        displayItems
+                      });
+                    }
+
                     // 서브카테고리가 없고 직속 아이템이 딱 1개인 경우: 아코디언 폴더 대신 바로 클릭 가능한 본문 링크로 렌더링
                     if (displaySubCats.length === 0 && displayItems.length === 1) {
                       const item = displayItems[0];

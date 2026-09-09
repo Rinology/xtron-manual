@@ -76,6 +76,11 @@ export async function fetchGuidesFromGoogleSheet(csvUrl) {
               ItemID, ItemTitle, IconName, Summary, MarkdownFile, YoutubeLink, Status
             } = row;
 
+            // ID나 Title이 없는 완전히 비정상적인 쓰레기 행(예: 빈 줄에 FALSE만 있는 행)은 무시
+            if ((!CategoryID || CategoryID.trim() === "") && (!ItemTitle || ItemTitle.trim() === "")) {
+              return;
+            }
+
             // Status 값이 비어있을 경우 기본값을 'branchdeploy'로 간주 (대표님 요청)
             const safeStatus = (Status || 'branchdeploy').trim().toLowerCase();
 

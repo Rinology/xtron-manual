@@ -21,6 +21,8 @@ export function GuideProvider({ children }) {
           setGuidesData(remoteData);
           
           const flatItems = remoteData.categories.reduce((acc, cat) => {
+            let catItems = cat.items ? [...cat.items] : [];
+            
             if (cat.subCategories) {
               const subItems = cat.subCategories.reduce((subAcc, subCat) => {
                 let items = subCat.items ? [...subCat.items] : [];
@@ -33,9 +35,9 @@ export function GuideProvider({ children }) {
                 }
                 return [...subAcc, ...items];
               }, []);
-              return [...acc, ...subItems];
+              catItems = [...catItems, ...subItems];
             }
-            return acc;
+            return [...acc, ...catItems];
           }, []);
           setAllGuideItems(flatItems);
         }
