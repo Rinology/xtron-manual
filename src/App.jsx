@@ -120,7 +120,7 @@ function App() {
         <Header activePage={activePage} setActivePage={setActivePage} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
         <main className="page-container">
           <AnimatePresence mode="wait">
-            {(isGuidesLoading || !isInitialRouteResolved) && initialHash ? (
+            {isGuidesLoading || !isInitialRouteResolved ? (
               <div key="loading" style={{ height: '70vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', color: 'var(--text-secondary)' }}>
                 <div style={{ width: '30px', height: '30px', border: '3px solid var(--surface-border)', borderTop: '3px solid var(--ci-primary)', borderRadius: '50%', animation: 'spin 1s linear infinite', marginBottom: '1rem' }}></div>
                 <p>가이드를 불러오는 중입니다...</p>
