@@ -15,7 +15,7 @@ import { useGuides } from './context/GuideContext';
 function App() {
   useSecurity(); // 보안 로직 적용
   
-  const { allGuideItems } = useGuides();
+  const { allGuideItems, isGuidesLoading } = useGuides();
 
   const isValidRoute = (hash, items) => {
     return hash === 'troubleshooting-wizard' || hash === 'not-found' || items.some(item => item.id === hash);
@@ -112,7 +112,13 @@ function App() {
         <Header activePage={activePage} setActivePage={setActivePage} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
         <main className="page-container">
           <AnimatePresence mode="wait">
-            {!activePage ? (
+            {isGuidesLoading && initialHash && !activePage ? (
+              <div key="loading" style={{ height: '70vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', color: 'var(--text-secondary)' }}>
+                <div style={{ width: '30px', height: '30px', border: '3px solid var(--surface-border)', borderTop: '3px solid var(--ci-primary)', borderRadius: '50%', animation: 'spin 1s linear infinite', marginBottom: '1rem' }}></div>
+                <p>가이드를 불러오는 중입니다...</p>
+                <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+              </div>
+            ) : !activePage ? (
               <Hero key="hero" setActivePage={setActivePage} onOpenSearch={() => setIsSearchOpen(true)} />
             ) : activePage === 'troubleshooting-wizard' ? (
               <TroubleshootingWizard key="wizard" setActivePage={setActivePage} />
