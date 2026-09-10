@@ -30,16 +30,20 @@ function App() {
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isInitialRouteResolved, setIsInitialRouteResolved] = useState(false);
 
   // 데이터(시트)가 로드되어 allGuideItems가 업데이트 되었을 때 URL 해시 다시 검증
   useEffect(() => {
-    const currentHash = window.location.hash.replace('#', '');
-    // URL에서 해시가 지워졌더라도 최초 접속 시점의 해시(initialHash)를 다시 시도합니다.
-    const hashToTest = currentHash || initialHash;
-    if (hashToTest && isValidRoute(hashToTest, allGuideItems)) {
-      setActivePage(hashToTest);
+    if (!isGuidesLoading) {
+      const currentHash = window.location.hash.replace('#', '');
+      // URL에서 해시가 지워졌더라도 최초 접속 시점의 해시(initialHash)를 다시 시도합니다.
+      const hashToTest = currentHash || initialHash;
+      if (hashToTest && isValidRoute(hashToTest, allGuideItems)) {
+        setActivePage(hashToTest);
+      }
+      setIsInitialRouteResolved(true);
     }
-  }, [allGuideItems, initialHash]);
+  }, [allGuideItems, initialHash, isGuidesLoading]);
 
   // Cmd+K / Ctrl+K 단축키 리스너 (한글 IME, Caps Lock, e.code 지원)
   useEffect(() => {
@@ -57,10 +61,14 @@ function App() {
   useEffect(() => {
     // 1. 상태(activePage)가 바뀔 때 브라우저 주소 표시줄 업데이트
     if (activePage) {
-      window.history.pushState(null, '', `#${activePage}`);
-    } else {
-      // activePage가 null(메인화면)일 경우 해시 제거
-      window.history.pushState(null, '', window.location.pathname + window.location.search);
+      if (window.location.hash !== `#${activePage}`) {
+        window.history.pushState(null, '', `#${activePage}`);
+      }
+    } else if (isInitialRouteResolved) {
+      // activePage가 null(메인화면)일 경우 해시 제거 (초기 로딩 완료 후에만)
+      if (window.location.hash) {
+        window.history.pushState(null, '', window.location.pathname + window.location.search);
+      }
     }
 
     // 2. 브라우저 뒤로/앞으로 가기 버튼 리스너
@@ -80,7 +88,7 @@ function App() {
       window.removeEventListener('hashchange', handleHashChange);
       window.removeEventListener('popstate', handleHashChange);
     };
-  }, [activePage]);
+  }, [activePage, allGuideItems, isInitialRouteResolved]);
 
   return (
     <div className="app-layout">
@@ -112,7 +120,7 @@ function App() {
         <Header activePage={activePage} setActivePage={setActivePage} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
         <main className="page-container">
           <AnimatePresence mode="wait">
-            {isGuidesLoading && initialHash && !activePage ? (
+            {(isGuidesLoading || !isInitialRouteResolved) && initialHash ? (
               <div key="loading" style={{ height: '70vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', color: 'var(--text-secondary)' }}>
                 <div style={{ width: '30px', height: '30px', border: '3px solid var(--surface-border)', borderTop: '3px solid var(--ci-primary)', borderRadius: '50%', animation: 'spin 1s linear infinite', marginBottom: '1rem' }}></div>
                 <p>가이드를 불러오는 중입니다...</p>
