@@ -21,6 +21,8 @@ function App() {
     return hash === 'troubleshooting-wizard' || hash === 'not-found' || items.some(item => item.id === hash);
   };
 
+  const [initialHash] = useState(() => window.location.hash.replace('#', ''));
+
   const [activePage, setActivePage] = useState(() => {
     const hash = window.location.hash.replace('#', '');
     return hash && isValidRoute(hash, allGuideItems) ? hash : null;
@@ -31,11 +33,13 @@ function App() {
 
   // 데이터(시트)가 로드되어 allGuideItems가 업데이트 되었을 때 URL 해시 다시 검증
   useEffect(() => {
-    const hash = window.location.hash.replace('#', '');
-    if (hash && isValidRoute(hash, allGuideItems)) {
-      setActivePage(hash);
+    const currentHash = window.location.hash.replace('#', '');
+    // URL에서 해시가 지워졌더라도 최초 접속 시점의 해시(initialHash)를 다시 시도합니다.
+    const hashToTest = currentHash || initialHash;
+    if (hashToTest && isValidRoute(hashToTest, allGuideItems)) {
+      setActivePage(hashToTest);
     }
-  }, [allGuideItems]);
+  }, [allGuideItems, initialHash]);
 
   // Cmd+K / Ctrl+K 단축키 리스너 (한글 IME, Caps Lock, e.code 지원)
   useEffect(() => {
