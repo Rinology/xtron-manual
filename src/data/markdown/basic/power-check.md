@@ -42,5 +42,19 @@
 ---
 
 > [!NOTE]
-> **정기 점검 안내**  
-> 주행 전 셀프 점검에서 이상 소음이 나거나 브레이크 제동력이 약해진 경우, 무리하게 주행하지 마시고 가까운 공식 대리점이나 자전거 정비 전문점을 방문하여 점검을 받으시기 바랍니다.
+> **모든 단계를 확인하셨나요?**  
+> 그래도 전원이 켜지지 않는다면 고객센터로 문의해 주세요.
+> <div class="md-cta-container">
+  <a href="http://pf.kakao.com/_xhxhRZxl/chat" target="_blank" class="md-btn md-btn-kakao">
+    <span class="md-btn-icon-circle">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+    </span>
+    카카오톡 상담
+  </a>
+  <a href="https://qualisports.kr/board/free/agency_list_with_map.html" target="_blank" class="md-btn md-btn-dealer">
+    <span class="md-btn-icon-circle">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ci-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+    </span>
+    전국 대리점 위치
+  </a>
+</div>
