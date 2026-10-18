@@ -55,12 +55,13 @@
 | **Summary** | 검색 시 나타날 요약 설명 (여러 줄일 경우 `\|` 구분자 사용) | `싯포스트 일체형...` |
 | **MarkdownFile** | 연결될 마크다운 문서 파일명 (예: `kickstand-TypeA.md` 또는 `parts/kickstand-TypeA.md`. 파일명만 적어도 자동 연결됨) | `kickstand-TypeA.md` |
 | **YoutubeLink** | (선택) 영상이 있는 경우 유튜브 주소 입력 | `https://youtu.be/...` (없으면 빈칸) |
+| **Status** | **[선택]** 배포 상태 제어 (`Deploy`: 실서버 및 테스트 서버 모두 노출, `BranchDeploy`: 테스트/로컬 서버만 노출, 빈칸: 기본값 `BranchDeploy` 적용, `Hide`: 숨김) | `Deploy` |
 
 #### 📝 작성 예시 데이터:
-| CategoryID | CategoryTitle | SubCategoryID | SubCategoryTitle | ChildCategoryID | ChildCategoryTitle | ItemID | ItemTitle | Icon | Summary | MarkdownFile | YoutubeLink |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| battery-guide | 배터리 가이드 | battery-removal | 배터리 탈착 | seatpost | 싯포스트형 | battery-seatpost | ㄴ 싯포스트 배터리 탈착 | Key | 싯포스트 일체형... | battery/battery-seatpost.md | |
-| basic | 기본 가이드 | basic-assembly | 조립 및 피팅 | | | pedal | 페달 장착 방법 | Wrench | 좌/우 페달 식별... | basic/pedal.md | https://youtu.be/... |
+| CategoryID | CategoryTitle | SubCategoryID | SubCategoryTitle | ChildCategoryID | ChildCategoryTitle | ItemID | ItemTitle | Icon | Summary | MarkdownFile | YoutubeLink | Status |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| battery-guide | 배터리 가이드 | battery-removal | 배터리 탈착 | seatpost | 싯포스트형 | battery-seatpost | ㄴ 싯포스트 배터리 탈착 | Key | 싯포스트 일체형... | battery/battery-seatpost.md | | Deploy |
+| basic | 기본 가이드 | basic-assembly | 조립 및 피팅 | | | pedal | 페달 장착 방법 | Wrench | 좌/우 페달 식별... | basic/pedal.md | https://youtu.be/... | Deploy |
 
 > **💡 스프레드시트 작성 팁 (3단계 vs 4단계 구조 및 직통 링크)**
 > - **소분류 생략 (3단계)**: 소분류가 필요 없는 일반 항목은 `ChildCategoryID`와 `ChildCategoryTitle`을 **빈칸**으로 두시면, 기존처럼 3단계(중분류 바로 아래 아이템)로 렌더링됩니다.
@@ -71,6 +72,27 @@
 >
 > **현재 사용 중인 아이콘 목록:**
 > `Wrench` · `BatteryCharging` · `AlertTriangle` · `Wind` · `ZapOff` · `Settings` · `MonitorPlay` · `ShieldAlert` · `VolumeX` · `Power` · `Activity` · `PersonStanding` · `Gauge` · `Lightbulb` · `ArrowLeftRight` · `Navigation` · `Key` · `Zap` · `CheckCircle`
+
+---
+
+### 🤖 자가진단 마법사 관리 (Google Sheets 2번 탭 - WizardFlow)
+증상별 문답을 통해 문제를 해결하는 '자가진단 마법사' 데이터는 구글 스프레드시트의 2번째 탭(`WizardFlow`)에서 관리됩니다.
+
+#### 📝 2번 탭 구조 및 열 설명:
+| 열 이름 (Column) | 설명 | 작성 예시 |
+| :--- | :--- | :--- |
+| **RowID** | 개별 선택지 식별용 ID (선택) | `OPT-001` |
+| **NodeID** | 현재 질문 노드 ID (최초 시작 화면은 반드시 `start`) | `start`, `power_sub_1` |
+| **Question** | 해당 노드에서 사용자에게 던질 질문 텍스트 | `어떤 종류의 문제를 겪고 계신가요?` |
+| **OptionLabel** | 사용자가 클릭할 선택지 버튼 문구 | `전원이 안 켜지거나 배터리 문제` |
+| **Keywords** | 검색 및 추천용 보조 키워드 | `전원, 충전, 배터리` |
+| **NextNodeID** | 선택 시 이동할 다음 질문 노드 ID (최종 해결 단계일 경우 빈칸) | `power_sub_1` |
+| **ResultItemID** | 최종 해결 가이드로 연결될 가이드 ItemID (다음 질문이 있을 경우 빈칸) | `lcd-display-replacement` |
+| **Status** | 노출 여부 제어 (`Deploy`: 실서버 및 로컬 노출, `BranchDeploy`: 로컬/테스트 서버만 노출, `Hide`: 숨김) | `Deploy` |
+
+> **💡 마법사 버튼 자동 노출 규칙:**
+> - 2번 탭의 시작 노드(`NodeID: start`)에 배포 상태(`Deploy` 또는 테스트 환경의 `BranchDeploy`)를 만족하는 선택지가 **1개 이상 존재할 때만** 사이드바(좌측 패널) 및 메인 홈에 '자가진단 마법사' 버튼이 자동으로 표시됩니다.
+> - 시작 옵션이 모두 `Hide` 처리되거나 비활성화되면 마법사 버튼도 UI에서 자동으로 숨겨집니다.
 
 ### 🛠️ 데이터 연결 및 반영 방법:
 

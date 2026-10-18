@@ -1,5 +1,9 @@
 # README Update History
 
+## [2026-10-18]
+- 구글 스프레드시트 1번 탭(메뉴 목록)의 배포 환경 제어 열(`Status`) 가이드 추가.
+- 구글 스프레드시트 2번 탭(자가진단봇 - WizardFlow) 관리 가이드 및 열별 설명, 시작 노드(`start`) 기반 자동 버튼 노출 규칙 추가.
+
 ## [2026-09-08]
 - 사이드바 빈 폴더 생략 및 직통 링크(Direct Link) 설정을 위한 스프레드시트 작성 가이드라인(SubCategoryTitle, ChildCategoryTitle 빈칸 활용법) 추가.
 

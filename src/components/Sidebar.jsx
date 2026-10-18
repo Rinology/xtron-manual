@@ -4,7 +4,13 @@ import { useGuides } from '../context/GuideContext';
 import { ChevronDown, ChevronRight, Search, Menu, MessageCircle, ShoppingBag, MapPin, Tag, Youtube, Sparkles, LayoutGrid, PanelLeftClose } from 'lucide-react';
 
 export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch }) {
-  const { guidesData } = useGuides();
+  const { guidesData, wizardFlow } = useGuides();
+  const hasWizard = Boolean(
+    wizardFlow &&
+    wizardFlow.start &&
+    wizardFlow.start.options &&
+    wizardFlow.start.options.length > 0
+  );
   const [openCategories, setOpenCategories] = useState({
     "basic": true,
     "battery-guide": true,
@@ -225,32 +231,32 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
           <div style={{ padding: '0 1rem', display: 'flex', flexDirection: 'column', gap: '0.2rem', flexShrink: 0 }}>
             {isOpen ? (
               <>
-                {/* 자가진단 마법사 - 임시 숨김
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setActivePage('not-found');
-                    if (isMobile) setIsOpen(false);
-                  }}
-                  style={{
-                    width: '100%', display: 'flex', alignItems: 'center', gap: '0.75rem',
-                    padding: '0.65rem 1rem', borderRadius: 'var(--radius-full)',
-                    background: activePage === 'not-found' ? 'var(--ci-primary-light)' : 'transparent',
-                    color: activePage === 'not-found' ? 'var(--ci-primary)' : 'var(--text-primary)',
-                    fontSize: '0.9rem', border: 'none', cursor: 'pointer',
-                    transition: 'all 0.2s', marginBottom: '0.25rem'
-                  }}
-                  onMouseEnter={e => {
-                    if (activePage !== 'not-found') e.currentTarget.style.background = 'var(--surface-border)';
-                  }}
-                  onMouseLeave={e => {
-                    if (activePage !== 'not-found') e.currentTarget.style.background = 'transparent';
-                  }}
-                >
-                  <Sparkles size={18} color={activePage === 'not-found' ? 'var(--ci-primary)' : 'var(--text-secondary)'} />
-                  자가진단 마법사
-                </button>
-                */}
+                {hasWizard && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActivePage('troubleshooting-wizard');
+                      if (isMobile) setIsOpen(false);
+                    }}
+                    style={{
+                      width: '100%', display: 'flex', alignItems: 'center', gap: '0.75rem',
+                      padding: '0.65rem 1rem', borderRadius: 'var(--radius-full)',
+                      background: activePage === 'troubleshooting-wizard' ? 'var(--ci-primary-light)' : 'transparent',
+                      color: activePage === 'troubleshooting-wizard' ? 'var(--ci-primary)' : 'var(--text-primary)',
+                      fontSize: '0.9rem', border: 'none', cursor: 'pointer',
+                      transition: 'all 0.2s', marginBottom: '0.25rem'
+                    }}
+                    onMouseEnter={e => {
+                      if (activePage !== 'troubleshooting-wizard') e.currentTarget.style.background = 'var(--surface-border)';
+                    }}
+                    onMouseLeave={e => {
+                      if (activePage !== 'troubleshooting-wizard') e.currentTarget.style.background = 'transparent';
+                    }}
+                  >
+                    <Sparkles size={18} color={activePage === 'troubleshooting-wizard' ? 'var(--ci-primary)' : 'var(--text-secondary)'} />
+                    자가진단 마법사
+                  </button>
+                )}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -272,35 +278,35 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
               </>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-                {/* 자가진단 마법사 버튼 - 임시 숨김
-                <div style={{ position: 'relative' }}>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setActivePage('not-found');
-                      if (isMobile) setIsOpen(false);
-                    }}
-                    style={{
-                      width: '40px', height: '40px', borderRadius: '50%', border: 'none',
-                      background: activePage === 'not-found' ? 'var(--ci-primary-light)' : 'transparent',
-                      color: activePage === 'not-found' ? 'var(--ci-primary)' : 'var(--text-secondary)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      cursor: 'pointer', transition: 'all 0.2s'
-                    }}
-                    onMouseEnter={e => {
-                      if (activePage !== 'not-found') e.currentTarget.style.background = 'var(--surface-border)';
-                      setHoveredButton('wizard');
-                    }}
-                    onMouseLeave={e => {
-                      if (activePage !== 'not-found') e.currentTarget.style.background = 'transparent';
-                      setHoveredButton(null);
-                    }}
-                  >
-                    <Sparkles size={18} />
-                  </button>
-                  <Tooltip text="자가진단 마법사" visible={hoveredButton === 'wizard'} />
-                </div>
-                */}
+                {hasWizard && (
+                  <div style={{ position: 'relative' }}>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setActivePage('troubleshooting-wizard');
+                        if (isMobile) setIsOpen(false);
+                      }}
+                      style={{
+                        width: '40px', height: '40px', borderRadius: '50%', border: 'none',
+                        background: activePage === 'troubleshooting-wizard' ? 'var(--ci-primary-light)' : 'transparent',
+                        color: activePage === 'troubleshooting-wizard' ? 'var(--ci-primary)' : 'var(--text-secondary)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        cursor: 'pointer', transition: 'all 0.2s'
+                      }}
+                      onMouseEnter={e => {
+                        if (activePage !== 'troubleshooting-wizard') e.currentTarget.style.background = 'var(--surface-border)';
+                        setHoveredButton('wizard');
+                      }}
+                      onMouseLeave={e => {
+                        if (activePage !== 'troubleshooting-wizard') e.currentTarget.style.background = 'transparent';
+                        setHoveredButton(null);
+                      }}
+                    >
+                      <Sparkles size={18} />
+                    </button>
+                    <Tooltip text="자가진단 마법사" visible={hoveredButton === 'wizard'} />
+                  </div>
+                )}
 
                 <div style={{ position: 'relative' }}>
                   <button
