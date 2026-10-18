@@ -7,31 +7,31 @@
 
 #### 1. 배터리가 올바르게 장착되었는지 확인합니다.
    
-![잘못 장착된 예시](https://placehold.co/600x350?text=Saddle+%26+Handlebar+Check)
-![올바른 장착 시](https://placehold.co/600x350?text=Saddle+%26+Handlebar+Check)
+![잘못 장착된 예시](project/xtron-guide/basic/step_01-1.webp)
+![올바른 장착 시](project/xtron-guide/basic/step_01-2.webp)
 
 > [!TIP]
 > **배터리 장착 시 3개의 걸쇠에 배터리가 걸려야 합니다**  
-> ![걸쇠 이미지](https://placehold.co/600x350?text=Saddle+%26+Handlebar+Check)
+> ![걸쇠 이미지](project/xtron-guide/basic/step_01-3.webp)
 
 ---
 
 #### 2. 배터리 외부의 ON/OFF 버튼을 확인합니다.
 
-![배터리 버튼 확대](https://placehold.co/600x350?text=Saddle+%26+Handlebar+Check)
+![배터리 버튼 확대](project/xtron-guide/basic/step_02.webp)
 
 
 ---
 
 #### 3. 키박스에 열쇠를 꽂고 돌려줍니다.
 
-![키박스 확대](https://placehold.co/600x350?text=Tire+Pressure+%26+Wheel+Check)
+![키박스 확대](project/xtron-guide/basic/step_03.webp)
 
 ---
 
 #### 4. 계기판 버튼 중 전원 버튼을 약 3초간 길게 누릅니다.
 
-![계기판 확대](https://placehold.co/600x350?text=Brake+System+Check)
+![계기판 확대](project/xtron-guide/basic/step_04.webp)
 
 ---
 
