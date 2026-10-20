@@ -37,6 +37,24 @@ const MermaidChart = ({ chart }) => {
   );
 };
 
+// Helper to resolve media URLs (supports full URL or relative CDN path)
+const resolveMediaUrl = (src) => {
+  if (!src) return '';
+  const cdnBase = import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr';
+  const isExternal = src.startsWith('http://') || src.startsWith('https://') || src.startsWith('data:');
+  if (isExternal) return src;
+  let cleanPath = src.startsWith('/') ? src : `/${src}`;
+  if (!cleanPath.startsWith('/project/xtron-guide/')) {
+    cleanPath = `/project/xtron-guide${cleanPath}`;
+  }
+  return `${cdnBase}${cleanPath}`;
+};
+
+// Helper to detect video file extensions (MP4, WebM, MOV, OGG)
+const isVideoUrl = (url) => {
+  return /\.(mp4|webm|mov|ogg)(\?.*)?$/i.test(url || '');
+};
+
 // Load all markdown files at build time
 const markdownModules = import.meta.glob('../data/markdown/**/*.md', { query: '?raw', import: 'default' });
 
@@ -322,23 +340,70 @@ export default function GuideContent({ activePage, setActivePage }) {
       }
       return <a href={href} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--ci-primary)', textDecoration: 'underline' }} {...props}>{children}</a>;
     },
-    img: ({node, src, ...props}) => {
-      const cdnBase = import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr';
-      const isExternal = src?.startsWith('http://') || src?.startsWith('https://') || src?.startsWith('data:');
-      let fullSrc = src;
-      if (!isExternal && src) {
-        let cleanPath = src.startsWith('/') ? src : `/${src}`;
-        if (!cleanPath.startsWith('/project/xtron-guide/')) {
-          cleanPath = `/project/xtron-guide${cleanPath}`;
-        }
-        fullSrc = `${cdnBase}${cleanPath}`;
+    img: ({node, src, alt, ...props}) => {
+      const fullSrc = resolveMediaUrl(src);
+      const isVideo = isVideoUrl(fullSrc);
+
+      if (isVideo) {
+        return (
+          <video 
+            src={fullSrc}
+            autoPlay
+            loop
+            muted
+            playsInline
+            controls
+            title={alt || undefined}
+            aria-label={alt || '가이드 영상'}
+            style={{ 
+              width: '100%', 
+              maxWidth: '600px', 
+              maxHeight: '600px', 
+              objectFit: 'contain', 
+              borderRadius: '8px', 
+              border: '1px solid var(--surface-border)', 
+              display: 'block', 
+              margin: '1.5rem auto',
+              background: '#000'
+            }} 
+          />
+        );
       }
+
       return (
         <img 
           src={fullSrc}
+          alt={alt}
           style={{ width: '100%', maxWidth: '600px', maxHeight: '600px', objectFit: 'contain', borderRadius: '8px', border: '1px solid var(--surface-border)', display: 'block', margin: '1.5rem auto' }} 
           {...props} 
         />
+      );
+    },
+    video: ({node, src, children, ...props}) => {
+      const fullSrc = resolveMediaUrl(src);
+      return (
+        <video 
+          src={fullSrc || undefined}
+          autoPlay
+          loop
+          muted
+          playsInline
+          controls
+          style={{ 
+            width: '100%', 
+            maxWidth: '600px', 
+            maxHeight: '600px', 
+            objectFit: 'contain', 
+            borderRadius: '8px', 
+            border: '1px solid var(--surface-border)', 
+            display: 'block', 
+            margin: '1.5rem auto',
+            background: '#000'
+          }} 
+          {...props}
+        >
+          {children}
+        </video>
       );
     }
   };
@@ -424,7 +489,20 @@ export default function GuideContent({ activePage, setActivePage }) {
                         </div>
                       )}
                       {step.image && (
-                        <img src={step.image} alt={step.title} style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '500px', display: 'block', margin: '1rem auto' }} />
+                        isVideoUrl(step.image) ? (
+                          <video
+                            src={resolveMediaUrl(step.image)}
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            controls
+                            title={step.title}
+                            style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '500px', display: 'block', margin: '1rem auto', background: '#000' }}
+                          />
+                        ) : (
+                          <img src={resolveMediaUrl(step.image)} alt={step.title} style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '500px', display: 'block', margin: '1rem auto' }} />
+                        )
                       )}
                     </div>
                   </motion.div>

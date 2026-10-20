@@ -1,5 +1,8 @@
 # README Update History
 
+## [2026-10-20]
+- 사진 및 동영상 넣기 섹션에 마크다운 기반 MP4 동영상 지원 및 GIF 대체 최적화 가이드라인 추가 (무한 자동재생, R2/S3 풀 URL 및 상대 경로 정규화, 600px 자동 크기 최적화 안내).
+
 ## [2026-09-08]
 - 사이드바 빈 폴더 생략 및 직통 링크(Direct Link) 설정을 위한 스프레드시트 작성 가이드라인(SubCategoryTitle, ChildCategoryTitle 빈칸 활용법) 추가.
 

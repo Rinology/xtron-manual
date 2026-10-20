@@ -4,6 +4,22 @@
 
 ---
 
+## 📅 [2026-10-20] 마크다운 MP4 동영상 지원 및 GIF 대체 최적화
+
+### ✨ 신규 기능 (Features)
+- **마크다운 이미지 문법을 통한 MP4/비디오 자동 변환 렌더링 (`src/components/GuideContent.jsx`)**
+  - 기존 마크다운 이미지 문법(`![설명](영상.mp4)`)을 그대로 사용하여 동영상을 삽입할 수 있도록 지능형 미디어 스위처(`resolveMediaUrl`, `isVideoUrl`)를 구현했습니다.
+  - 파일 확장자가 `.mp4`, `.webm`, `.mov`, `.ogg`인 경우 브라우저가 재생하지 못하는 `<img>` 태그 대신 `<video>` 태그로 자동 변환 렌더링됩니다.
+  - 용량이 무거운 GIF 대신 압축률이 높은 MP4/WebM 비디오를 호스팅하여 사용할 때 GIF처럼 **무한 자동 재생(`autoPlay`, `loop`, `muted`, `playsInline`)**되도록 최적화했습니다.
+  - 사용자가 일시정지하거나 재생 구간을 탐색할 수 있도록 비디오 컨트롤러(`controls`)를 함께 제공합니다.
+- **HTML `<video>` 태그 및 스토리지 경로 자동 정규화 지원 (`src/components/GuideContent.jsx`)**
+  - 마크다운 본문에 `<video src="...">` HTML 태그를 직접 작성하더라도 동일하게 일관된 스타일(최대 600px, 둥근 모서리, 중앙 정렬 등)과 자동 재생 옵션이 적용됩니다.
+  - S3 / Cloudflare R2의 풀 URL(`https://...`)뿐만 아니라, 기존 이미지처럼 CDN 상대 경로(`project/xtron-guide/...` 또는 `parts/...`)를 적어도 환경변수(`VITE_CDN_URL`) 기반의 절대 경로로 자동 보정 결합됩니다.
+- **JSON 가이드 단계(JSON Steps) 동영상 호환 지원 (`src/components/GuideContent.jsx`)**
+  - CMS나 로컬 JSON 데이터의 `step.image`에 MP4 영상 파일이 입력되더라도 자동으로 `<video>`로 분기하여 정상 재생되도록 안정성을 강화했습니다.
+
+---
+
 ## 📅 [2026-09-10] R2 버킷 PDF URL 설정 및 다운로드 링크 적용
 
 ### ✨ 환경 설정 및 콘텐츠 업데이트
