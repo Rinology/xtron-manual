@@ -182,37 +182,36 @@
   👉 **미디어 자동 최적화 규격:**
   모든 이미지와 동영상은 화면 렌더링 시 **가로 최대 600px, 세로 최대 600px**로 자동 제한됩니다. 아무리 해상도가 높거나 세로로 긴 미디어를 넣어도 화면을 벗어나지 않고 **원본 비율을 유지하며 안전하게 축소**되므로 사이즈를 억지로 맞춰서 올리실 필요가 없습니다. (추가로 모서리가 8px 둥글게 깎이고 깔끔한 테두리가 적용됩니다.)
 
-  ### ⚡ AWS S3 + CloudFront 연동 아키텍처 (비용 및 속도 최적화)
-  AWS S3에 이미지를 올리고 CloudFront를 연동하면 트래픽 비용이 절감되고 로딩 속도가 극대화됩니다.
+  ### ⚡ Cloudflare R2 + 커스텀 도메인 연동 아키텍처 (비용 및 속도 최적화)
+  정적 미디어(이미지, MP4 동영상, PDF 설명서)는 Cloudflare R2에 저장되고, 커스텀 도메인(`https://cdn.xtron-guide.kr`) 및 에지 캐시(Cache-Control) 룰을 통해 초고속으로 전송됩니다.
   
   #### 📊 데이터 흐름 다이어그램
   ```mermaid
   sequenceDiagram
       participant User as 👤 사용자 브라우저
       participant Vercel as 🌐 Vercel (프론트엔드)
-      participant CF as ⚡ CloudFront (캐시 서버)
-      participant S3 as 🪣 AWS S3 (원본 저장소)
+      participant CF as ⚡ Cloudflare Edge CDN (캐시 서버)
+      participant R2 as 🪣 Cloudflare R2 (미디어 저장소)
 
       Note over User, Vercel: [1단계] 웹사이트 최초 접속
       User->>Vercel: 웹사이트 접속 (xtron-manual)
-      Vercel-->>User: 글자, 레이아웃, 코드 전달 (빠름)
+      Vercel-->>User: 레이아웃, 코드 전달 (빠름)
 
-      Note over User, S3: [2단계] 첫 번째 이미지 요청 (최초 1회)
-      User->>CF: 1번 사진 보여줘! (pedal.jpg)
-      CF->>S3: (캐시에 없음) S3야 1번 사진 줘!
-      S3-->>CF: 1번 사진 전달 (S3 ➡️ CF 전송비용 무료)
-      CF-->>User: 사진 전달 및 CloudFront 서버에 임시 저장(캐싱)
+      Note over User, R2: [2단계] 첫 번째 미디어 요청 (최초 1회)
+      User->>CF: 사진/영상/PDF 요청 (cdn.xtron-guide.kr)
+      CF->>R2: (캐시에 없음) R2야 파일 전달해줘!
+      R2-->>CF: 파일 전달 (Egress 다운로드 비용 0원 무료!)
+      CF-->>User: 사용자에게 전달 및 글로벌 에지 캐시에 저장
 
-      Note over User, S3: [3단계] 두 번째 방문 혹은 다른 사람의 접속
-      User->>CF: 1번 사진 보여줘! (pedal.jpg)
-      CF-->>User: S3 안 가고 저장해둔 사진 바로 전달! (초고속)
+      Note over User, R2: [3단계] 이후 방문 또는 다른 사용자의 접속
+      User->>CF: 동일 미디어 요청
+      CF-->>User: R2 버킷 접근 없이 에지 캐시에서 초고속 전달!
       
-      Note right of CF: ✨ S3 트래픽 미발생 (비용 절감) <br> ✨ 로딩 속도 압도적 향상
+      Note right of CF: ✨ Egress 트래픽 비용 0원 유지 <br> ✨ 글로벌 캐시로 응답 속도 극대화
   ```
   
-  * **비용 절감 원리:** 첫 1명째 방문 시에만 S3에서 사진을 꺼내오고 나머지 방문자들에게는 CloudFront가 복사본을 전달하므로 **S3 아웃바운드 트래픽 요금**이 거의 발생하지 않습니다. (CloudFront는 매월 1TB 무료)
-  * **설정 팁:** CloudFront는 기존 AWS 계정에서 별도 가입 없이 바로 연결 세팅이 가능합니다.
-  * **URL 변경:** 마크다운에 주소를 적을 때 길고 복잡한 S3 주소(`s3.ap-northeast...`) 대신 **CloudFront가 제공하는 짧은 주소(`d1234abcd.cloudfront.net`)**를 사용하세요.
+  * **비용 절감 원리:** Cloudflare R2는 AWS S3와 달리 **아웃바운드 다운로드 트래픽(Egress) 요금이 완전히 무료**입니다. 대용량 MP4 영상이나 PDF 설명서를 수만 명이 다운로드해도 트래픽 추가 비용이 발생하지 않습니다.
+  * **도메인 통일:** 모든 이미지, MP4, PDF는 단일 커스텀 도메인인 **`https://cdn.xtron-guide.kr`**로 일원화되어 서비스됩니다.
 
 * **유튜브 영상 버튼 넣기**: 
   메뉴 데이터(구글 스프레드시트) 쪽에 `youtubeLink` 같은 별도 항목을 두어 버튼화하는 것도 가능하며, 마크다운 본문에도 직접 링크를 적어주면 작동합니다.
