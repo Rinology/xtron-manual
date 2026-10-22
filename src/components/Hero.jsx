@@ -2,12 +2,22 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Sparkles, X, HelpCircle } from 'lucide-react';
 import { allGuideItems } from '../data/guides';
+import { useGuides } from '../context/GuideContext';
 
 export default function Hero({ setActivePage, onOpenSearch }) {
+  const { wizardFlow, allGuideItems: dynamicGuideItems } = useGuides();
+  const guideItems = dynamicGuideItems && dynamicGuideItems.length > 0 ? dynamicGuideItems : allGuideItems;
+  const hasWizard = Boolean(
+    wizardFlow &&
+    wizardFlow.start &&
+    wizardFlow.start.options &&
+    wizardFlow.start.options.length > 0
+  );
+
   const [localSearch, setLocalSearch] = useState('');
   const [isFocused, setIsFocused] = useState(false);
 
-  const matchedItems = allGuideItems.filter(item => 
+  const matchedItems = guideItems.filter(item => 
     item.title.toLowerCase().includes(localSearch.toLowerCase()) || 
     (item.summary && (Array.isArray(item.summary) ? item.summary.some(text => text.toLowerCase().includes(localSearch.toLowerCase())) : item.summary.toLowerCase().includes(localSearch.toLowerCase())))
   );
@@ -198,30 +208,30 @@ export default function Hero({ setActivePage, onOpenSearch }) {
           <button type="submit" style={{ display: 'none' }}>검색</button>
         </form>
 
-        {/* 자가진단 마법사 배너 (Premium Sleek Design) - 임시 숨김 */}
-        {/*
-        <div className="hero-wizard-banner" style={{ marginBottom: '3rem', width: '100%', display: 'flex', justifyContent: 'center' }}>
-          <button
-            onClick={() => setActivePage('not-found')}
-            style={{
-              display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-              background: 'transparent', border: 'none', cursor: 'pointer',
-              padding: '0.5rem 1rem', borderRadius: 'var(--radius-full)',
-              transition: 'all var(--transition-fast)'
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.background = 'var(--ci-primary-light)';
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.background = 'transparent';
-            }}
-          >
-            <Sparkles size={18} color="var(--ci-primary)" style={{ flexShrink: 0 }} />
-            <span style={{ fontSize: '0.95rem', fontWeight: 500, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>증상으로 문제 찾기 👉</span>
-            <span className="text-gradient" style={{ fontSize: '0.95rem', fontWeight: 700, whiteSpace: 'nowrap' }}>자가진단 마법사 시작</span>
-          </button>
-        </div>
-        */}
+        {/* 자가진단 마법사 배너 (Premium Sleek Design) */}
+        {hasWizard && (
+          <div className="hero-wizard-banner" style={{ marginBottom: '3rem', width: '100%', display: 'flex', justifyContent: 'center' }}>
+            <button
+              onClick={() => setActivePage('troubleshooting-wizard')}
+              style={{
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                background: 'transparent', border: 'none', cursor: 'pointer',
+                padding: '0.5rem 1rem', borderRadius: 'var(--radius-full)',
+                transition: 'all var(--transition-fast)'
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = 'var(--ci-primary-light)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = 'transparent';
+              }}
+            >
+              <Sparkles size={18} color="var(--ci-primary)" style={{ flexShrink: 0 }} />
+              <span style={{ fontSize: '0.95rem', fontWeight: 500, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>증상으로 문제 찾기 👉</span>
+              <span className="text-gradient" style={{ fontSize: '0.95rem', fontWeight: 700, whiteSpace: 'nowrap' }}>자가진단 마법사 시작</span>
+            </button>
+          </div>
+        )}
 
         {/* 추천 퀵 가이드 리뉴얼 */}
         <div className="hero-faq-tags" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>

@@ -15,7 +15,7 @@ import { useGuides } from './context/GuideContext';
 function App() {
   useSecurity(); // 보안 로직 적용
   
-  const { allGuideItems, isLoading: isGuidesLoading } = useGuides();
+  const { allGuideItems, isGuidesLoading } = useGuides();
 
   const isValidRoute = (hash, items) => {
     return hash === 'troubleshooting-wizard' || hash === 'not-found' || items.some(item => item.id === hash);

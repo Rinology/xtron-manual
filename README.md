@@ -55,12 +55,13 @@
 | **Summary** | 검색 시 나타날 요약 설명 (여러 줄일 경우 `\|` 구분자 사용) | `싯포스트 일체형...` |
 | **MarkdownFile** | 연결될 마크다운 문서 파일명 (예: `kickstand-TypeA.md` 또는 `parts/kickstand-TypeA.md`. 파일명만 적어도 자동 연결됨) | `kickstand-TypeA.md` |
 | **YoutubeLink** | (선택) 영상이 있는 경우 유튜브 주소 입력 | `https://youtu.be/...` (없으면 빈칸) |
+| **Status** | **[선택]** 배포 상태 제어 (`Deploy`: 실서버 및 테스트 서버 모두 노출, `BranchDeploy`: 테스트/로컬 서버만 노출, 빈칸: 기본값 `BranchDeploy` 적용, `Hide`: 숨김) | `Deploy` |
 
 #### 📝 작성 예시 데이터:
-| CategoryID | CategoryTitle | SubCategoryID | SubCategoryTitle | ChildCategoryID | ChildCategoryTitle | ItemID | ItemTitle | Icon | Summary | MarkdownFile | YoutubeLink |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| battery-guide | 배터리 가이드 | battery-removal | 배터리 탈착 | seatpost | 싯포스트형 | battery-seatpost | ㄴ 싯포스트 배터리 탈착 | Key | 싯포스트 일체형... | battery/battery-seatpost.md | |
-| basic | 기본 가이드 | basic-assembly | 조립 및 피팅 | | | pedal | 페달 장착 방법 | Wrench | 좌/우 페달 식별... | basic/pedal.md | https://youtu.be/... |
+| CategoryID | CategoryTitle | SubCategoryID | SubCategoryTitle | ChildCategoryID | ChildCategoryTitle | ItemID | ItemTitle | Icon | Summary | MarkdownFile | YoutubeLink | Status |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| battery-guide | 배터리 가이드 | battery-removal | 배터리 탈착 | seatpost | 싯포스트형 | battery-seatpost | ㄴ 싯포스트 배터리 탈착 | Key | 싯포스트 일체형... | battery/battery-seatpost.md | | Deploy |
+| basic | 기본 가이드 | basic-assembly | 조립 및 피팅 | | | pedal | 페달 장착 방법 | Wrench | 좌/우 페달 식별... | basic/pedal.md | https://youtu.be/... | Deploy |
 
 > **💡 스프레드시트 작성 팁 (3단계 vs 4단계 구조 및 직통 링크)**
 > - **소분류 생략 (3단계)**: 소분류가 필요 없는 일반 항목은 `ChildCategoryID`와 `ChildCategoryTitle`을 **빈칸**으로 두시면, 기존처럼 3단계(중분류 바로 아래 아이템)로 렌더링됩니다.
@@ -71,6 +72,27 @@
 >
 > **현재 사용 중인 아이콘 목록:**
 > `Wrench` · `BatteryCharging` · `AlertTriangle` · `Wind` · `ZapOff` · `Settings` · `MonitorPlay` · `ShieldAlert` · `VolumeX` · `Power` · `Activity` · `PersonStanding` · `Gauge` · `Lightbulb` · `ArrowLeftRight` · `Navigation` · `Key` · `Zap` · `CheckCircle`
+
+---
+
+### 🤖 자가진단 마법사 관리 (Google Sheets 2번 탭 - WizardFlow)
+증상별 문답을 통해 문제를 해결하는 '자가진단 마법사' 데이터는 구글 스프레드시트의 2번째 탭(`WizardFlow`)에서 관리됩니다.
+
+#### 📝 2번 탭 구조 및 열 설명:
+| 열 이름 (Column) | 설명 | 작성 예시 |
+| :--- | :--- | :--- |
+| **RowID** | 개별 선택지 식별용 ID (선택) | `OPT-001` |
+| **NodeID** | 현재 질문 노드 ID (최초 시작 화면은 반드시 `start`) | `start`, `power_sub_1` |
+| **Question** | 해당 노드에서 사용자에게 던질 질문 텍스트 | `어떤 종류의 문제를 겪고 계신가요?` |
+| **OptionLabel** | 사용자가 클릭할 선택지 버튼 문구 | `전원이 안 켜지거나 배터리 문제` |
+| **Keywords** | 검색 및 추천용 보조 키워드 | `전원, 충전, 배터리` |
+| **NextNodeID** | 선택 시 이동할 다음 질문 노드 ID (최종 해결 단계일 경우 빈칸) | `power_sub_1` |
+| **ResultItemID** | 최종 해결 가이드로 연결될 가이드 ItemID (다음 질문이 있을 경우 빈칸) | `lcd-display-replacement` |
+| **Status** | 노출 여부 제어 (`Deploy`: 실서버 및 로컬 노출, `BranchDeploy`: 로컬/테스트 서버만 노출, `Hide`: 숨김) | `Deploy` |
+
+> **💡 마법사 버튼 자동 노출 규칙:**
+> - 2번 탭의 시작 노드(`NodeID: start`)에 배포 상태(`Deploy` 또는 테스트 환경의 `BranchDeploy`)를 만족하는 선택지가 **1개 이상 존재할 때만** 사이드바(좌측 패널) 및 메인 홈에 '자가진단 마법사' 버튼이 자동으로 표시됩니다.
+> - 시작 옵션이 모두 `Hide` 처리되거나 비활성화되면 마법사 버튼도 UI에서 자동으로 숨겨집니다.
 
 ### 🛠️ 데이터 연결 및 반영 방법:
 
@@ -139,45 +161,57 @@
   ```
   👉 **결과:** 좌측에 굵은 파란색 테두리가 생기고, 옅은 배경색이 깔린 예쁜 알림/경고 박스 형태로 디자인됩니다.
 
-* **사진 넣기 (AWS S3 연동 및 크기 규격)**: 
-  사진은 **AWS S3** 콘솔에서 복사한 **S3 Key(경로)**를 그대로 입력하시면 됩니다. 맨 앞의 슬래시(`/`)가 없거나(`project/xtron-guide/...`), 프로젝트 폴더가 생략된 경로(`parts/...`)여도 시스템이 알아서 CDN 주소(`https://cdn.xtron-guide.kr/project/xtron-guide/...`)로 자동 변환해 줍니다!
+* **사진 및 동영상 넣기 (AWS S3 / Cloudflare R2 연동 & GIF 대체 최적화)**: 
+  사진(`.webp`, `.jpg` 등)뿐만 아니라 **동영상(`.mp4`, `.webm`)**도 기존 이미지와 동일한 마크다운 문법으로 편하게 삽입할 수 있습니다.
+  
   ```markdown
+  <!-- 1. 사진 삽입 -->
   ![사진설명글](project/xtron-guide/parts/suntour-seatpost_install_1_remove.webp)
-  ```
-  👉 **이미지 자동 최적화 규격:**
-  모든 이미지는 화면 렌더링 시 **가로 최대 600px, 세로 최대 600px**로 자동 제한됩니다. 아무리 해상도가 높거나 세로로 긴 사진을 넣어도 화면을 벗어나지 않고 **원본 비율을 유지하며 안전하게 축소**되므로 사이즈를 억지로 맞춰서 올리실 필요가 없습니다. (추가로 모서리가 8px 둥글게 깎이고 깔끔한 테두리가 적용됩니다.)
 
-  ### ⚡ AWS S3 + CloudFront 연동 아키텍처 (비용 및 속도 최적화)
-  AWS S3에 이미지를 올리고 CloudFront를 연동하면 트래픽 비용이 절감되고 로딩 속도가 극대화됩니다.
+  <!-- 2. 동영상 삽입 (GIF 대체용 MP4) -->
+  ![페달 장착 시연](project/xtron-guide/parts/pedal_install.mp4)
+  <!-- 또는 R2/S3 풀 URL 사용 -->
+  ![페달 장착 시연](https://pub-232c80dc3dbf4d56bb94606401fd833e.r2.dev/parts/pedal_install.mp4)
+  ```
+
+  👉 **GIF 대신 MP4 동영상을 써야 하는 이유 (용량 & 속도 최적화):**
+  - GIF는 압축률이 낮아 몇 초 분량도 수십 MB에 달하며 모바일 로딩 속도를 크게 저하시킵니다.
+  - 동일한 화면을 **MP4/WebM으로 변환하여 올리면 용량이 80~90% 이상 절감**됩니다.
+  - 시스템이 동영상 확장자(`.mp4`, `.webm` 등)를 스스로 감지하여, 브라우저에서 GIF처럼 **자동 무한 반복 재생(`autoPlay`, `loop`, `muted`, `playsInline`)**되고 일시정지도 가능한 전용 비디오 플레이어로 똑똑하게 변환 렌더링해 줍니다.
+
+  👉 **미디어 자동 최적화 규격:**
+  모든 이미지와 동영상은 화면 렌더링 시 **가로 최대 600px, 세로 최대 600px**로 자동 제한됩니다. 아무리 해상도가 높거나 세로로 긴 미디어를 넣어도 화면을 벗어나지 않고 **원본 비율을 유지하며 안전하게 축소**되므로 사이즈를 억지로 맞춰서 올리실 필요가 없습니다. (추가로 모서리가 8px 둥글게 깎이고 깔끔한 테두리가 적용됩니다.)
+
+  ### ⚡ Cloudflare R2 + 커스텀 도메인 연동 아키텍처 (비용 및 속도 최적화)
+  정적 미디어(이미지, MP4 동영상, PDF 설명서)는 Cloudflare R2에 저장되고, 커스텀 도메인(`https://cdn.xtron-guide.kr`) 및 에지 캐시(Cache-Control) 룰을 통해 초고속으로 전송됩니다.
   
   #### 📊 데이터 흐름 다이어그램
   ```mermaid
   sequenceDiagram
       participant User as 👤 사용자 브라우저
       participant Vercel as 🌐 Vercel (프론트엔드)
-      participant CF as ⚡ CloudFront (캐시 서버)
-      participant S3 as 🪣 AWS S3 (원본 저장소)
+      participant CF as ⚡ Cloudflare Edge CDN (캐시 서버)
+      participant R2 as 🪣 Cloudflare R2 (미디어 저장소)
 
       Note over User, Vercel: [1단계] 웹사이트 최초 접속
       User->>Vercel: 웹사이트 접속 (xtron-manual)
-      Vercel-->>User: 글자, 레이아웃, 코드 전달 (빠름)
+      Vercel-->>User: 레이아웃, 코드 전달 (빠름)
 
-      Note over User, S3: [2단계] 첫 번째 이미지 요청 (최초 1회)
-      User->>CF: 1번 사진 보여줘! (pedal.jpg)
-      CF->>S3: (캐시에 없음) S3야 1번 사진 줘!
-      S3-->>CF: 1번 사진 전달 (S3 ➡️ CF 전송비용 무료)
-      CF-->>User: 사진 전달 및 CloudFront 서버에 임시 저장(캐싱)
+      Note over User, R2: [2단계] 첫 번째 미디어 요청 (최초 1회)
+      User->>CF: 사진/영상/PDF 요청 (cdn.xtron-guide.kr)
+      CF->>R2: (캐시에 없음) R2야 파일 전달해줘!
+      R2-->>CF: 파일 전달 (Egress 다운로드 비용 0원 무료!)
+      CF-->>User: 사용자에게 전달 및 글로벌 에지 캐시에 저장
 
-      Note over User, S3: [3단계] 두 번째 방문 혹은 다른 사람의 접속
-      User->>CF: 1번 사진 보여줘! (pedal.jpg)
-      CF-->>User: S3 안 가고 저장해둔 사진 바로 전달! (초고속)
+      Note over User, R2: [3단계] 이후 방문 또는 다른 사용자의 접속
+      User->>CF: 동일 미디어 요청
+      CF-->>User: R2 버킷 접근 없이 에지 캐시에서 초고속 전달!
       
-      Note right of CF: ✨ S3 트래픽 미발생 (비용 절감) <br> ✨ 로딩 속도 압도적 향상
+      Note right of CF: ✨ Egress 트래픽 비용 0원 유지 <br> ✨ 글로벌 캐시로 응답 속도 극대화
   ```
   
-  * **비용 절감 원리:** 첫 1명째 방문 시에만 S3에서 사진을 꺼내오고 나머지 방문자들에게는 CloudFront가 복사본을 전달하므로 **S3 아웃바운드 트래픽 요금**이 거의 발생하지 않습니다. (CloudFront는 매월 1TB 무료)
-  * **설정 팁:** CloudFront는 기존 AWS 계정에서 별도 가입 없이 바로 연결 세팅이 가능합니다.
-  * **URL 변경:** 마크다운에 주소를 적을 때 길고 복잡한 S3 주소(`s3.ap-northeast...`) 대신 **CloudFront가 제공하는 짧은 주소(`d1234abcd.cloudfront.net`)**를 사용하세요.
+  * **비용 절감 원리:** Cloudflare R2는 AWS S3와 달리 **아웃바운드 다운로드 트래픽(Egress) 요금이 완전히 무료**입니다. 대용량 MP4 영상이나 PDF 설명서를 수만 명이 다운로드해도 트래픽 추가 비용이 발생하지 않습니다.
+  * **도메인 통일:** 모든 이미지, MP4, PDF는 단일 커스텀 도메인인 **`https://cdn.xtron-guide.kr`**로 일원화되어 서비스됩니다.
 
 * **유튜브 영상 버튼 넣기**: 
   메뉴 데이터(구글 스프레드시트) 쪽에 `youtubeLink` 같은 별도 항목을 두어 버튼화하는 것도 가능하며, 마크다운 본문에도 직접 링크를 적어주면 작동합니다.

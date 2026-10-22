@@ -66,7 +66,10 @@ export async function fetchGuidesFromGoogleSheet(csvUrl) {
           const data = results.data;
           const parsedCategories = [];
 
-          const isLive = window.location.hostname.includes('xtron-guide.kr');
+          const isLive = 
+            window.location.hostname.includes('xtron-guide.kr') || 
+            (typeof __VERCEL_ENV__ !== 'undefined' && __VERCEL_ENV__ === 'production') ||
+            (typeof __GIT_BRANCH__ !== 'undefined' && __GIT_BRANCH__ === 'main');
 
           data.forEach(row => {
             const { 
@@ -171,12 +174,20 @@ export async function fetchWizardFromGoogleSheet(csvUrl) {
           const data = results.data;
           const wizardFlow = {};
 
-          const isLive = window.location.hostname.includes('xtron-guide.kr');
+          const isLive = 
+            window.location.hostname.includes('xtron-guide.kr') || 
+            (typeof __VERCEL_ENV__ !== 'undefined' && __VERCEL_ENV__ === 'production') ||
+            (typeof __GIT_BRANCH__ !== 'undefined' && __GIT_BRANCH__ === 'main');
 
           data.forEach(row => {
             const { 
               RowID, NodeID, Question, OptionLabel, NextNodeID, ResultItemID, Keywords, Status 
             } = row;
+
+            // ID나 라벨이 없는 완전히 비정상적인 빈 행은 무시
+            if ((!NodeID || NodeID.trim() === "") && (!OptionLabel || OptionLabel.trim() === "")) {
+              return;
+            }
 
             // Status 값이 비어있을 경우 기본값을 'branchdeploy'로 간주 (대표님 요청)
             const safeStatus = (Status || 'branchdeploy').trim().toLowerCase();
@@ -189,25 +200,28 @@ export async function fetchWizardFromGoogleSheet(csvUrl) {
               if (safeStatus !== 'branchdeploy' && safeStatus !== 'deploy') return;
             }
 
-            if (!NodeID) return; // NodeID가 없으면 무시
+            const cleanNodeId = NodeID ? NodeID.trim() : '';
+            if (!cleanNodeId) return; // NodeID가 없으면 무시
 
             // Node 초기화
-            if (!wizardFlow[NodeID]) {
-              wizardFlow[NodeID] = {
-                question: Question || '',
+            if (!wizardFlow[cleanNodeId]) {
+              wizardFlow[cleanNodeId] = {
+                question: Question ? Question.trim() : '',
                 options: []
               };
+            } else if (!wizardFlow[cleanNodeId].question && Question) {
+              wizardFlow[cleanNodeId].question = Question.trim();
             }
 
             // Option 추가
             const option = { 
-              label: OptionLabel || '',
-              keywords: Keywords || '' 
+              label: OptionLabel ? OptionLabel.trim() : '',
+              keywords: Keywords ? Keywords.trim() : '' 
             };
-            if (NextNodeID) option.next = NextNodeID;
-            if (ResultItemID) option.result = ResultItemID;
+            if (NextNodeID && NextNodeID.trim()) option.next = NextNodeID.trim();
+            if (ResultItemID && ResultItemID.trim()) option.result = ResultItemID.trim();
 
-            wizardFlow[NodeID].options.push(option);
+            wizardFlow[cleanNodeId].options.push(option);
           });
 
           resolve(wizardFlow);

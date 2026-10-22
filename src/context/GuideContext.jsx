@@ -9,6 +9,7 @@ export function GuideProvider({ children }) {
   const [allGuideItems, setAllGuideItems] = useState(fallbackItems);
   const [wizardFlow, setWizardFlow] = useState(null);
   const [isWizardLoading, setIsWizardLoading] = useState(true);
+  const [isGuidesLoading, setIsGuidesLoading] = useState(true);
 
   useEffect(() => {
     async function loadCMS() {
@@ -42,6 +43,7 @@ export function GuideProvider({ children }) {
           setAllGuideItems(flatItems);
         }
       }
+      setIsGuidesLoading(false);
 
       // 2. 자가진단 마법사 데이터 로딩
       const wizardBaseUrl = import.meta.env.VITE_WIZARD_SHEETS_URL;
@@ -63,7 +65,7 @@ export function GuideProvider({ children }) {
   }, []);
 
   return (
-    <GuideContext.Provider value={{ guidesData, allGuideItems, wizardFlow, isWizardLoading }}>
+    <GuideContext.Provider value={{ guidesData, allGuideItems, wizardFlow, isWizardLoading, isGuidesLoading }}>
       {children}
     </GuideContext.Provider>
   );
