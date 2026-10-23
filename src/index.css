@@ -818,6 +818,28 @@ mark {
   flex-shrink: 0;
 }
 
+.md-btn-kakao {
+  background-color: #FEE500 !important;
+  color: #191919 !important;
+  border-color: #fada0a !important;
+  font-weight: 600 !important;
+}
+
+.md-btn-kakao:hover {
+  background-color: #f7dd00 !important;
+}
+
+.md-btn-dealer {
+  background-color: #f1f5f9 !important;
+  color: var(--ci-primary, #2f6286) !important;
+  border-color: rgba(47, 98, 134, 0.2) !important;
+  font-weight: 600 !important;
+}
+
+.md-btn-dealer:hover {
+  background-color: #e2e8f0 !important;
+}
+
 /* Custom Thin Scrollbar */
 .custom-scrollbar {
   scrollbar-width: thin;

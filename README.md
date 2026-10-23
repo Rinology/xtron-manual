@@ -10,7 +10,7 @@
 다른 핵심 문서들을 보시려면 아래 링크를 클릭해 주세요!
 
 * 🛠️ **[관리자용 마크다운 종합 예시 (admin.md)](./src/data/markdown/admin.md)** : 표, 다이어그램, 알림 박스 등 웹페이지에 적용되는 모든 시각적 마크다운 예시 모음
-* 📝 **[마크다운 기본 문법 가이드 (MARKDOWN_GUIDE.md)](./MARKDOWN_GUIDE.md)** : 글씨 굵게, 링크, 리스트 등 기본적인 마크다운 작성법
+* 📝 **[마크다운 기본 문법 가이드 (MARKDOWN_GUIDE.md)](./MARKDOWN_GUIDE.md)** : 글씨 굵게, 링크, 리스트, 빠른 연결 버튼(CTA), 동영상 삽입 등 기본적인 마크다운 작성법
 * 🆕 **[업데이트 패치 노트 (PATCH_NOTES.md)](./PATCH_NOTES.md)** : 시스템 개선 및 기능 추가 내역
 * 📜 **[README 히스토리 (readme_history.md)](./readme_history.md)** : 본 가이드 문서의 수정 내역
 

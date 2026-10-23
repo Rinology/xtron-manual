@@ -18,11 +18,20 @@
 ### 🛠️ 코드 개선 및 버그 수정 (GuideContent.jsx)
 - **전체 미디어 렌더링 파이프라인에 `VideoPlayer` 전면 적용 (`src/components/GuideContent.jsx`)**
   - 마크다운 이미지 문법(`![설명](영상.mp4)`), HTML 태그(`<video src="...">`), 그리고 JSON 가이드 스텝 영상에 이르기까지 모든 동영상 요소가 신규 `VideoPlayer`로 일관되게 렌더링되도록 연동했습니다.
+- **보안 정책(CSP) 미디어 로드 차단 오류 해결 (`vercel.json`)**
+  - `Content-Security-Policy` 헤더에 `media-src 'self' data: blob: https:;`를 추가하여, 브라우저가 `default-src 'self'`로 폴백하며 Cloudflare R2 외부 비디오 파일 로드를 차단하던 문제를 완벽하게 해결했습니다.
+  - Vercel 프리뷰 툴바 및 R2 CDN과의 정상 연동을 위해 `script-src`, `connect-src`, `frame-src`에 `https://vercel.live`, `https://cdn.xtron-guide.kr`, `https://*.r2.dev`를 허용 도메인으로 등록했습니다.
 - **Cloudflare R2 `/xtron-guide/` 미디어 경로 자동 정규화 및 404 해결 (`src/components/GuideContent.jsx`)**
   - 기존 AWS S3 레거시 로직에서 `/project/xtron-guide/`를 강제로 덧붙이던 문제로 인해, R2 대시보드의 커스텀 도메인 경로(`/xtron-guide/...`)를 입력 시 `/project/`가 중복 삽입되어 이미지가 404로 출력되지 않던 현상을 수정했습니다.
   - S3 시절 작성된 기존 문서의 `project/xtron-guide/...` 경로와 신규 R2 문서의 `xtron-guide/...`, `/xtron-guide/...` 경로가 모두 단일 R2 도메인으로 정상 서빙되도록 하위 호환성을 완벽히 구현했습니다.
 
 ### 📝 마크다운 가이드 콘텐츠 업데이트
+- **빠른 연결 버튼(CTA) 스타일 유틸리티 확충 및 마크다운 간소화 (`index.css`, `error-throttle.md`, `power-check.md`, `pedal.md`)**
+  - 마크다운 문서 내에서 인라인 스타일이나 장황한 SVG 태그 없이도 카카오톡 상담 버튼과 대리점 안내 버튼을 생성할 수 있도록 `.md-btn-kakao` 및 `.md-btn-dealer` 전역 스타일을 구축했습니다.
+  - 급발진 가이드(`error-throttle.md`)에 하드코딩되어 있던 과거 Vercel 임시 브랜치 프리뷰 URL을 표준 내부 라우트 경로(`/#throttle`)로 전면 교체하여, 어떤 도메인 환경에서도 튕김 없이 즉시 스로틀 교체 매뉴얼로 이동하도록 최적화했습니다.
+  - 마크다운 기본 문법 가이드(`MARKDOWN_GUIDE.md`)에 7번 섹션으로 '빠른 연결 버튼(CTA 버튼) 넣는 법' 가이드를 공식 추가했습니다.
+- **자전거 접기/펴기 가이드 (`folding.md`) 표준 동영상 문법 전환**
+  - 5개 접기 단계의 HTML `<video src="...">` 태그를 표준 마크다운 문법(`![단계명](xtron-guide/basic/...)`)으로 전면 교체하여 스마트 플레이어와 안정적인 CDN 스트리밍이 연동되도록 조치했습니다.
 - **배터리 보조 브라켓 장착 가이드 (`battery-braket.md`) 동영상 예시 추가**
   - 최종 결합 점검 단계에 동작 테스트용 임시 MP4 비디오를 순수 마크다운 이미지 문법(`![최종 점검 시연 영상](...)`)으로 적용했습니다.
   - 추후 Cloudflare R2에 실제 장착 시연 영상 업로드 후 `xtron-guide/...` 상대 경로 또는 R2 URL로 즉시 교체 가능하도록 가이드를 구성했습니다.

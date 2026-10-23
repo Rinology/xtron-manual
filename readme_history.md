@@ -1,6 +1,7 @@
 # README Update History
 
 ## [2026-10-23]
+- 1. 빠른 링크(Quick Links) 섹션 내 `MARKDOWN_GUIDE.md` 안내 문구에 빠른 연결 버튼(CTA) 및 미디어 가이드 설명 보강.
 - 3. 마크다운 자동 디자인 및 기본 문법 섹션에 신규 프리미엄 비디오 플레이어(`VideoPlayer.jsx`) 기능 설명 반영.
 - 영상 재생 및 무한 반복재생(`Loop ON / OFF`) 제어 버튼, 처음부터 다시보기(`Replay`), 타임라인 탐색(Scrubber) 등 스마트 제어 도구 가이드 추가.
 - 사진 및 동영상 삽입 예시에 Cloudflare R2 대시보드 커스텀 도메인 경로(`/xtron-guide/...`) 직접 작성 가이드 반영.
