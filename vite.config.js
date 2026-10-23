@@ -4,6 +4,10 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  define: {
+    '__VERCEL_ENV__': JSON.stringify(process.env.VERCEL_ENV || ''),
+    '__GIT_BRANCH__': JSON.stringify(process.env.VERCEL_GIT_COMMIT_REF || ''),
+  },
   plugins: [
     react(),
     VitePWA({

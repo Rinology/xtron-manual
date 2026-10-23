@@ -66,7 +66,10 @@ export async function fetchGuidesFromGoogleSheet(csvUrl) {
           const data = results.data;
           const parsedCategories = [];
 
-          const isLive = window.location.hostname.includes('xtron-guide.kr');
+          const isLive = 
+            window.location.hostname.includes('xtron-guide.kr') || 
+            (typeof __VERCEL_ENV__ !== 'undefined' && __VERCEL_ENV__ === 'production') ||
+            (typeof __GIT_BRANCH__ !== 'undefined' && __GIT_BRANCH__ === 'main');
 
           data.forEach(row => {
             const { 
@@ -171,7 +174,10 @@ export async function fetchWizardFromGoogleSheet(csvUrl) {
           const data = results.data;
           const wizardFlow = {};
 
-          const isLive = window.location.hostname.includes('xtron-guide.kr');
+          const isLive = 
+            window.location.hostname.includes('xtron-guide.kr') || 
+            (typeof __VERCEL_ENV__ !== 'undefined' && __VERCEL_ENV__ === 'production') ||
+            (typeof __GIT_BRANCH__ !== 'undefined' && __GIT_BRANCH__ === 'main');
 
           data.forEach(row => {
             const { 
