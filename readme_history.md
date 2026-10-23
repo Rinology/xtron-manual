@@ -1,5 +1,9 @@
 # README Update History
 
+## [2026-10-23]
+- 3. 마크다운 자동 디자인 및 기본 문법 섹션에 신규 프리미엄 비디오 플레이어(`VideoPlayer.jsx`) 기능 설명 반영.
+- 영상 재생 및 무한 반복재생(`Loop ON / OFF`) 제어 버튼, 처음부터 다시보기(`Replay`), 타임라인 탐색(Scrubber) 등 스마트 제어 도구 가이드 추가.
+
 ## [2026-10-22]
 - 미디어 스토리지 아키텍처를 AWS S3에서 Cloudflare R2로 전환 반영.
 - Cloudflare R2 커스텀 도메인 및 에지 캐시(Cache-Control) 룰 연동 다이어그램 갱신.

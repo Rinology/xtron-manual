@@ -8,6 +8,7 @@ import rehypeRaw from 'rehype-raw';
 import mermaid from 'mermaid';
 import { sanitizeUrl } from '../utils/security';
 import { Info, Lightbulb, AlertTriangle, ShieldAlert, BookOpen, FileDown } from 'lucide-react';
+import VideoPlayer from './VideoPlayer';
 
 mermaid.initialize({
   startOnLoad: false,
@@ -346,26 +347,9 @@ export default function GuideContent({ activePage, setActivePage }) {
 
       if (isVideo) {
         return (
-          <video 
+          <VideoPlayer 
             src={fullSrc}
-            autoPlay
-            loop
-            muted
-            playsInline
-            controls
             title={alt || undefined}
-            aria-label={alt || '가이드 영상'}
-            style={{ 
-              width: '100%', 
-              maxWidth: '600px', 
-              maxHeight: '600px', 
-              objectFit: 'contain', 
-              borderRadius: '8px', 
-              border: '1px solid var(--surface-border)', 
-              display: 'block', 
-              margin: '1.5rem auto',
-              background: '#000'
-            }} 
           />
         );
       }
@@ -382,28 +366,9 @@ export default function GuideContent({ activePage, setActivePage }) {
     video: ({node, src, children, ...props}) => {
       const fullSrc = resolveMediaUrl(src);
       return (
-        <video 
-          src={fullSrc || undefined}
-          autoPlay
-          loop
-          muted
-          playsInline
-          controls
-          style={{ 
-            width: '100%', 
-            maxWidth: '600px', 
-            maxHeight: '600px', 
-            objectFit: 'contain', 
-            borderRadius: '8px', 
-            border: '1px solid var(--surface-border)', 
-            display: 'block', 
-            margin: '1.5rem auto',
-            background: '#000'
-          }} 
-          {...props}
-        >
-          {children}
-        </video>
+        <VideoPlayer 
+          src={fullSrc}
+        />
       );
     }
   };
@@ -490,15 +455,10 @@ export default function GuideContent({ activePage, setActivePage }) {
                       )}
                       {step.image && (
                         isVideoUrl(step.image) ? (
-                          <video
+                          <VideoPlayer
                             src={resolveMediaUrl(step.image)}
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                            controls
                             title={step.title}
-                            style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '500px', display: 'block', margin: '1rem auto', background: '#000' }}
+                            maxWidth="500px"
                           />
                         ) : (
                           <img src={resolveMediaUrl(step.image)} alt={step.title} style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '500px', display: 'block', margin: '1rem auto' }} />
