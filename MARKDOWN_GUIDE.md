@@ -110,7 +110,7 @@ graph TD
 **사진 및 동영상 넣는 법:**
 ```markdown
 <!-- 사진 삽입 -->
-![자전거 사진 설명(대체 텍스트)](project/xtron-guide/parts/photo.webp)
+![자전거 사진 설명(대체 텍스트)](xtron-guide/parts/photo.webp)
 
 <!-- 동영상(MP4) 삽입 (용량이 무거운 GIF 대신 사용) -->
 ![페달 조립 시연 영상](xtron-guide/parts/pedal_install.mp4)
