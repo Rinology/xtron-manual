@@ -41,13 +41,24 @@ const MermaidChart = ({ chart }) => {
 // Helper to resolve media URLs (supports full URL or relative CDN path)
 const resolveMediaUrl = (src) => {
   if (!src) return '';
-  const cdnBase = import.meta.env.VITE_R2_URL || import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr';
+  const cdnBase = (import.meta.env.VITE_R2_URL || import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr').replace(/\/+$/, '');
   const isExternal = src.startsWith('http://') || src.startsWith('https://') || src.startsWith('data:');
   if (isExternal) return src;
+
   let cleanPath = src.startsWith('/') ? src : `/${src}`;
-  if (!cleanPath.startsWith('/project/xtron-guide/')) {
-    cleanPath = `/project/xtron-guide${cleanPath}`;
+  
+  // 1. 기존 AWS S3 시절의 레거시 /project/ 접두사 제거 및 정규화
+  if (cleanPath.startsWith('/project/xtron-guide/')) {
+    cleanPath = cleanPath.replace(/^\/project\/xtron-guide/, '/xtron-guide');
+  } else if (cleanPath.startsWith('/project/')) {
+    cleanPath = cleanPath.replace(/^\/project/, '/xtron-guide');
   }
+
+  // 2. R2 버킷 최상위 경로인 /xtron-guide/ 접두사 자동 보정
+  if (!cleanPath.startsWith('/xtron-guide/')) {
+    cleanPath = `/xtron-guide${cleanPath}`;
+  }
+
   return `${cdnBase}${cleanPath}`;
 };
 

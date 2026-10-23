@@ -165,13 +165,15 @@
   사진(`.webp`, `.jpg` 등)뿐만 아니라 **동영상(`.mp4`, `.webm`)**도 기존 이미지와 동일한 마크다운 문법으로 편하게 삽입할 수 있습니다.
   
   ```markdown
-  <!-- 1. 사진 삽입 -->
-  ![사진설명글](project/xtron-guide/parts/suntour-seatpost_install_1_remove.webp)
+  <!-- 1. 사진 삽입 (R2 대시보드의 경로 그대로 복사하여 입력 가능) -->
+  ![계기판 화면](/xtron-guide/lcd/lcd_display_position_2.webp)
+  <!-- 또는 상대 경로 / 풀 URL 모두 완벽 지원 -->
+  ![사진설명글](xtron-guide/parts/suntour/suntour-seatpost_install_1_remove.webp)
 
   <!-- 2. 동영상 삽입 (GIF 대체용 MP4) -->
-  ![페달 장착 시연](project/xtron-guide/parts/pedal_install.mp4)
-  <!-- 또는 R2/S3 풀 URL 사용 -->
-  ![페달 장착 시연](https://pub-232c80dc3dbf4d56bb94606401fd833e.r2.dev/parts/pedal_install.mp4)
+  ![페달 장착 시연](xtron-guide/parts/pedal_install.mp4)
+  <!-- 또는 R2 풀 URL 사용 -->
+  ![페달 장착 시연](https://cdn.xtron-guide.kr/xtron-guide/parts/pedal_install.mp4)
   ```
 
   👉 **GIF 대신 MP4 동영상을 써야 하는 이유 (용량 & 속도 최적화):**

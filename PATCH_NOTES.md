@@ -15,9 +15,12 @@
   - **인터랙티브 탐색바(Timeline Scrubber) & 타임스탬프**: 재생 구간을 클릭하여 원하는 초 단위로 즉시 이동할 수 있으며, `현재 시간 / 총 시간`이 정밀하게 표시됩니다.
   - **음소거 토글(Mute) & 전체화면(Fullscreen)**: 작은 부품이나 정밀한 손동작을 모바일/PC 화면 전체로 크게 확대하여 확인할 수 있습니다.
 
-### 🛠️ 코드 개선 (GuideContent.jsx)
+### 🛠️ 코드 개선 및 버그 수정 (GuideContent.jsx)
 - **전체 미디어 렌더링 파이프라인에 `VideoPlayer` 전면 적용 (`src/components/GuideContent.jsx`)**
   - 마크다운 이미지 문법(`![설명](영상.mp4)`), HTML 태그(`<video src="...">`), 그리고 JSON 가이드 스텝 영상에 이르기까지 모든 동영상 요소가 신규 `VideoPlayer`로 일관되게 렌더링되도록 연동했습니다.
+- **Cloudflare R2 `/xtron-guide/` 미디어 경로 자동 정규화 및 404 해결 (`src/components/GuideContent.jsx`)**
+  - 기존 AWS S3 레거시 로직에서 `/project/xtron-guide/`를 강제로 덧붙이던 문제로 인해, R2 대시보드의 커스텀 도메인 경로(`/xtron-guide/...`)를 입력 시 `/project/`가 중복 삽입되어 이미지가 404로 출력되지 않던 현상을 수정했습니다.
+  - S3 시절 작성된 기존 문서의 `project/xtron-guide/...` 경로와 신규 R2 문서의 `xtron-guide/...`, `/xtron-guide/...` 경로가 모두 단일 R2 도메인으로 정상 서빙되도록 하위 호환성을 완벽히 구현했습니다.
 
 ### 📝 마크다운 가이드 콘텐츠 업데이트
 - **배터리 보조 브라켓 장착 가이드 (`battery-braket.md`) 동영상 예시 추가**
