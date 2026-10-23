@@ -7,7 +7,7 @@
 ❶ 부피 축소를 위해 핸들바의 높이를 최하단으로 부드럽게 내립니다.
 <br>❷ **안장(배터리 팩)을 바닥에 닿을 때까지 완전히 밀어 내립니다.** 접었을 때 배터리 하단이 바닥 지지대 역할을 하게 됩니다.
 
-<video src="/xtron-guide/basic/folding_01_handle_seat_down.mp4"></video>
+<video src="/xtron-guide/basic/folding_01_handle_seat_down.mp4" controls></video>
 ---
 
 #### 2. 핸들 포스트 및 페달 접기
