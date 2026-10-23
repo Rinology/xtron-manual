@@ -110,12 +110,12 @@ graph TD
 **사진 및 동영상 넣는 법:**
 ```markdown
 <!-- 사진 삽입 -->
-![자전거 사진 설명(대체 텍스트)](project/xtron-guide/parts/photo.webp)
+![자전거 사진 설명(대체 텍스트)](xtron-guide/parts/photo.webp)
 
 <!-- 동영상(MP4) 삽입 (용량이 무거운 GIF 대신 사용) -->
-![페달 조립 시연 영상](project/xtron-guide/parts/pedal_install.mp4)
-<!-- 또는 Cloudflare R2 / S3 풀 URL 사용 -->
-![페달 조립 시연 영상](https://pub-232c80dc3dbf4d56bb94606401fd833e.r2.dev/parts/pedal_install.mp4)
+![페달 조립 시연 영상](xtron-guide/parts/pedal_install.mp4)
+<!-- 또는 Cloudflare R2 풀 URL 사용 -->
+![페달 조립 시연 영상](https://cdn.xtron-guide.kr/xtron-guide/parts/pedal_install.mp4)
 ```
 > **💡 동영상(MP4) 꿀팁:**
 > 움직이는 사진(GIF)은 파일 용량이 너무 커서 웹페이지를 느리게 만듭니다. MP4 영상 파일로 올리시면 파일 용량이 80~90% 줄어들며, 사이트에서 GIF처럼 **자동 무한 반복 재생**됩니다!

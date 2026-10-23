@@ -8,6 +8,7 @@ import rehypeRaw from 'rehype-raw';
 import mermaid from 'mermaid';
 import { sanitizeUrl } from '../utils/security';
 import { Info, Lightbulb, AlertTriangle, ShieldAlert, BookOpen, FileDown } from 'lucide-react';
+import VideoPlayer from './VideoPlayer';
 
 mermaid.initialize({
   startOnLoad: false,
@@ -40,13 +41,24 @@ const MermaidChart = ({ chart }) => {
 // Helper to resolve media URLs (supports full URL or relative CDN path)
 const resolveMediaUrl = (src) => {
   if (!src) return '';
-  const cdnBase = import.meta.env.VITE_R2_URL || import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr';
+  const cdnBase = (import.meta.env.VITE_R2_URL || import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr').replace(/\/+$/, '');
   const isExternal = src.startsWith('http://') || src.startsWith('https://') || src.startsWith('data:');
   if (isExternal) return src;
+
   let cleanPath = src.startsWith('/') ? src : `/${src}`;
-  if (!cleanPath.startsWith('/project/xtron-guide/')) {
-    cleanPath = `/project/xtron-guide${cleanPath}`;
+  
+  // 1. 기존 AWS S3 시절의 레거시 /project/ 접두사 제거 및 정규화
+  if (cleanPath.startsWith('/project/xtron-guide/')) {
+    cleanPath = cleanPath.replace(/^\/project\/xtron-guide/, '/xtron-guide');
+  } else if (cleanPath.startsWith('/project/')) {
+    cleanPath = cleanPath.replace(/^\/project/, '/xtron-guide');
   }
+
+  // 2. R2 버킷 최상위 경로인 /xtron-guide/ 접두사 자동 보정
+  if (!cleanPath.startsWith('/xtron-guide/')) {
+    cleanPath = `/xtron-guide${cleanPath}`;
+  }
+
   return `${cdnBase}${cleanPath}`;
 };
 
@@ -346,26 +358,9 @@ export default function GuideContent({ activePage, setActivePage }) {
 
       if (isVideo) {
         return (
-          <video 
+          <VideoPlayer 
             src={fullSrc}
-            autoPlay
-            loop
-            muted
-            playsInline
-            controls
             title={alt || undefined}
-            aria-label={alt || '가이드 영상'}
-            style={{ 
-              width: '100%', 
-              maxWidth: '600px', 
-              maxHeight: '600px', 
-              objectFit: 'contain', 
-              borderRadius: '8px', 
-              border: '1px solid var(--surface-border)', 
-              display: 'block', 
-              margin: '1.5rem auto',
-              background: '#000'
-            }} 
           />
         );
       }
@@ -382,28 +377,9 @@ export default function GuideContent({ activePage, setActivePage }) {
     video: ({node, src, children, ...props}) => {
       const fullSrc = resolveMediaUrl(src);
       return (
-        <video 
-          src={fullSrc || undefined}
-          autoPlay
-          loop
-          muted
-          playsInline
-          controls
-          style={{ 
-            width: '100%', 
-            maxWidth: '600px', 
-            maxHeight: '600px', 
-            objectFit: 'contain', 
-            borderRadius: '8px', 
-            border: '1px solid var(--surface-border)', 
-            display: 'block', 
-            margin: '1.5rem auto',
-            background: '#000'
-          }} 
-          {...props}
-        >
-          {children}
-        </video>
+        <VideoPlayer 
+          src={fullSrc}
+        />
       );
     }
   };
@@ -490,15 +466,10 @@ export default function GuideContent({ activePage, setActivePage }) {
                       )}
                       {step.image && (
                         isVideoUrl(step.image) ? (
-                          <video
+                          <VideoPlayer
                             src={resolveMediaUrl(step.image)}
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                            controls
                             title={step.title}
-                            style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '500px', display: 'block', margin: '1rem auto', background: '#000' }}
+                            maxWidth="500px"
                           />
                         ) : (
                           <img src={resolveMediaUrl(step.image)} alt={step.title} style={{ width: '100%', borderRadius: '8px', border: '1px solid var(--surface-border)', maxWidth: '500px', display: 'block', margin: '1rem auto' }} />
