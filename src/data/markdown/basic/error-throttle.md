@@ -40,7 +40,7 @@
 >   </a>
 >   <a href="https://xtron-manual-git-feature-full-guides-taerins-projects.vercel.app/#throttle" target="_blank" class="md-btn md-btn-dealer" style="display: flex; align-items: center; gap: 8px; padding: 10px 16px; background-color: #f1f5f9; color: #333; text-decoration: none; border-radius: 8px; font-weight: bold; border: 1px solid #e2e8f0;">
 >     <span class="md-btn-icon-circle">
->       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+>       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
 >     </span>
 >     스로틀 교체 바로가기
 >   </a>
