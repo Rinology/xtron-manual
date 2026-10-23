@@ -62,7 +62,5 @@ graph LR
 **최종 결합 점검:** 장착이 끝난 후 브라켓을 손으로 잡고 흔들어보아, 흔들림이나 유격 없이 단단히 고정되었는지 체크한 후 작업을 마무리합니다.
 ![최종 결합 점검](project/xtron-guide/parts/BatteryBracket/battery_bracket_install_5.webp)
 
-![최종 점검 시연 영상](https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4)
-
 
 
