@@ -44,10 +44,6 @@
 > 모든 나사를 조이고 윤활을 마쳤는데도 아래와 같은 증상이 있다면 **내부 기어 손상**일 수 있으므로 **본사 또는 대리점 점검**을 권장합니다.
 > - 모터 쪽에서 **금속이 갈리는 소리**가 날 때
 > - 체인에서 규칙적인 **'딱딱딱' 소리**가 날 때
-
----
-
-> [!NOTE]
 > <div class="md-cta-container">
 >   <a href="http://pf.kakao.com/_xhxhRZxl/chat" target="_blank" class="md-btn md-btn-kakao">
 >     💬 카카오톡 상담
