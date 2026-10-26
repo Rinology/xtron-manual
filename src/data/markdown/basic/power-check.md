@@ -27,13 +27,13 @@
 
 #### 3. 키박스에 열쇠를 꽂고 돌려줍니다.
 
-![키박스 확대](project/xtron-guide/basic/step_03_v2.webp)
+![키박스 확대](/xtron-guide/basic/step_03_v2.webp)
 
 ---
 
 #### 4. 계기판 버튼 중 전원 버튼을 약 3초간 길게 누릅니다.
 
-![계기판 확대](project/xtron-guide/basic/step_04_v2.webp)
+![계기판 확대](/xtron-guide/basic/step_04_v2.webp)
 
 ---
 
