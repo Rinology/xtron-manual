@@ -20,7 +20,7 @@
   - 마크다운 이미지 문법(`![설명](영상.mp4)`), HTML 태그(`<video src="...">`), 그리고 JSON 가이드 스텝 영상에 이르기까지 모든 동영상 요소가 신규 `VideoPlayer`로 일관되게 렌더링되도록 연동했습니다.
 - **보안 정책(CSP) 미디어 로드 차단 오류 해결 (`vercel.json`)**
   - `Content-Security-Policy` 헤더에 `media-src 'self' data: blob: https:;`를 추가하여, 브라우저가 `default-src 'self'`로 폴백하며 Cloudflare R2 외부 비디오 파일 로드를 차단하던 문제를 완벽하게 해결했습니다.
-  - Vercel 프리뷰 툴바 및 R2 CDN과의 정상 연동을 위해 `script-src`, `connect-src`, `frame-src`에 `https://vercel.live`, `https://cdn.xtron-guide.kr`, `https://*.r2.dev`를 허용 도메인으로 등록했습니다.
+  - Vercel 프리뷰 툴바 및 외부 스토리지(R2 CDN)와의 정상 통신을 위해 `script-src`, `connect-src`, `frame-src`에 Vercel 프리뷰 도메인(`https://vercel.live`) 및 환경변수(`VITE_CDN_URL`, `VITE_R2_URL`)로 관리되는 허용 도메인을 등록했습니다.
 - **Cloudflare R2 `/xtron-guide/` 미디어 경로 자동 정규화 및 404 해결 (`src/components/GuideContent.jsx`)**
   - 기존 AWS S3 레거시 로직에서 `/project/xtron-guide/`를 강제로 덧붙이던 문제로 인해, R2 대시보드의 커스텀 도메인 경로(`/xtron-guide/...`)를 입력 시 `/project/`가 중복 삽입되어 이미지가 404로 출력되지 않던 현상을 수정했습니다.
   - S3 시절 작성된 기존 문서의 `project/xtron-guide/...` 경로와 신규 R2 문서의 `xtron-guide/...`, `/xtron-guide/...` 경로가 모두 단일 R2 도메인으로 정상 서빙되도록 하위 호환성을 완벽히 구현했습니다.
