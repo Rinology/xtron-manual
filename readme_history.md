@@ -1,5 +1,9 @@
 # README Update History
 
+## [2026-10-27]
+- 구글 스프레드시트 3번 탭(FAQ - 자주 묻는 질문) 컬럼 구조(FAQ_ID, Category, Question, Answer, Keywords, RelatedItemID, Pinned, Status) 및 운영 가이드 섹션 추가.
+- 사이드바 '자주 묻는 질문 (FAQ)' 자동 노출 규칙, 자가진단 마법사(ResultItemID) 연동법, Pinned 핵심 질문 메인 홈 태그 자동 추천 기능 안내 반영.
+
 ## [2026-10-23]
 - 1. 빠른 링크(Quick Links) 섹션 내 `MARKDOWN_GUIDE.md` 안내 문구에 빠른 연결 버튼(CTA) 및 미디어 가이드 설명 보강.
 - 3. 마크다운 자동 디자인 및 기본 문법 섹션에 신규 프리미엄 비디오 플레이어(`VideoPlayer.jsx`) 기능 설명 반영.

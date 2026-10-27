@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X, ChevronRight, FileText } from 'lucide-react';
+import { Search, X, ChevronRight, FileText, HelpCircle } from 'lucide-react';
 import { useGuides } from '../context/GuideContext';
 
 export default function SearchModal({ isOpen, onClose, onSelect }) {
-  const { allGuideItems } = useGuides();
+  const { allGuideItems, faqItems } = useGuides();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -26,15 +26,28 @@ export default function SearchModal({ isOpen, onClose, onSelect }) {
     }
 
     const lowerQuery = query.toLowerCase();
-    const filtered = allGuideItems.filter(item => {
+    const filteredGuides = allGuideItems.filter(item => {
       const matchTitle = item.title.toLowerCase().includes(lowerQuery);
       const matchSummary = item.summary && (Array.isArray(item.summary) ? item.summary.some(s => s.toLowerCase().includes(lowerQuery)) : item.summary.toLowerCase().includes(lowerQuery));
       return matchTitle || matchSummary;
     });
 
-    setResults(filtered);
+    const filteredFaqs = (faqItems || []).filter(faq => {
+      const matchQuestion = faq.question.toLowerCase().includes(lowerQuery);
+      const matchAnswer = faq.answer.toLowerCase().includes(lowerQuery);
+      const matchKeywords = faq.keywords && faq.keywords.toLowerCase().includes(lowerQuery);
+      const matchCategory = faq.category && faq.category.toLowerCase().includes(lowerQuery);
+      return matchQuestion || matchAnswer || matchKeywords || matchCategory;
+    }).map(faq => ({
+      id: faq.id,
+      title: `[FAQ] ${faq.question}`,
+      icon: <HelpCircle size={16} />,
+      summary: [faq.category ? `분류: ${faq.category}` : '자주 묻는 질문']
+    }));
+
+    setResults([...filteredGuides, ...filteredFaqs]);
     setSelectedIndex(0);
-  }, [query]);
+  }, [query, allGuideItems, faqItems]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {

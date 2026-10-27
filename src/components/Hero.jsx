@@ -5,7 +5,7 @@ import { allGuideItems } from '../data/guides';
 import { useGuides } from '../context/GuideContext';
 
 export default function Hero({ setActivePage, onOpenSearch }) {
-  const { wizardFlow, allGuideItems: dynamicGuideItems } = useGuides();
+  const { wizardFlow, allGuideItems: dynamicGuideItems, faqItems } = useGuides();
   const guideItems = dynamicGuideItems && dynamicGuideItems.length > 0 ? dynamicGuideItems : allGuideItems;
   const hasWizard = Boolean(
     wizardFlow &&
@@ -17,10 +17,25 @@ export default function Hero({ setActivePage, onOpenSearch }) {
   const [localSearch, setLocalSearch] = useState('');
   const [isFocused, setIsFocused] = useState(false);
 
-  const matchedItems = guideItems.filter(item => 
-    item.title.toLowerCase().includes(localSearch.toLowerCase()) || 
-    (item.summary && (Array.isArray(item.summary) ? item.summary.some(text => text.toLowerCase().includes(localSearch.toLowerCase())) : item.summary.toLowerCase().includes(localSearch.toLowerCase())))
+  const query = localSearch.toLowerCase();
+  const matchedGuides = guideItems.filter(item => 
+    item.title.toLowerCase().includes(query) || 
+    (item.summary && (Array.isArray(item.summary) ? item.summary.some(text => text.toLowerCase().includes(query)) : item.summary.toLowerCase().includes(query)))
   );
+
+  const matchedFaqs = (faqItems || []).filter(faq =>
+    faq.question.toLowerCase().includes(query) ||
+    faq.answer.toLowerCase().includes(query) ||
+    (faq.keywords && faq.keywords.toLowerCase().includes(query)) ||
+    (faq.category && faq.category.toLowerCase().includes(query))
+  ).map(faq => ({
+    id: faq.id,
+    title: `[FAQ] ${faq.question}`,
+    summary: [faq.category ? `${faq.category}` : '자주 묻는 질문'],
+    isFaq: true
+  }));
+
+  const matchedItems = [...matchedGuides, ...matchedFaqs];
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -33,9 +48,13 @@ export default function Hero({ setActivePage, onOpenSearch }) {
     setLocalSearch('');
   };
 
-  const suggestions = [
-    { title: "페달 장착", id: "pedal" }
-  ];
+  const pinnedFaqSuggestions = (faqItems || [])
+    .filter(faq => faq.pinned)
+    .map(faq => ({ title: faq.question, id: faq.id }));
+
+  const suggestions = pinnedFaqSuggestions.length > 0
+    ? pinnedFaqSuggestions
+    : [{ title: "페달 장착", id: "pedal" }];
 
   return (
     <motion.section 

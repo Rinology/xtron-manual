@@ -8,6 +8,7 @@ import ProgressBar from './components/ProgressBar';
 import BackToTop from './components/BackToTop';
 import SearchModal from './components/SearchModal';
 import TroubleshootingWizard from './components/TroubleshootingWizard';
+import FaqBoard from './components/FaqBoard';
 import { AnimatePresence } from 'framer-motion';
 import useSecurity from './hooks/useSecurity';
 import { useGuides } from './context/GuideContext';
@@ -15,35 +16,45 @@ import { useGuides } from './context/GuideContext';
 function App() {
   useSecurity(); // 보안 로직 적용
   
-  const { allGuideItems, isGuidesLoading } = useGuides();
+  const { allGuideItems, faqItems, isGuidesLoading, isFaqLoading } = useGuides();
 
-  const isValidRoute = (hash, items) => {
-    return hash === 'troubleshooting-wizard' || hash === 'not-found' || items.some(item => item.id === hash);
+  const isFaqRoute = (hash, faqs) => {
+    if (!hash) return false;
+    return hash === 'faq' || (Array.isArray(faqs) && faqs.some(f => f.id.toLowerCase() === hash.toLowerCase()));
+  };
+
+  const isValidRoute = (hash, items, faqs) => {
+    return (
+      hash === 'troubleshooting-wizard' ||
+      hash === 'not-found' ||
+      isFaqRoute(hash, faqs) ||
+      items.some(item => item.id === hash)
+    );
   };
 
   const [initialHash] = useState(() => window.location.hash.replace('#', ''));
 
   const [activePage, setActivePage] = useState(() => {
     const hash = window.location.hash.replace('#', '');
-    return hash && isValidRoute(hash, allGuideItems) ? hash : null;
+    return hash && isValidRoute(hash, allGuideItems, faqItems) ? hash : null;
   }); // null means Hero (Home)
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isInitialRouteResolved, setIsInitialRouteResolved] = useState(false);
 
-  // 데이터(시트)가 로드되어 allGuideItems가 업데이트 되었을 때 URL 해시 다시 검증
+  // 데이터(시트)가 로드되어 allGuideItems 및 faqItems가 업데이트 되었을 때 URL 해시 다시 검증
   useEffect(() => {
-    if (!isGuidesLoading) {
+    if (!isGuidesLoading && !isFaqLoading) {
       const currentHash = window.location.hash.replace('#', '');
       // URL에서 해시가 지워졌더라도 최초 접속 시점의 해시(initialHash)를 다시 시도합니다.
       const hashToTest = currentHash || initialHash;
-      if (hashToTest && isValidRoute(hashToTest, allGuideItems)) {
+      if (hashToTest && isValidRoute(hashToTest, allGuideItems, faqItems)) {
         setActivePage(hashToTest);
       }
       setIsInitialRouteResolved(true);
     }
-  }, [allGuideItems, initialHash, isGuidesLoading]);
+  }, [allGuideItems, faqItems, initialHash, isGuidesLoading, isFaqLoading]);
 
   // Cmd+K / Ctrl+K 단축키 리스너 (한글 IME, Caps Lock, e.code 지원)
   useEffect(() => {
@@ -74,7 +85,7 @@ function App() {
     // 2. 브라우저 뒤로/앞으로 가기 버튼 리스너
     const handleHashChange = () => {
       const currentHash = window.location.hash.replace('#', '');
-      if (currentHash && isValidRoute(currentHash, allGuideItems)) {
+      if (currentHash && isValidRoute(currentHash, allGuideItems, faqItems)) {
         setActivePage(currentHash);
       } else {
         setActivePage(null);
@@ -88,7 +99,7 @@ function App() {
       window.removeEventListener('hashchange', handleHashChange);
       window.removeEventListener('popstate', handleHashChange);
     };
-  }, [activePage, allGuideItems, isInitialRouteResolved]);
+  }, [activePage, allGuideItems, faqItems, isInitialRouteResolved]);
 
   return (
     <div className="app-layout">
@@ -120,7 +131,7 @@ function App() {
         <Header activePage={activePage} setActivePage={setActivePage} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
         <main className="page-container">
           <AnimatePresence mode="wait">
-            {isGuidesLoading || !isInitialRouteResolved ? (
+            {isGuidesLoading || isFaqLoading || !isInitialRouteResolved ? (
               <div key="loading" style={{ height: '70vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', color: 'var(--text-secondary)' }}>
                 <div style={{ width: '30px', height: '30px', border: '3px solid var(--surface-border)', borderTop: '3px solid var(--ci-primary)', borderRadius: '50%', animation: 'spin 1s linear infinite', marginBottom: '1rem' }}></div>
                 <p>가이드를 불러오는 중입니다...</p>
@@ -130,6 +141,8 @@ function App() {
               <Hero key="hero" setActivePage={setActivePage} onOpenSearch={() => setIsSearchOpen(true)} />
             ) : activePage === 'troubleshooting-wizard' ? (
               <TroubleshootingWizard key="wizard" setActivePage={setActivePage} />
+            ) : isFaqRoute(activePage, faqItems) ? (
+              <FaqBoard key="faq" activePage={activePage} setActivePage={setActivePage} />
             ) : (
               <GuideContent key={activePage} activePage={activePage} setActivePage={setActivePage} />
             )}

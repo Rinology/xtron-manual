@@ -4,6 +4,23 @@
 
 ---
 
+## 📅 [2026-10-27] 구글 스프레드시트 3번 탭(FAQ) 연동 및 아코디언 전용 보드 신규 구축
+
+### ✨ 신규 기능 (Features)
+- **구글 시트 3번 탭(`FAQ`) CMS 파서 및 전역 상태 연동 (`src/utils/googleSheetsCMS.jsx`, `src/context/GuideContext.jsx`, `.env`)**
+  - 별도의 `.md` 파일을 생성하지 않고도 단답형 질문과 간단한 해결 가이드를 스프레드시트 단일 탭에서 일괄 추가·수정·삭제할 수 있는 `fetchFaqFromGoogleSheet` 로더를 구현했습니다.
+  - `FAQ_ID`, `Category`, `Question`, `Answer`, `Keywords`, `RelatedItemID`, `Pinned`, `Status` 8개 표준 컬럼을 지원하며, 1·2번 탭과 동일한 `Status` 기반 배포 제어(`Deploy`, `BranchDeploy`, `Hide`)가 적용됩니다.
+- **FAQ 전용 아코디언 보드 컴포넌트 신규 구현 (`src/components/FaqBoard.jsx`)**
+  - 상단 카테고리 필터 탭(`전체` 및 시트 내 고유 분류 자동 추출)과 실시간 키워드 검색창, 부드러운 접기/펼치기 아코디언 UI를 제공합니다.
+  - `Answer` 셀 내 마크다운 문법(`**강조**`, 알림 박스 `> [!TIP]`, 줄바꿈 `Alt+Enter`) 및 Cloudflare R2 이미지/MP4 스마트 비디오 플레이어(`VideoPlayer.jsx`) 렌더링을 완벽히 지원합니다.
+  - `RelatedItemID` 입력 시 답변 하단에 **`[관련 매뉴얼 보러가기]`** 직통 버튼을 자동 생성하며, 개별 질문의 직통 해시 링크(`/#FAQ-001`) 복사 기능을 제공합니다.
+- **사이드바, 메인 홈(`Pinned`), 통합 검색(`Ctrl+K`), 자가진단 마법사 전면 연동 (`Sidebar.jsx`, `Hero.jsx`, `SearchModal.jsx`, `App.jsx`, `Header.jsx`)**
+  - 3번 탭에 유효한 배포 항목이 1개 이상 존재할 때 좌측 사이드바 상단에 **`자주 묻는 질문 (FAQ)`** 진입 버튼이 자동 노출됩니다.
+  - `Pinned`가 `TRUE`(체크)로 설정된 핵심 질문은 FAQ 목록 최상단에 고정되며, 메인 홈(`Hero.jsx`) 하단의 `'자주 찾는 질문'` 추천 태그로 자동 연동됩니다.
+  - 통합 검색 모달(`SearchModal.jsx`), 메인 검색창, 자가진단 마법사(`ResultItemID`에 `FAQ_ID` 입력 시)에서 특정 FAQ로 즉시 이동하여 해당 답변이 자동으로 펼쳐지도록 딥링크 라우팅을 구현했습니다.
+
+---
+
 ## 📅 [2026-10-23] 커스텀 스마트 비디오 플레이어 신규 구축 및 반복재생(Loop) 제어 버튼 도입
 
 ### ✨ 신규 기능 (Features)
