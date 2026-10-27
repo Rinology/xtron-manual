@@ -74,10 +74,10 @@ export default function FaqBoard({ activePage, setActivePage }) {
         }, 150);
       }
     } else if (activePage === 'faq') {
-      // 기본 진입 시 Pinned 항목 중 첫 번째 항목을 기본으로 열어두거나 깔끔하게 유지
-      const firstPinned = faqItems.find(f => f.pinned);
-      if (firstPinned && Object.keys(openIds).length === 0) {
-        setOpenIds({ [firstPinned.id]: true });
+      // 기본 진입 시 Pinned 순서가 가장 빠른 첫 번째 항목을 기본으로 열어두기
+      const pinnedSorted = [...faqItems].filter(f => f.pinned).sort((a, b) => a.pinned - b.pinned);
+      if (pinnedSorted.length > 0 && Object.keys(openIds).length === 0) {
+        setOpenIds({ [pinnedSorted[0].id]: true });
       }
     }
   }, [activePage, faqItems]);
@@ -97,7 +97,7 @@ export default function FaqBoard({ activePage, setActivePage }) {
     });
   };
 
-  // 필터링 및 Pinned 우선 정렬
+  // 필터링 및 Pinned 순서(1~10) 우선 정렬
   const filteredFaqs = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
 
@@ -114,8 +114,9 @@ export default function FaqBoard({ activePage, setActivePage }) {
       );
     });
 
-    // Pinned 항목을 상단에 배치하되 원래 시트 순서를 보존
+    // Pinned 항목을 숫자 순서(1~10)대로 상단에 배치하고, 일반 항목은 시트 순서 보존
     return [...filtered].sort((a, b) => {
+      if (a.pinned && b.pinned) return a.pinned - b.pinned;
       if (a.pinned && !b.pinned) return -1;
       if (!a.pinned && b.pinned) return 1;
       return 0;

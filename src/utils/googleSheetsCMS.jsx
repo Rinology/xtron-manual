@@ -44,6 +44,16 @@ async function fetchWithCache(url) {
   return csvText;
 }
 
+// Pinned 순서 값 파싱 헬퍼 (1~10 등 숫자는 해당 숫자 반환, TRUE는 99 반환, 빈칸/FALSE는 null 반환)
+function parsePinnedOrder(rawVal) {
+  if (rawVal === undefined || rawVal === null) return null;
+  const str = String(rawVal).trim().toLowerCase();
+  if (!str || str === 'false' || str === '0') return null;
+  if (str === 'true') return 99;
+  const num = Number(str);
+  return !isNaN(num) && num > 0 ? num : null;
+}
+
 /**
  * 구글 스프레드시트 CSV 데이터를 파싱하여 guidesData 형식의 JSON으로 변환합니다.
  * 
@@ -76,7 +86,7 @@ export async function fetchGuidesFromGoogleSheet(csvUrl) {
               CategoryID, CategoryTitle, 
               SubCategoryID, SubCategoryTitle, 
               ChildCategoryID, ChildCategoryTitle,
-              ItemID, ItemTitle, IconName, Summary, MarkdownFile, YoutubeLink, Status
+              ItemID, ItemTitle, IconName, Summary, MarkdownFile, YoutubeLink, Pinned, Status
             } = row;
 
             // ID나 Title이 없는 완전히 비정상적인 쓰레기 행(예: 빈 줄에 FALSE만 있는 행)은 무시
@@ -111,7 +121,8 @@ export async function fetchGuidesFromGoogleSheet(csvUrl) {
               icon: <IconComponent size={18} />,
               summary: Summary ? Summary.split('|').map(s => s.trim()) : [], // | 문자로 줄바꿈 분리
               markdownFile: MarkdownFile,
-              youtubeLink: YoutubeLink
+              youtubeLink: YoutubeLink,
+              pinned: parsePinnedOrder(Pinned)
             };
 
             // 2. 서브카테고리 존재 여부에 따른 분기 처리
@@ -288,7 +299,7 @@ export async function fetchFaqFromGoogleSheet(csvUrl) {
             }
 
             const cleanId = (FAQ_ID && FAQ_ID.trim() !== "") ? FAQ_ID.trim() : `FAQ-${index + 1}`;
-            const isPinned = String(Pinned || '').trim().toLowerCase() === 'true';
+            const pinnedOrder = parsePinnedOrder(Pinned);
 
             faqList.push({
               id: cleanId,
@@ -297,7 +308,7 @@ export async function fetchFaqFromGoogleSheet(csvUrl) {
               answer: Answer ? Answer.trim() : '',
               keywords: Keywords ? Keywords.trim() : '',
               relatedItemId: RelatedItemID ? RelatedItemID.trim() : '',
-              pinned: isPinned
+              pinned: pinnedOrder
             });
           });
 
