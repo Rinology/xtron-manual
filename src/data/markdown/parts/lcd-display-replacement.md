@@ -20,11 +20,11 @@
 
 1\. **케이블 분리**: 기존 계기판에 연결된 케이블을 양손으로 잡고 조심스럽게 당겨 분리합니다.
 
-![분리해야하는 케이블 이미지](project/xtron-guide/parts/LCD/color_lcd_display_replace_1.webp)
+![분리해야하는 케이블 이미지](project/xtron-guide/parts/LCD/color_lcd_display_replace_1_v2.webp)
 
 2\. **볼트 해체**: 계기판 아래쪽 홈에 있는 고정 볼트를 2.5mm 육각렌치를 사용하여 풀어줍니다.
 
-![아래 홈 위치 이미지(볼트위치)](project/xtron-guide/parts/LCD/color_lcd_display_replace_2.webp)
+![아래 홈 위치 이미지(볼트위치)](project/xtron-guide/parts/LCD/color_lcd_display_replace_2_v2.webp)
 
 3\. **완전 탈거**: 볼트를 다 푼 후, 거치대(클램프) 관절을 열어 핸들바에서 계기판을 완전히 탈거해 줍니다.
 
@@ -36,12 +36,12 @@
 
 2\. **볼트 삽입**: 볼트를 홀에 넣어 관절을 닫아주며, 위치 조정을 위해 볼트를 꽉 조이지 않고 적당히 가결합해 줍니다.
 
-![계기판 핸들바에 가결합되어있는 이미지](project/xtron-guide/parts/LCD/color_lcd_display_replace_3.webp)
+![계기판 핸들바에 가결합되어있는 이미지](project/xtron-guide/parts/LCD/color_lcd_display_replace_3_v2.webp)
 
 3\. **위치 고정**: 계기판을 잡고 키박스 옆으로 최대한 밀어 밀착시킵니다. <br>&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;이후 주행 중 흔들리거나 돌아가지 않도록 육각렌치로 볼트를 꽉 조여 단단히 고정해 줍니다.
 
-![키박스옆으로 최대한 옆으로 이동](project/xtron-guide/parts/LCD/color_lcd_display_replace_4.webp)
-![볼트로 고정](project/xtron-guide/parts/LCD/color_lcd_display_replace_5.webp)
+![키박스옆으로 최대한 옆으로 이동](project/xtron-guide/parts/LCD/color_lcd_display_replace_4_v2.webp)
+![볼트로 고정](project/xtron-guide/parts/LCD/color_lcd_display_replace_5_v2.webp)
 
 ---
 
@@ -51,8 +51,8 @@
 <span style="color:red">**케이블 연결 시 주의사항 (핀 파손 주의)**</span>
 케이블을 연결할 때는 내부 핀이 휘어지지 않도록 주의해야 합니다. <br>케이블 연결 부위 외부에 있는 **두 케이블의 화살표(▲)가 서로 마주 보도록** 정확히 맞춘 상태에서 밀어 넣어 장착해 주세요.
 
-![케이블을 꼽으려는 손](project/xtron-guide/parts/LCD/color_lcd_display_replace_6.webp)
-![두 케이블의 화살표가 마주보고있는 이미지](project/xtron-guide/parts/LCD/color_lcd_display_replace_7.webp)
+![케이블을 꼽으려는 손](project/xtron-guide/parts/LCD/color_lcd_display_replace_6_v2.webp)
+![두 케이블의 화살표가 마주보고있는 이미지](project/xtron-guide/parts/LCD/color_lcd_display_replace_7_v2.webp)
 
 ---
 
@@ -66,4 +66,4 @@
 
 3\. **세부 기능 확인**: 화면이 켜졌다면 조작 버튼을 사용하여 라이트 점등, 워킹 모드(도보 지원) 등 <br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;계기판에서 지원하는 모든 기능이 정상적으로 작동하는지 꼼꼼히 점검해 보세요.
 
-![계기판이 작동하는 모습](project/xtron-guide/parts/LCD/color_lcd_display_replace_8.webp)
+![계기판이 작동하는 모습](project/xtron-guide/parts/LCD/color_lcd_display_replace_8_v2.webp)
