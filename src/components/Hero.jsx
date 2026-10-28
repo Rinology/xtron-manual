@@ -5,7 +5,7 @@ import { allGuideItems } from '../data/guides';
 import { useGuides } from '../context/GuideContext';
 
 export default function Hero({ setActivePage, onOpenSearch }) {
-  const { wizardFlow, allGuideItems: dynamicGuideItems } = useGuides();
+  const { wizardFlow, allGuideItems: dynamicGuideItems, faqItems } = useGuides();
   const guideItems = dynamicGuideItems && dynamicGuideItems.length > 0 ? dynamicGuideItems : allGuideItems;
   const hasWizard = Boolean(
     wizardFlow &&
@@ -17,10 +17,25 @@ export default function Hero({ setActivePage, onOpenSearch }) {
   const [localSearch, setLocalSearch] = useState('');
   const [isFocused, setIsFocused] = useState(false);
 
-  const matchedItems = guideItems.filter(item => 
-    item.title.toLowerCase().includes(localSearch.toLowerCase()) || 
-    (item.summary && (Array.isArray(item.summary) ? item.summary.some(text => text.toLowerCase().includes(localSearch.toLowerCase())) : item.summary.toLowerCase().includes(localSearch.toLowerCase())))
+  const query = localSearch.toLowerCase();
+  const matchedGuides = guideItems.filter(item => 
+    item.title.toLowerCase().includes(query) || 
+    (item.summary && (Array.isArray(item.summary) ? item.summary.some(text => text.toLowerCase().includes(query)) : item.summary.toLowerCase().includes(query)))
   );
+
+  const matchedFaqs = (faqItems || []).filter(faq =>
+    faq.question.toLowerCase().includes(query) ||
+    faq.answer.toLowerCase().includes(query) ||
+    (faq.keywords && faq.keywords.toLowerCase().includes(query)) ||
+    (faq.category && faq.category.toLowerCase().includes(query))
+  ).map(faq => ({
+    id: faq.id,
+    title: `[FAQ] ${faq.question}`,
+    summary: [faq.category ? `${faq.category}` : '자주 묻는 질문'],
+    isFaq: true
+  }));
+
+  const matchedItems = [...matchedGuides, ...matchedFaqs];
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -33,9 +48,34 @@ export default function Hero({ setActivePage, onOpenSearch }) {
     setLocalSearch('');
   };
 
-  const suggestions = [
-    { title: "페달 장착", id: "pedal" }
-  ];
+  const pinnedGuides = (guideItems || [])
+    .filter(item => item.pinned)
+    .map((item, index) => ({
+      title: item.title.replace(/^ㄴ\s*/, ''),
+      id: item.id,
+      pinnedOrder: Number(item.pinned) || 99,
+      sourcePriority: 1, // 1번 탭(매뉴얼) 우선순위 1위
+      rowIndex: index
+    }));
+
+  const pinnedFaqs = (faqItems || [])
+    .filter(faq => faq.pinned)
+    .map((faq, index) => ({
+      title: faq.question,
+      id: faq.id,
+      pinnedOrder: Number(faq.pinned) || 99,
+      sourcePriority: 2, // 3번 탭(FAQ) 우선순위 2위
+      rowIndex: index
+    }));
+
+  const suggestions = [...pinnedGuides, ...pinnedFaqs].sort((a, b) => {
+    // 1. Pinned 숫자 오름차순 (1 -> 2 -> 3 ...)
+    if (a.pinnedOrder !== b.pinnedOrder) return a.pinnedOrder - b.pinnedOrder;
+    // 2. 같은 숫자일 경우 1번 탭(매뉴얼)이 3번 탭(FAQ)보다 먼저 노출
+    if (a.sourcePriority !== b.sourcePriority) return a.sourcePriority - b.sourcePriority;
+    // 3. 같은 탭 안에서 숫자가 중복될 경우 시트 위쪽 행부터 순서대로 노출
+    return a.rowIndex - b.rowIndex;
+  });
 
   return (
     <motion.section 
@@ -233,43 +273,45 @@ export default function Hero({ setActivePage, onOpenSearch }) {
           </div>
         )}
 
-        {/* 추천 퀵 가이드 리뉴얼 */}
-        <div className="hero-faq-tags" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 500, marginRight: '0.2rem' }}>자주 찾는 질문:</span>
-          {suggestions.map(s => (
-            <button
-              key={s.id}
-              onClick={() => setActivePage(s.id)}
-              style={{
-                background: 'rgba(255, 255, 255, 0.5)',
-                backdropFilter: 'blur(8px)',
-                border: '1px solid rgba(47, 98, 134, 0.15)',
-                padding: '0.35rem 0.9rem',
-                borderRadius: 'var(--radius-full)',
-                color: 'var(--ci-primary)',
-                fontSize: '0.85rem',
-                fontWeight: 600,
-                cursor: 'pointer',
-                transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.background = 'var(--ci-white)';
-                e.target.style.borderColor = 'rgba(47, 98, 134, 0.3)';
-                e.target.style.transform = 'translateY(-1px)';
-                e.target.style.boxShadow = '0 4px 6px rgba(0,0,0,0.05)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.background = 'rgba(255, 255, 255, 0.5)';
-                e.target.style.borderColor = 'rgba(47, 98, 134, 0.15)';
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.02)';
-              }}
-            >
-              {s.title}
-            </button>
-          ))}
-        </div>
+        {/* 추천 퀵 가이드 리뉴얼 (1번 탭 또는 3번 탭에 Pinned 값이 1개 이상 있을 때만 노출) */}
+        {suggestions.length > 0 && (
+          <div className="hero-faq-tags" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 500, marginRight: '0.2rem' }}>자주 찾는 질문:</span>
+            {suggestions.map((s, idx) => (
+              <button
+                key={`${s.sourcePriority}-${s.id}-${idx}`}
+                onClick={() => setActivePage(s.id)}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.5)',
+                  backdropFilter: 'blur(8px)',
+                  border: '1px solid rgba(47, 98, 134, 0.15)',
+                  padding: '0.35rem 0.9rem',
+                  borderRadius: 'var(--radius-full)',
+                  color: 'var(--ci-primary)',
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'var(--ci-white)';
+                  e.target.style.borderColor = 'rgba(47, 98, 134, 0.3)';
+                  e.target.style.transform = 'translateY(-1px)';
+                  e.target.style.boxShadow = '0 4px 6px rgba(0,0,0,0.05)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'rgba(255, 255, 255, 0.5)';
+                  e.target.style.borderColor = 'rgba(47, 98, 134, 0.15)';
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.02)';
+                }}
+              >
+                {s.title}
+              </button>
+            ))}
+          </div>
+        )}
 
       </div>
     </motion.section>

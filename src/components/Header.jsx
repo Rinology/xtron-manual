@@ -3,11 +3,12 @@ import { useGuides } from '../context/GuideContext';
 import { ChevronLeft, Menu, Home } from 'lucide-react';
 
 export default function Header({ activePage, setActivePage, isOpen, setIsOpen }) {
-  const { allGuideItems } = useGuides();
+  const { allGuideItems, faqItems } = useGuides();
   const guide = activePage ? allGuideItems.find(item => item.id === activePage) : null;
   const isWizard = activePage === 'troubleshooting-wizard';
-  const showBreadcrumb = guide || isWizard;
-  const titleText = isWizard ? '자가진단 마법사' : (guide ? guide.title : '');
+  const isFaq = activePage === 'faq' || Boolean(activePage && faqItems && faqItems.some(f => f.id.toLowerCase() === activePage.toLowerCase()));
+  const showBreadcrumb = guide || isWizard || isFaq;
+  const titleText = isWizard ? '자가진단 마법사' : isFaq ? '자주 묻는 질문 (FAQ)' : (guide ? guide.title : '');
 
   return (
       <header style={{

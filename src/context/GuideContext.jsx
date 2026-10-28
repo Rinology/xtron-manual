@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { guidesData as fallbackData, allGuideItems as fallbackItems } from '../data/guides';
-import { fetchGuidesFromGoogleSheet, fetchWizardFromGoogleSheet } from '../utils/googleSheetsCMS';
+import { fetchGuidesFromGoogleSheet, fetchWizardFromGoogleSheet, fetchFaqFromGoogleSheet } from '../utils/googleSheetsCMS';
 
 const GuideContext = createContext();
 
@@ -8,8 +8,10 @@ export function GuideProvider({ children }) {
   const [guidesData, setGuidesData] = useState(fallbackData);
   const [allGuideItems, setAllGuideItems] = useState(fallbackItems);
   const [wizardFlow, setWizardFlow] = useState(null);
+  const [faqItems, setFaqItems] = useState([]);
   const [isWizardLoading, setIsWizardLoading] = useState(true);
   const [isGuidesLoading, setIsGuidesLoading] = useState(true);
+  const [isFaqLoading, setIsFaqLoading] = useState(true);
 
   useEffect(() => {
     async function loadCMS() {
@@ -60,12 +62,27 @@ export function GuideProvider({ children }) {
       } else {
         setIsWizardLoading(false);
       }
+
+      // 3. 자주 묻는 질문(FAQ) 데이터 로딩
+      const faqBaseUrl = import.meta.env.VITE_FAQ_SHEETS_URL;
+      if (faqBaseUrl) {
+        try {
+          const remoteFaqData = await fetchFaqFromGoogleSheet(faqBaseUrl);
+          if (remoteFaqData && Array.isArray(remoteFaqData)) {
+            setFaqItems(remoteFaqData);
+          }
+        } finally {
+          setIsFaqLoading(false);
+        }
+      } else {
+        setIsFaqLoading(false);
+      }
     }
     loadCMS();
   }, []);
 
   return (
-    <GuideContext.Provider value={{ guidesData, allGuideItems, wizardFlow, isWizardLoading, isGuidesLoading }}>
+    <GuideContext.Provider value={{ guidesData, allGuideItems, wizardFlow, faqItems, isWizardLoading, isGuidesLoading, isFaqLoading }}>
       {children}
     </GuideContext.Provider>
   );

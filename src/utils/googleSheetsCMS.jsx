@@ -44,6 +44,16 @@ async function fetchWithCache(url) {
   return csvText;
 }
 
+// Pinned 순서 값 파싱 헬퍼 (1~10 등 숫자는 해당 숫자 반환, TRUE는 99 반환, 빈칸/FALSE는 null 반환)
+function parsePinnedOrder(rawVal) {
+  if (rawVal === undefined || rawVal === null) return null;
+  const str = String(rawVal).trim().toLowerCase();
+  if (!str || str === 'false' || str === '0') return null;
+  if (str === 'true') return 99;
+  const num = Number(str);
+  return !isNaN(num) && num > 0 ? num : null;
+}
+
 /**
  * 구글 스프레드시트 CSV 데이터를 파싱하여 guidesData 형식의 JSON으로 변환합니다.
  * 
@@ -76,7 +86,7 @@ export async function fetchGuidesFromGoogleSheet(csvUrl) {
               CategoryID, CategoryTitle, 
               SubCategoryID, SubCategoryTitle, 
               ChildCategoryID, ChildCategoryTitle,
-              ItemID, ItemTitle, IconName, Summary, MarkdownFile, YoutubeLink, Status
+              ItemID, ItemTitle, IconName, Summary, MarkdownFile, YoutubeLink, Pinned, Status
             } = row;
 
             // ID나 Title이 없는 완전히 비정상적인 쓰레기 행(예: 빈 줄에 FALSE만 있는 행)은 무시
@@ -111,7 +121,8 @@ export async function fetchGuidesFromGoogleSheet(csvUrl) {
               icon: <IconComponent size={18} />,
               summary: Summary ? Summary.split('|').map(s => s.trim()) : [], // | 문자로 줄바꿈 분리
               markdownFile: MarkdownFile,
-              youtubeLink: YoutubeLink
+              youtubeLink: YoutubeLink,
+              pinned: parsePinnedOrder(Pinned)
             };
 
             // 2. 서브카테고리 존재 여부에 따른 분기 처리
@@ -234,6 +245,83 @@ export async function fetchWizardFromGoogleSheet(csvUrl) {
   } catch (error) {
     console.error("Failed to fetch Wizard Google Sheets CSV:", error);
     return null;
+  }
+}
+
+/**
+ * 자주 묻는 질문(FAQ) 구글 스프레드시트 CSV 데이터를 파싱하여 FAQ 배열로 변환합니다.
+ * 
+ * 스프레드시트 구조 (열 이름):
+ * FAQ_ID | Category | Question | Answer | Keywords | RelatedItemID | Pinned | Status
+ * 
+ * @param {string} csvUrl 구글 스프레드시트 CSV 웹 게시 URL (FAQ 3번 탭)
+ * @returns {Promise<Array>} 변환된 FAQ 아이템 배열
+ */
+export async function fetchFaqFromGoogleSheet(csvUrl) {
+  try {
+    if (!csvUrl) return [];
+
+    const csvText = await fetchWithCache(csvUrl);
+
+    return new Promise((resolve, reject) => {
+      Papa.parse(csvText, {
+        header: true,
+        skipEmptyLines: true,
+        transformHeader: header => header.trim(),
+        complete: (results) => {
+          const data = results.data;
+          const faqList = [];
+
+          const isLive = 
+            window.location.hostname.includes('xtron-guide.kr') || 
+            (typeof __VERCEL_ENV__ !== 'undefined' && __VERCEL_ENV__ === 'production') ||
+            (typeof __GIT_BRANCH__ !== 'undefined' && __GIT_BRANCH__ === 'main');
+
+          data.forEach((row, index) => {
+            const {
+              FAQ_ID, Category, Question, Answer, Keywords, RelatedItemID, Pinned, Status
+            } = row;
+
+            // Question과 Answer가 모두 없는 빈 행은 무시
+            if ((!Question || Question.trim() === "") && (!Answer || Answer.trim() === "")) {
+              return;
+            }
+
+            // Status 값이 비어있을 경우 기본값을 'branchdeploy'로 간주
+            const safeStatus = (Status || 'branchdeploy').trim().toLowerCase();
+
+            // 상태(Status) 필터링 (라이브/테스트 서버 분리)
+            if (isLive) {
+              if (safeStatus !== 'deploy') return; // 라이브 서버: Deploy만 노출
+            } else {
+              // 테스트 서버(브랜치): Deploy 및 BranchDeploy 노출
+              if (safeStatus !== 'branchdeploy' && safeStatus !== 'deploy') return;
+            }
+
+            const cleanId = (FAQ_ID && FAQ_ID.trim() !== "") ? FAQ_ID.trim() : `FAQ-${index + 1}`;
+            const pinnedOrder = parsePinnedOrder(Pinned);
+
+            faqList.push({
+              id: cleanId,
+              category: (Category && Category.trim() !== "") ? Category.trim() : '일반',
+              question: Question ? Question.trim() : '',
+              answer: Answer ? Answer.trim() : '',
+              keywords: Keywords ? Keywords.trim() : '',
+              relatedItemId: RelatedItemID ? RelatedItemID.trim() : '',
+              pinned: pinnedOrder
+            });
+          });
+
+          resolve(faqList);
+        },
+        error: (err) => {
+          reject(err);
+        }
+      });
+    });
+  } catch (error) {
+    console.error("Failed to fetch FAQ Google Sheets CSV:", error);
+    return [];
   }
 }
 

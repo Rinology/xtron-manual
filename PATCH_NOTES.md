@@ -4,6 +4,23 @@
 
 ---
 
+## 📅 [2026-10-27] 구글 스프레드시트 3번 탭(FAQ) 연동 및 아코디언 전용 보드 신규 구축
+
+### ✨ 신규 기능 (Features)
+- **구글 시트 3번 탭(`FAQ`) CMS 파서 및 전역 상태 연동 (`src/utils/googleSheetsCMS.jsx`, `src/context/GuideContext.jsx`, `.env`)**
+  - 별도의 `.md` 파일을 생성하지 않고도 단답형 질문과 간단한 해결 가이드를 스프레드시트 단일 탭에서 일괄 추가·수정·삭제할 수 있는 `fetchFaqFromGoogleSheet` 로더를 구현했습니다.
+  - `FAQ_ID`, `Category`, `Question`, `Answer`, `Keywords`, `RelatedItemID`, `Pinned`, `Status` 8개 표준 컬럼을 지원하며, 1·2번 탭과 동일한 `Status` 기반 배포 제어(`Deploy`, `BranchDeploy`, `Hide`)가 적용됩니다.
+- **FAQ 전용 아코디언 보드 컴포넌트 신규 구현 (`src/components/FaqBoard.jsx`)**
+  - 상단 카테고리 필터 탭(`전체` 및 시트 내 고유 분류 자동 추출)과 실시간 키워드 검색창, 부드러운 접기/펼치기 아코디언 UI를 제공합니다.
+  - `Answer` 셀 내 마크다운 문법(`**강조**`, 알림 박스 `> [!TIP]`, 줄바꿈 `Alt+Enter`) 및 Cloudflare R2 이미지/MP4 스마트 비디오 플레이어(`VideoPlayer.jsx`) 렌더링을 완벽히 지원합니다.
+  - `RelatedItemID` 입력 시 답변 하단에 **`[관련 매뉴얼 보러가기]`** 직통 버튼을 자동 생성하며, 개별 질문의 직통 해시 링크(`/#FAQ-001`) 복사 기능을 제공합니다.
+- **사이드바, 메인 홈(`Pinned`), 통합 검색(`Ctrl+K`), 자가진단 마법사 전면 연동 (`Sidebar.jsx`, `Hero.jsx`, `SearchModal.jsx`, `App.jsx`, `Header.jsx`)**
+  - 3번 탭에 유효한 배포 항목이 1개 이상 존재할 때 좌측 사이드바 상단에 **`자주 묻는 질문 (FAQ)`** 진입 버튼이 자동 노출됩니다.
+  - **1번 탭(매뉴얼) 및 3번 탭(FAQ) 통합 `Pinned` 우선순위(1~10) 연동**: 두 시트의 `Pinned` 컬럼에 `1`~`10`의 숫자가 입력된 항목들을 합산하여 숫자 오름차순으로 메인 홈(`Hero.jsx`) 하단의 `'자주 찾는 질문:'` 알약 태그에 진열합니다. 동일한 번호(예: `1`번 중복)가 입력되어도 누락 없이 모두 표시되며, **동일 번호 시 1번 탭(매뉴얼) → 3번 탭(FAQ) → 시트 내 위쪽 행 순서**로 우선 배치됩니다. (`Pinned` 값이 있는 항목이 1개 이상일 때만 영역이 노출되며 기존 하드코딩 항목은 제거되었습니다.)
+  - 통합 검색 모달(`SearchModal.jsx`), 메인 검색창, 자가진단 마법사(`ResultItemID`에 `FAQ_ID` 입력 시)에서 특정 FAQ로 즉시 이동하여 해당 답변이 자동으로 펼쳐지도록 딥링크 라우팅을 구현했습니다.
+
+---
+
 ## 📅 [2026-10-23] 커스텀 스마트 비디오 플레이어 신규 구축 및 반복재생(Loop) 제어 버튼 도입
 
 ### ✨ 신규 기능 (Features)
@@ -20,7 +37,7 @@
   - 마크다운 이미지 문법(`![설명](영상.mp4)`), HTML 태그(`<video src="...">`), 그리고 JSON 가이드 스텝 영상에 이르기까지 모든 동영상 요소가 신규 `VideoPlayer`로 일관되게 렌더링되도록 연동했습니다.
 - **보안 정책(CSP) 미디어 로드 차단 오류 해결 (`vercel.json`)**
   - `Content-Security-Policy` 헤더에 `media-src 'self' data: blob: https:;`를 추가하여, 브라우저가 `default-src 'self'`로 폴백하며 Cloudflare R2 외부 비디오 파일 로드를 차단하던 문제를 완벽하게 해결했습니다.
-  - Vercel 프리뷰 툴바 및 R2 CDN과의 정상 연동을 위해 `script-src`, `connect-src`, `frame-src`에 `https://vercel.live`, `https://cdn.xtron-guide.kr`, `https://*.r2.dev`를 허용 도메인으로 등록했습니다.
+  - Vercel 프리뷰 툴바 및 외부 스토리지(R2 CDN)와의 정상 통신을 위해 `script-src`, `connect-src`, `frame-src`에 Vercel 프리뷰 도메인(`https://vercel.live`) 및 환경변수(`VITE_CDN_URL`, `VITE_R2_URL`)로 관리되는 허용 도메인을 등록했습니다.
 - **Cloudflare R2 `/xtron-guide/` 미디어 경로 자동 정규화 및 404 해결 (`src/components/GuideContent.jsx`)**
   - 기존 AWS S3 레거시 로직에서 `/project/xtron-guide/`를 강제로 덧붙이던 문제로 인해, R2 대시보드의 커스텀 도메인 경로(`/xtron-guide/...`)를 입력 시 `/project/`가 중복 삽입되어 이미지가 404로 출력되지 않던 현상을 수정했습니다.
   - S3 시절 작성된 기존 문서의 `project/xtron-guide/...` 경로와 신규 R2 문서의 `xtron-guide/...`, `/xtron-guide/...` 경로가 모두 단일 R2 도메인으로 정상 서빙되도록 하위 호환성을 완벽히 구현했습니다.

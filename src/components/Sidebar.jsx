@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGuides } from '../context/GuideContext';
-import { ChevronDown, ChevronRight, Search, Menu, MessageCircle, ShoppingBag, MapPin, Tag, Youtube, Sparkles, LayoutGrid, PanelLeftClose } from 'lucide-react';
+import { ChevronDown, ChevronRight, Search, Menu, MessageCircle, ShoppingBag, MapPin, Tag, Youtube, Sparkles, LayoutGrid, PanelLeftClose, HelpCircle } from 'lucide-react';
 
 export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch }) {
-  const { guidesData, wizardFlow } = useGuides();
+  const { guidesData, wizardFlow, faqItems } = useGuides();
   const hasWizard = Boolean(
     wizardFlow &&
     wizardFlow.start &&
     wizardFlow.start.options &&
     wizardFlow.start.options.length > 0
   );
+  const hasFaq = Boolean(faqItems && faqItems.length > 0);
+  const isFaqActive = activePage === 'faq' || Boolean(activePage && faqItems && faqItems.some(f => f.id.toLowerCase() === activePage.toLowerCase()));
   const [openCategories, setOpenCategories] = useState({
     "basic": true,
     "battery-guide": true,
@@ -257,6 +259,32 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                     자가진단 마법사
                   </button>
                 )}
+                {hasFaq && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActivePage('faq');
+                      if (isMobile) setIsOpen(false);
+                    }}
+                    style={{
+                      width: '100%', display: 'flex', alignItems: 'center', gap: '0.75rem',
+                      padding: '0.65rem 1rem', borderRadius: 'var(--radius-full)',
+                      background: isFaqActive ? 'var(--ci-primary-light)' : 'transparent',
+                      color: isFaqActive ? 'var(--ci-primary)' : 'var(--text-primary)',
+                      fontSize: '0.9rem', border: 'none', cursor: 'pointer',
+                      transition: 'all 0.2s', marginBottom: '0.25rem'
+                    }}
+                    onMouseEnter={e => {
+                      if (!isFaqActive) e.currentTarget.style.background = 'var(--surface-border)';
+                    }}
+                    onMouseLeave={e => {
+                      if (!isFaqActive) e.currentTarget.style.background = 'transparent';
+                    }}
+                  >
+                    <HelpCircle size={18} color={isFaqActive ? 'var(--ci-primary)' : 'var(--text-secondary)'} />
+                    자주 묻는 질문 (FAQ)
+                  </button>
+                )}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -305,6 +333,36 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                       <Sparkles size={18} />
                     </button>
                     <Tooltip text="자가진단 마법사" visible={hoveredButton === 'wizard'} />
+                  </div>
+                )}
+
+                {hasFaq && (
+                  <div style={{ position: 'relative' }}>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setActivePage('faq');
+                        if (isMobile) setIsOpen(false);
+                      }}
+                      style={{
+                        width: '40px', height: '40px', borderRadius: '50%', border: 'none',
+                        background: isFaqActive ? 'var(--ci-primary-light)' : 'transparent',
+                        color: isFaqActive ? 'var(--ci-primary)' : 'var(--text-secondary)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        cursor: 'pointer', transition: 'all 0.2s'
+                      }}
+                      onMouseEnter={e => {
+                        if (!isFaqActive) e.currentTarget.style.background = 'var(--surface-border)';
+                        setHoveredButton('faq');
+                      }}
+                      onMouseLeave={e => {
+                        if (!isFaqActive) e.currentTarget.style.background = 'transparent';
+                        setHoveredButton(null);
+                      }}
+                    >
+                      <HelpCircle size={18} />
+                    </button>
+                    <Tooltip text="자주 묻는 질문 (FAQ)" visible={hoveredButton === 'faq'} />
                   </div>
                 )}
 
