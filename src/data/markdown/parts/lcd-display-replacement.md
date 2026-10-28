@@ -24,7 +24,7 @@
 
 2\. **볼트 해체**: 계기판 아래쪽 홈에 있는 고정 볼트를 2.5mm 육각렌치를 사용하여 풀어줍니다.
 
-![아래 홈 위치 이미지(볼트위치)](project/xtron-guide/parts/LCD/color_lcd_display_replace_2_v2.webp)
+![아래 홈 위치 이미지(볼트위치)](project/xtron-guide/parts/LCD/color_lcd_display_replace_2_v3.webp)
 
 3\. **완전 탈거**: 볼트를 다 푼 후, 거치대(클램프) 관절을 열어 핸들바에서 계기판을 완전히 탈거해 줍니다.
 
