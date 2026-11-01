@@ -7,6 +7,9 @@
 ## 📅 [2026-11-01] 메인 화면 미니멀화, 구글 제미나이 스타일 검색 UI 및 마법사 롤링 티커 개편
 
 ### ✨ 신규 기능 및 UX 개선 (Features & UX Improvements)
+- **동영상 플레이어(`VideoPlayer`) 기본값 정지(Paused) 전환 및 Xenie 그라데이션 타이포그래피 적용 (`src/components/VideoPlayer.jsx`, `src/index.css`, `Sidebar.jsx`, `Hero.jsx`, `SearchModal.jsx`, `TroubleshootingWizard.jsx`)**
+  - 자전거 접기/펴기 등 본문 내 MP4 시연 영상 진입 시 자동 재생으로 인한 산만함을 방지하기 위해 기본 재생 상태를 **정지(Paused, `autoPlay = false`)**로 전환했습니다. 사용자가 영상 클릭 시 재생되고 재생 상태가 직관적으로 표시됩니다.
+  - Xenie 브랜드 명칭에 적용되었던 산만한 개별 단색(`X` 녹색, `enie` 남색)을 자연스러운 **녹색 ➡️ 남색 원톤 그라데이션(`.xenie-gradient-text`, `linear-gradient(135deg, var(--ci-secondary) 0%, var(--ci-primary) 100%)`)**으로 통일하여 시각적 피로도를 없애고 세련된 프리미엄 BI를 구현했습니다.
 - **MD 가이드 메인 타이틀 및 본문 타이포그래피 비율 축소 정돈 (`src/components/GuideContent.jsx`, `src/index.css`)**
   - 사이드바 메뉴(15px / `0.9rem`) 및 메인 화면 폰트 크기 비율에 자연스럽게 조화되도록 가이드 상단 대형 제목(`h2`) 크기를 기존 `2rem(30px)`에서 **`1.35rem(20.25px)`**로 대폭 축소 조정했습니다.
   - 마크다운 본문 내부 소제목(`h1`: 1.25rem, `h2`: 1.15rem, `h3`: 1.05rem, `h4`: 0.95rem)과 본문 문단(`p`, `ul`, `ol`을 기존 0.95rem에서 **`0.85rem(12.75px)`**) 및 인용/경고 박스(`0.85rem`)의 크기 및 상하 여백을 컴팩트하게 정돈하여 화면 조망감과 정보 밀도를 극대화했습니다.

@@ -301,8 +301,7 @@ function Hero({ setActivePage }) {
                           <div style={{ display: 'flex', flexDirection: 'column' }}>
                             <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--ci-primary)' }}>
                               <span style={{ fontWeight: 800 }}>
-                                <span style={{ color: 'var(--ci-secondary)' }}>X</span>
-                                <span style={{ color: 'var(--ci-primary)' }}>enie</span>
+                                <span className="xenie-gradient-text">Xenie</span>
                               </span> (자가진단 마법사)
                             </span>
                             <span style={{ fontSize: '0.76rem', color: 'var(--text-secondary)' }}>

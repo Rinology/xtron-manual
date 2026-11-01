@@ -177,6 +177,15 @@ h1, h2, h3, h4, h5, h6 {
   display: inline-block;
 }
 
+/* Xenie 브랜드명 전용 녹색 -> 남색 그라데이션 타이포그래피 */
+.xenie-gradient-text {
+  background: linear-gradient(135deg, var(--ci-secondary) 0%, var(--ci-primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+}
+
 /* Minimalist Navigation Button */
 .nav-btn {
   display: flex;

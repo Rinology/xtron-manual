@@ -253,7 +253,7 @@ function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch })
                   }}
                 >
                   <Sparkles size={18} color={activePage === 'troubleshooting-wizard' ? 'var(--ci-primary)' : 'var(--text-secondary)'} style={{ flexShrink: 0 }} />
-                  <span><strong style={{ fontWeight: 700 }}><span style={{ color: 'var(--ci-secondary)' }}>X</span><span style={{ color: 'var(--ci-primary)' }}>enie</span></strong> (자가진단 마법사)</span>
+                  <span><strong style={{ fontWeight: 700 }}><span className="xenie-gradient-text">Xenie</span></strong> (자가진단 마법사)</span>
                 </button>
               )}
               {hasFaq && (

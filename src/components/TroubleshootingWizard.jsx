@@ -107,8 +107,7 @@ function TroubleshootingWizard({ setActivePage }) {
             <div>
               <h2 style={{ fontSize: '1.8rem', margin: 0, fontWeight: 700, display: 'flex', alignItems: 'baseline', gap: '0.45rem', flexWrap: 'wrap' }}>
                 <span style={{ fontWeight: 800 }}>
-                  <span style={{ color: 'var(--ci-secondary)' }}>X</span>
-                  <span style={{ color: 'var(--ci-primary)' }}>enie</span>
+                  <span className="xenie-gradient-text">Xenie</span>
                 </span>
                 <span style={{ fontSize: '1.35rem', fontWeight: 700, color: 'var(--ci-primary)' }}>(자가진단 마법사)</span>
               </h2>

@@ -14,14 +14,15 @@ export default function VideoPlayer({
   maxWidth = '600px', 
   maxHeight = '600px',
   style = {},
-  className = '' 
+  className = '' ,
+  autoPlay = false
 }) {
   const containerRef = useRef(null);
   const videoRef = useRef(null);
   const progressBarRef = useRef(null);
   const toastTimeoutRef = useRef(null);
 
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [isLooping, setIsLooping] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
   const [currentTime, setCurrentTime] = useState(0);
@@ -152,7 +153,7 @@ export default function VideoPlayer({
       <video
         ref={videoRef}
         src={src}
-        autoPlay
+        autoPlay={autoPlay}
         loop={isLooping}
         muted={isMuted}
         playsInline
