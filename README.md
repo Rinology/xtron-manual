@@ -199,7 +199,7 @@
   <!-- 2. 동영상 삽입 (GIF 대체용 MP4) -->
   ![페달 장착 시연](xtron-guide/parts/pedal_install.mp4)
   <!-- 또는 R2 풀 URL 사용 -->
-  ![페달 장착 시연](https://cdn.xtron-guide.kr/xtron-guide/parts/pedal_install.mp4)
+  ![페달 장착 시연](https://<YOUR_CDN_DOMAIN>/xtron-guide/parts/pedal_install.mp4)
   ```
 
   👉 **GIF 대신 MP4 동영상을 써야 하는 이유 (용량 & 속도 최적화):**
@@ -216,7 +216,7 @@
   모든 이미지와 동영상은 화면 렌더링 시 **가로 최대 600px, 세로 최대 600px**로 자동 제한됩니다. 아무리 해상도가 높거나 세로로 긴 미디어를 넣어도 화면을 벗어나지 않고 **원본 비율을 유지하며 안전하게 축소**되므로 사이즈를 억지로 맞춰서 올리실 필요가 없습니다. (추가로 모서리가 8px 둥글게 깎이고 깔끔한 테두리가 적용됩니다.)
 
   ### ⚡ Cloudflare R2 + 커스텀 도메인 연동 아키텍처 (비용 및 속도 최적화)
-  정적 미디어(이미지, MP4 동영상, PDF 설명서)는 Cloudflare R2에 저장되고, 커스텀 도메인(`https://cdn.xtron-guide.kr`) 및 에지 캐시(Cache-Control) 룰을 통해 초고속으로 전송됩니다.
+  정적 미디어(이미지, MP4 동영상, PDF 설명서)는 Cloudflare R2에 저장되고, 커스텀 도메인(`https://<YOUR_CDN_DOMAIN>`) 및 에지 캐시(Cache-Control) 룰을 통해 초고속으로 전송됩니다.
   
   #### 📊 데이터 흐름 다이어그램
   ```mermaid
@@ -231,7 +231,7 @@
       Vercel-->>User: 레이아웃, 코드 전달 (빠름)
 
       Note over User, R2: [2단계] 첫 번째 미디어 요청 (최초 1회)
-      User->>CF: 사진/영상/PDF 요청 (cdn.xtron-guide.kr)
+      User->>CF: 사진/영상/PDF 요청 (R2 CDN)
       CF->>R2: (캐시에 없음) R2야 파일 전달해줘!
       R2-->>CF: 파일 전달 (Egress 다운로드 비용 0원 무료!)
       CF-->>User: 사용자에게 전달 및 글로벌 에지 캐시에 저장
@@ -244,7 +244,7 @@
   ```
   
   * **비용 절감 원리:** Cloudflare R2는 AWS S3와 달리 **아웃바운드 다운로드 트래픽(Egress) 요금이 완전히 무료**입니다. 대용량 MP4 영상이나 PDF 설명서를 수만 명이 다운로드해도 트래픽 추가 비용이 발생하지 않습니다.
-  * **도메인 통일:** 모든 이미지, MP4, PDF는 단일 커스텀 도메인인 **`https://cdn.xtron-guide.kr`**로 일원화되어 서비스됩니다.
+  * **도메인 통일:** 모든 이미지, MP4, PDF는 단일 커스텀 도메인인 **`https://<YOUR_CDN_DOMAIN>`**로 일원화되어 서비스됩니다.
 
 * **유튜브 영상 버튼 넣기**: 
   메뉴 데이터(구글 스프레드시트) 쪽에 `youtubeLink` 같은 별도 항목을 두어 버튼화하는 것도 가능하며, 마크다운 본문에도 직접 링크를 적어주면 작동합니다.
