@@ -55,7 +55,7 @@ const MermaidChart = React.memo(({ chart }) => {
 // Helper to resolve media URLs (supports full URL or relative CDN path)
 const resolveMediaUrl = (src) => {
   if (!src) return '';
-  const cdnBase = (import.meta.env.VITE_R2_URL || import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr').replace(/\/+$/, '');
+  const cdnBase = (import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr').replace(/\/+$/, '');
   const isExternal = src.startsWith('http://') || src.startsWith('https://') || src.startsWith('data:');
   if (isExternal) return src;
 
@@ -186,7 +186,7 @@ const MarkdownComponents = {
   },
   a: ({node, href, children, ...props}) => {
     if (href && href.endsWith('.pdf')) {
-      const r2Url = import.meta.env.VITE_R2_URL || import.meta.env.VITE_R2_PDF_URL || import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr';
+      const r2Url = import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr';
       const fullHref = href.startsWith('http') ? href : `${r2Url}/${href.replace(/^\//, '')}`;
       
       let title = '';

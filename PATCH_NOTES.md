@@ -7,6 +7,10 @@
 ## 📅 [2026-11-01] 메인 화면 미니멀화, 구글 제미나이 스타일 검색 UI 및 마법사 롤링 티커 개편
 
 ### ✨ 신규 기능 및 UX 개선 (Features & UX Improvements)
+- **Cloudflare R2 CDN 환경변수 단일화 (`VITE_CDN_URL`) 및 레거시 변수 전면 정리 (`src/components/FaqBoard.jsx`, `src/components/GuideContent.jsx`, `.env`)**
+  - 기존에 이미지/동영상/PDF 처리를 위해 분리·혼용되던 `VITE_R2_URL`, `VITE_CDN_URL`, `VITE_R2_PDF_URL` 3개 환경변수를 단일 규격인 **`VITE_CDN_URL`**로 전면 통일했습니다.
+  - Vercel 프로젝트 환경변수 및 로컬 `.env` 설정 시 중복 입력을 없애고 관리 포인트를 1개로 단순화하여 설정 누락이나 혼선을 완벽히 방지했습니다.
+  - 마크다운 이미지/동영상 처리 함수(`resolveMediaUrl`) 및 PDF 다운로드 링크 렌더러에서 `VITE_CDN_URL`을 최우선으로 바라보며, 기본 폴백(`https://cdn.xtron-guide.kr`)을 유지하여 배포 안정성을 높였습니다.
 - **모바일 반응형 순서도(세로 자동 전환) 및 표(Table) 가로 터치 스크롤 최적화 (`src/components/FaqBoard.jsx`, `src/index.css`)**
   - 모바일(화면 폭 768px 이하)에서 가로 순서도가 30% 수준으로 찌그러져 글씨를 읽을 수 없던 문제를 해결하기 위해, `[순서도]` 태그 작성 시 **모바일에서는 항시 위에서 아래로 흐르는 세로형(`flowchart TD`)으로 자동 전환**되도록 구현했습니다.
   - 작성자가 방향을 고정하고 싶을 때를 위해 **`[세로순서도]`(항시 세로)**와 **`[가로순서도]`(항시 가로)** 태그를 추가 지원합니다.

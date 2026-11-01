@@ -221,7 +221,7 @@ const preprocessFaqAnswer = (rawText, isMobile = false) => {
 // R2 미디어 경로 자동 보정 헬퍼 (GuideContent.jsx와 동일 규격)
 const resolveMediaUrl = (src) => {
   if (!src) return '';
-  const cdnBase = (import.meta.env.VITE_R2_URL || import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr').replace(/\/+$/, '');
+  const cdnBase = (import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr').replace(/\/+$/, '');
   const isExternal = src.startsWith('http://') || src.startsWith('https://') || src.startsWith('data:');
   if (isExternal) return src;
 
@@ -439,7 +439,7 @@ const MarkdownComponents = {
       );
     }
     if (href && href.endsWith('.pdf')) {
-      const r2Url = import.meta.env.VITE_R2_URL || import.meta.env.VITE_R2_PDF_URL || import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr';
+      const r2Url = import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr';
       const fullHref = href.startsWith('http') ? href : `${r2Url}/${href.replace(/^\//, '')}`;
       return (
         <a
