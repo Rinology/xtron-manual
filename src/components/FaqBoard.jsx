@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  HelpCircle, Search, ChevronDown, ChevronUp, Pin, ExternalLink,
+  HelpCircle, Search, ChevronDown, ChevronUp, ChevronRight, ExternalLink,
   Link as LinkIcon, Check, Info, Lightbulb, AlertTriangle,
   ShieldAlert, MessageCircle, BookOpen, FileDown, X
 } from 'lucide-react';
@@ -43,6 +43,8 @@ export default function FaqBoard({ activePage, setActivePage }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [openIds, setOpenIds] = useState({});
   const [copiedId, setCopiedId] = useState(null);
+  const [tickerIndex, setTickerIndex] = useState(0);
+  const [isTickerHovered, setIsTickerHovered] = useState(false);
   const itemRefs = useRef({});
 
   // 카테고리 목록 추출 ('전체' + 시트에 등장하는 고유 분류명)
@@ -56,7 +58,40 @@ export default function FaqBoard({ activePage, setActivePage }) {
     return ['전체', ...uniqueCats];
   }, [faqItems]);
 
-  // 특정 FAQ_ID 해시(예: #FAQ-001)로 진입했을 때 해당 아코디언 자동 펼침 및 스크롤 이동
+  // 전체 탭 상단 1줄 롤링용 질문 풀 (Pinned 순서 우선 + 미지정 항목 랜덤 셔플)
+  const rollingFaqs = useMemo(() => {
+    const pinned = (faqItems || [])
+      .filter(f => f.pinned && f.id && f.question)
+      .sort((a, b) => a.pinned - b.pinned);
+
+    const unpinned = (faqItems || [])
+      .filter(f => !f.pinned && f.id && f.question);
+
+    for (let i = unpinned.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [unpinned[i], unpinned[j]] = [unpinned[j], unpinned[i]];
+    }
+
+    return [...pinned, ...unpinned];
+  }, [faqItems]);
+
+  // 전체 탭이고 검색어가 없을 때 3.5초 주기로 롤링
+  useEffect(() => {
+    if (selectedCategory !== '전체' || searchQuery.trim() !== '' || rollingFaqs.length <= 1 || isTickerHovered) {
+      return;
+    }
+    const interval = setInterval(() => {
+      setTickerIndex(prev => (prev + 1) % rollingFaqs.length);
+    }, 3500);
+    return () => clearInterval(interval);
+  }, [selectedCategory, searchQuery, rollingFaqs.length, isTickerHovered]);
+
+  const currentRollingFaq = rollingFaqs.length > 0
+    ? rollingFaqs[tickerIndex % rollingFaqs.length]
+    : null;
+
+  // 특정 FAQ_ID 해시(예: #FAQ-001)로 진입했을 때만 해당 아코디언 자동 펼침 및 스크롤 이동
+  // 일반 'faq' 페이지 진입 시에는 모든 질문이 닫힌 상태로 표시
   useEffect(() => {
     if (!faqItems || faqItems.length === 0) return;
 
@@ -65,7 +100,7 @@ export default function FaqBoard({ activePage, setActivePage }) {
       if (targetFaq) {
         setSelectedCategory('전체');
         setSearchQuery('');
-        setOpenIds(prev => ({ ...prev, [targetFaq.id]: true }));
+        setOpenIds({ [targetFaq.id]: true });
         setTimeout(() => {
           const el = itemRefs.current[targetFaq.id];
           if (el) {
@@ -74,16 +109,23 @@ export default function FaqBoard({ activePage, setActivePage }) {
         }, 150);
       }
     } else if (activePage === 'faq') {
-      // 기본 진입 시 Pinned 순서가 가장 빠른 첫 번째 항목을 기본으로 열어두기
-      const pinnedSorted = [...faqItems].filter(f => f.pinned).sort((a, b) => a.pinned - b.pinned);
-      if (pinnedSorted.length > 0 && Object.keys(openIds).length === 0) {
-        setOpenIds({ [pinnedSorted[0].id]: true });
-      }
+      setOpenIds({});
     }
   }, [activePage, faqItems]);
 
   const toggleItem = (id) => {
     setOpenIds(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const handleRollingFaqClick = (faq) => {
+    if (!faq) return;
+    setOpenIds(prev => ({ ...prev, [faq.id]: true }));
+    setTimeout(() => {
+      const el = itemRefs.current[faq.id];
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 100);
   };
 
   const handleCopyFaqLink = (e, id) => {
@@ -97,7 +139,7 @@ export default function FaqBoard({ activePage, setActivePage }) {
     });
   };
 
-  // 필터링 및 Pinned 순서(1~10) 우선 정렬
+  // 필터링 및 Pinned 순서 우선 정렬
   const filteredFaqs = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
 
@@ -114,14 +156,25 @@ export default function FaqBoard({ activePage, setActivePage }) {
       );
     });
 
-    // Pinned 항목을 숫자 순서(1~10)대로 상단에 배치하고, 일반 항목은 시트 순서 보존
-    return [...filtered].sort((a, b) => {
+    // Pinned 항목을 숫자 순서대로 상단에 배치하고, 일반 항목은 시트 순서 보존
+    const sorted = [...filtered].sort((a, b) => {
       if (a.pinned && b.pinned) return a.pinned - b.pinned;
       if (a.pinned && !b.pinned) return -1;
       if (!a.pinned && b.pinned) return 1;
       return 0;
     });
-  }, [faqItems, selectedCategory, searchQuery]);
+
+    // '전체' 탭이고 검색어가 없을 때는 Pinned(숫자 또는 TRUE)된 핵심 질문만 최대 10개까지 노출
+    // (단, 롤링 티커 클릭이나 직통 링크로 열린 일반 질문이 있다면 함께 표시)
+    if (selectedCategory === '전체' && !q) {
+      const pinnedTop = sorted.filter(item => Boolean(item.pinned)).slice(0, 10);
+      const openedExtras = sorted.filter(item => !item.pinned && openIds[item.id]);
+      const combined = [...pinnedTop, ...openedExtras];
+      return combined.length > 0 ? combined : sorted.slice(0, 10);
+    }
+
+    return sorted;
+  }, [faqItems, selectedCategory, searchQuery, openIds]);
 
   // 마크다운 컴포넌트 설정 (구글 시트 Alt+Enter 줄바꿈 및 R2 이미지/동영상 완벽 호환)
   const MarkdownComponents = {
@@ -245,7 +298,7 @@ export default function FaqBoard({ activePage, setActivePage }) {
         <img
           src={fullSrc}
           alt={alt}
-          style={{ width: '100%', maxWidth: '520px', maxHeight: '520px', objectFit: 'contain', borderRadius: '8px', border: '1px solid var(--surface-border)', display: 'block', margin: '1rem auto' }}
+          style={{ width: 'auto', maxWidth: 'min(100%, 520px)', maxHeight: '520px', objectFit: 'contain', borderRadius: '8px', border: '1px solid var(--surface-border)', display: 'block', margin: '1rem auto' }}
           {...props}
         />
       );
@@ -349,7 +402,10 @@ export default function FaqBoard({ activePage, setActivePage }) {
               return (
                 <button
                   key={cat}
-                  onClick={() => setSelectedCategory(cat)}
+                  onClick={() => {
+                    setSelectedCategory(cat);
+                    setOpenIds({});
+                  }}
                   style={{
                     padding: '0.5rem 1rem',
                     borderRadius: 'var(--radius-full)',
@@ -370,6 +426,115 @@ export default function FaqBoard({ activePage, setActivePage }) {
           </div>
         )}
 
+        {/* '전체' 탭이고 검색어가 없을 때: 상단 1줄 롤링 메뉴 + 주요 질문 안내 */}
+        {selectedCategory === '전체' && !searchQuery.trim() && currentRollingFaq && (
+          <div style={{ marginBottom: '1.75rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.65rem' }}>
+              <div style={{ width: '4px', height: '15px', background: 'var(--ci-secondary)', borderRadius: '2px' }}></div>
+              <span style={{ fontSize: '0.92rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                실시간 추천 질문
+              </span>
+            </div>
+
+            <div
+              onMouseEnter={() => setIsTickerHovered(true)}
+              onMouseLeave={() => setIsTickerHovered(false)}
+              onClick={() => handleRollingFaqClick(currentRollingFaq)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+                padding: '0.95rem 1.25rem',
+                borderRadius: 'var(--radius-md)',
+                background: 'var(--surface-color)',
+                border: '1px solid var(--surface-border)',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
+                userSelect: 'none'
+              }}
+              onMouseEnterCapture={(e) => {
+                e.currentTarget.style.background = 'var(--ci-primary-light)';
+                e.currentTarget.style.borderColor = 'rgba(47, 98, 134, 0.3)';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+              }}
+              onMouseLeaveCapture={(e) => {
+                e.currentTarget.style.background = 'var(--surface-color)';
+                e.currentTarget.style.borderColor = 'var(--surface-border)';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.03)';
+              }}
+            >
+              <Lightbulb size={18} color="var(--ci-secondary)" style={{ flexShrink: 0 }} />
+
+              <div style={{ flex: 1, minWidth: 0, height: '1.5rem', position: 'relative', overflow: 'hidden' }}>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={`${currentRollingFaq.id}-${tickerIndex}`}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -12 }}
+                    transition={{ duration: 0.28, ease: 'easeOut' }}
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem'
+                    }}
+                  >
+                    {currentRollingFaq.category && (
+                      <span style={{
+                        background: 'var(--surface-border)',
+                        color: 'var(--text-secondary)',
+                        fontSize: '0.74rem',
+                        fontWeight: 600,
+                        padding: '0.15rem 0.5rem',
+                        borderRadius: '6px',
+                        flexShrink: 0
+                      }}>
+                        {currentRollingFaq.category}
+                      </span>
+                    )}
+                    <span style={{
+                      fontSize: '0.96rem',
+                      fontWeight: 600,
+                      color: 'var(--text-primary)',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      width: '100%'
+                    }}>
+                      Q. {currentRollingFaq.question}
+                    </span>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: 'var(--ci-primary)', fontSize: '0.85rem', fontWeight: 600, flexShrink: 0 }}>
+                <span>답변 보기</span>
+                <ChevronRight size={16} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* '전체' 탭이고 검색어가 없을 때 하단 핵심 질문 섹션 타이틀 */}
+        {selectedCategory === '전체' && !searchQuery.trim() && filteredFaqs.length > 0 && (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ width: '4px', height: '15px', background: 'var(--ci-primary)', borderRadius: '2px' }}></div>
+              <span style={{ fontSize: '0.92rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                자주 찾는 핵심 질문
+              </span>
+            </div>
+            <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
+              분야별 전체 질문은 상단 카테고리 탭을 선택해 주세요
+            </span>
+          </div>
+        )}
+
         {/* FAQ 아코디언 리스트 */}
         {filteredFaqs.length === 0 ? (
           <div style={{ padding: '4rem 2rem', textAlign: 'center', color: 'var(--text-secondary)', background: 'var(--bg-color)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--surface-border)' }}>
@@ -386,9 +551,17 @@ export default function FaqBoard({ activePage, setActivePage }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
             {filteredFaqs.map(item => {
               const isOpen = Boolean(openIds[item.id]);
-              const relatedGuide = item.relatedItemId
-                ? allGuideItems.find(g => g.id === item.relatedItemId)
-                : null;
+
+              // 콤마(,) 구분자로 연결된 복수 매뉴얼 ID 파싱 및 유효한 매뉴얼 항목만 안전하게 매칭
+              // (구분자 오류나 존재하지 않는 ID가 입력된 경우 에러 없이 링크 노출 생략)
+              const rawRelatedIds = Array.isArray(item.relatedItemIds) && item.relatedItemIds.length > 0
+                ? item.relatedItemIds
+                : (item.relatedItemId ? String(item.relatedItemId).split(',').map(s => s.trim()).filter(Boolean) : []);
+
+              const matchedRelatedGuides = rawRelatedIds
+                .map(relId => (allGuideItems || []).find(g => g && g.id && g.id.toLowerCase() === relId.toLowerCase()))
+                .filter(Boolean);
+
               const isHighlighted = activePage && activePage.toLowerCase() === item.id.toLowerCase();
 
               return (
@@ -424,16 +597,9 @@ export default function FaqBoard({ activePage, setActivePage }) {
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap', flex: 1 }}>
-                      {/* Pinned 뱃지 */}
+                      {/* Pinned 녹색 전구 아이콘 */}
                       {item.pinned && (
-                        <span style={{
-                          display: 'inline-flex', alignItems: 'center', gap: '0.25rem',
-                          background: 'rgba(47, 98, 134, 0.12)', color: 'var(--ci-primary)',
-                          fontSize: '0.75rem', fontWeight: 700, padding: '0.2rem 0.55rem',
-                          borderRadius: 'var(--radius-full)', flexShrink: 0
-                        }}>
-                          <Pin size={12} /> 핵심
-                        </span>
+                        <Lightbulb size={17} color="var(--ci-secondary)" style={{ flexShrink: 0 }} />
                       )}
 
                       {/* 카테고리 태그 */}
@@ -492,7 +658,7 @@ export default function FaqBoard({ activePage, setActivePage }) {
                             </ReactMarkdown>
                           </div>
 
-                          {/* 하단 액션 바: 연관 상세 가이드 이동 버튼 & 개별 질문 링크 복사 */}
+                          {/* 하단 액션 바: 연관 상세 가이드 이동 버튼 배열 & 개별 질문 링크 복사 */}
                           <div style={{
                             display: 'flex',
                             alignItems: 'center',
@@ -503,11 +669,12 @@ export default function FaqBoard({ activePage, setActivePage }) {
                             paddingTop: '0.85rem',
                             borderTop: '1px dashed var(--surface-border)'
                           }}>
-                            <div>
-                              {item.relatedItemId && (
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', flex: 1 }}>
+                              {matchedRelatedGuides.map(guide => (
                                 <button
+                                  key={guide.id}
                                   onClick={() => {
-                                    setActivePage(item.relatedItemId);
+                                    setActivePage(guide.id);
                                     window.scrollTo({ top: 0, behavior: 'instant' });
                                   }}
                                   style={{
@@ -529,10 +696,10 @@ export default function FaqBoard({ activePage, setActivePage }) {
                                   onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
                                 >
                                   <BookOpen size={15} />
-                                  {relatedGuide ? `관련 매뉴얼: ${relatedGuide.title}` : '관련 상세 매뉴얼 보러가기'}
+                                  {`관련 매뉴얼: ${guide.title.replace(/^ㄴ\s*/, '')}`}
                                   <ExternalLink size={14} />
                                 </button>
-                              )}
+                              ))}
                             </div>
 
                             <button
@@ -570,4 +737,3 @@ export default function FaqBoard({ activePage, setActivePage }) {
     </motion.div>
   );
 }
-

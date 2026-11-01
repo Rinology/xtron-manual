@@ -72,7 +72,7 @@ export default function TroubleshootingWizard({ setActivePage }) {
               borderRadius: '50%', animation: 'spin 1s linear infinite', marginBottom: '1rem'
             }} />
             <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
-            <p>자가진단 마법사를 불러오고 있습니다...</p>
+            <p>Xenie(자가진단 마법사)를 불러오고 있습니다...</p>
           </>
         ) : (
           <p>데이터를 불러올 수 없습니다...</p>
@@ -104,14 +104,25 @@ export default function TroubleshootingWizard({ setActivePage }) {
     >
       <div className="glass-panel guide-panel">
         
-        {/* Header - GuideContent와 동일한 형태 */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1.5rem' }}>
-          <div style={{ background: 'var(--ci-primary-light)', color: 'var(--ci-primary)', padding: '0.75rem', borderRadius: '12px' }}>
-            <Sparkles size={24} />
+        {/* 상단 타이틀 헤더 (FAQ 보드와 통일된 규격 및 설명 문구) */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1.5rem', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <div style={{ background: 'var(--ci-primary-light)', color: 'var(--ci-primary)', padding: '0.75rem', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Sparkles size={24} />
+            </div>
+            <div>
+              <h2 style={{ fontSize: '1.8rem', margin: 0, fontWeight: 700, display: 'flex', alignItems: 'baseline', gap: '0.45rem', flexWrap: 'wrap' }}>
+                <span style={{ fontWeight: 800 }}>
+                  <span style={{ color: 'var(--ci-secondary)' }}>X</span>
+                  <span style={{ color: 'var(--ci-primary)' }}>enie</span>
+                </span>
+                <span style={{ fontSize: '1.35rem', fontWeight: 700, color: 'var(--ci-primary)' }}>(자가진단 마법사)</span>
+              </h2>
+              <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                어떤 키워드로 검색할지 고민될 때, Xenie의 간단한 단계별 문답으로 증상에 꼭 맞는 해결책을 찾아보세요.
+              </p>
+            </div>
           </div>
-          <h2 style={{ fontSize: '1.8rem', color: 'var(--ci-primary)', margin: 0, fontWeight: 700 }}>
-            {currentNode === 'start' ? '어떤 종류의 문제를 겪고 계신가요?' : '자가진단 마법사'}
-          </h2>
         </div>
 
         {/* Body */}
@@ -138,7 +149,7 @@ export default function TroubleshootingWizard({ setActivePage }) {
                     <Search size={18} color="#94a3b8" style={{ position: 'absolute', left: '1.15rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
                     <input 
                       type="text"
-                      placeholder="어떤 문제가 발생했나요? 증상이나 키워드를 검색하세요."
+                      placeholder="증상이나 키워드를 입력하세요."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       style={{ 
@@ -182,7 +193,7 @@ export default function TroubleshootingWizard({ setActivePage }) {
                         style={{
                           display: 'flex',
                           alignItems: 'center',
-                          gap: '0.85rem',
+                          gap: '0.75rem',
                           padding: '1rem 1.25rem',
                           borderRadius: 'var(--radius-md)',
                           background: 'var(--surface-color)',
@@ -205,21 +216,7 @@ export default function TroubleshootingWizard({ setActivePage }) {
                           e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.03)';
                         }}
                       >
-                        <div style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '0.35rem',
-                          background: 'rgba(47, 98, 134, 0.1)',
-                          color: 'var(--ci-primary)',
-                          padding: '0.2rem 0.55rem',
-                          borderRadius: '6px',
-                          fontSize: '0.76rem',
-                          fontWeight: 700,
-                          flexShrink: 0
-                        }}>
-                          <Lightbulb size={14} color="var(--ci-primary)" />
-                          <span>추천</span>
-                        </div>
+                        <Lightbulb size={18} color="var(--ci-secondary)" style={{ flexShrink: 0 }} />
                         
                         <div style={{ flex: 1, minWidth: 0, height: '1.5rem', position: 'relative', overflow: 'hidden' }}>
                           <AnimatePresence mode="wait">
@@ -256,11 +253,6 @@ export default function TroubleshootingWizard({ setActivePage }) {
                           <ChevronRight size={16} />
                         </div>
                       </div>
-
-                      {/* 안내 문구 */}
-                      <p style={{ fontSize: '0.82rem', color: '#94a3b8', marginTop: '0.75rem', paddingLeft: '0.25rem' }}>
-                        💡 원하시는 증상이 다르다면 위 검색창에 직접 입력하여 마법사 옵션을 필터링할 수 있습니다.
-                      </p>
                     </div>
                   )}
                 </div>

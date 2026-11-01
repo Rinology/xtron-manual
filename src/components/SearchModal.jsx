@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, ChevronRight, FileText, HelpCircle, Sparkles, Lightbulb } from 'lucide-react';
 import { useGuides } from '../context/GuideContext';
@@ -18,36 +18,64 @@ export default function SearchModal({ isOpen, onClose, onSelect }) {
     wizardFlow.start.options.length > 0
   );
 
-  // Pinned 추천 항목 (1번 탭: 매뉴얼, 3번 탭: FAQ)
-  const pinnedGuides = (allGuideItems || [])
-    .filter(item => item.pinned)
-    .map((item, index) => ({
-      title: item.title.replace(/^ㄴ\s*/, ''),
-      id: item.id,
-      pinnedOrder: Number(item.pinned) || 99,
-      sourcePriority: 1,
-      rowIndex: index,
-      isFaq: false,
-      category: '매뉴얼'
-    }));
+  // 롤링 추천 항목: Pinned 순서가 지정된 항목을 우선 노출하고, 빈칸(미지정) 항목은 뒤이어 랜덤 노출
+  const suggestions = useMemo(() => {
+    const pGuides = (allGuideItems || [])
+      .filter(item => item.pinned && item.id && item.title)
+      .map((item, index) => ({
+        title: item.title.replace(/^ㄴ\s*/, ''),
+        id: item.id,
+        pinnedOrder: Number(item.pinned) || 99,
+        sourcePriority: 1,
+        rowIndex: index,
+        isFaq: false,
+        category: '매뉴얼'
+      }));
 
-  const pinnedFaqs = (faqItems || [])
-    .filter(faq => faq.pinned)
-    .map((faq, index) => ({
-      title: faq.question,
-      id: faq.id,
-      pinnedOrder: Number(faq.pinned) || 99,
-      sourcePriority: 2,
-      rowIndex: index,
-      isFaq: true,
-      category: faq.category || 'FAQ'
-    }));
+    const pFaqs = (faqItems || [])
+      .filter(faq => faq.pinned && faq.id && faq.question)
+      .map((faq, index) => ({
+        title: faq.question,
+        id: faq.id,
+        pinnedOrder: Number(faq.pinned) || 99,
+        sourcePriority: 2,
+        rowIndex: index,
+        isFaq: true,
+        category: faq.category || 'FAQ'
+      }));
 
-  const suggestions = [...pinnedGuides, ...pinnedFaqs].sort((a, b) => {
-    if (a.pinnedOrder !== b.pinnedOrder) return a.pinnedOrder - b.pinnedOrder;
-    if (a.sourcePriority !== b.sourcePriority) return a.sourcePriority - b.sourcePriority;
-    return a.rowIndex - b.rowIndex;
-  });
+    const sortedPinned = [...pGuides, ...pFaqs].sort((a, b) => {
+      if (a.pinnedOrder !== b.pinnedOrder) return a.pinnedOrder - b.pinnedOrder;
+      if (a.sourcePriority !== b.sourcePriority) return a.sourcePriority - b.sourcePriority;
+      return a.rowIndex - b.rowIndex;
+    });
+
+    const uGuides = (allGuideItems || [])
+      .filter(item => !item.pinned && item.id && item.title && item.id !== 'admin')
+      .map(item => ({
+        title: item.title.replace(/^ㄴ\s*/, ''),
+        id: item.id,
+        isFaq: false,
+        category: '매뉴얼'
+      }));
+
+    const uFaqs = (faqItems || [])
+      .filter(faq => !faq.pinned && faq.id && faq.question)
+      .map(faq => ({
+        title: faq.question,
+        id: faq.id,
+        isFaq: true,
+        category: faq.category || 'FAQ'
+      }));
+
+    const unpinnedPool = [...uGuides, ...uFaqs];
+    for (let i = unpinnedPool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [unpinnedPool[i], unpinnedPool[j]] = [unpinnedPool[j], unpinnedPool[i]];
+    }
+
+    return [...sortedPinned, ...unpinnedPool];
+  }, [allGuideItems, faqItems]);
 
   // 모달 내부 롤링 상태 (라벨 및 카운터 없는 순수 질문 롤링)
   const [tickerIndex, setTickerIndex] = useState(0);
@@ -80,8 +108,9 @@ export default function SearchModal({ isOpen, onClose, onSelect }) {
     const lowerQuery = query.toLowerCase();
     const filteredGuides = (allGuideItems || []).filter(item => {
       const matchTitle = item.title.toLowerCase().includes(lowerQuery);
+      const matchKeywords = item.keywords && item.keywords.toLowerCase().includes(lowerQuery);
       const matchSummary = item.summary && (Array.isArray(item.summary) ? item.summary.some(s => s.toLowerCase().includes(lowerQuery)) : item.summary.toLowerCase().includes(lowerQuery));
-      return matchTitle || matchSummary;
+      return matchTitle || matchKeywords || matchSummary;
     });
 
     const filteredFaqs = (faqItems || []).filter(faq => {
@@ -260,7 +289,10 @@ export default function SearchModal({ isOpen, onClose, onSelect }) {
                           </div>
                           <div style={{ display: 'flex', flexDirection: 'column' }}>
                             <span style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--ci-primary)' }}>
-                              증상별 자가진단 마법사
+                              <span style={{ fontWeight: 800 }}>
+                                <span style={{ color: 'var(--ci-secondary)' }}>X</span>
+                                <span style={{ color: 'var(--ci-primary)' }}>enie</span>
+                              </span> (자가진단 마법사)
                             </span>
                             <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
                               어떤 키워드로 검색해야 할지 애매할 때 단계별 질문으로 즉시 해결
@@ -351,7 +383,7 @@ export default function SearchModal({ isOpen, onClose, onSelect }) {
                       gap: '0.45rem'
                     }}>
                       <span>찾으시는 매뉴얼 항목이나 증상의 키워드를 검색창에 입력해 보세요.</span>
-                      <span style={{ fontSize: '0.78rem', color: '#a0aec0' }}>예: 전원, 페달, 케이블, 비상정지, 소음</span>
+                      <span style={{ fontSize: '0.78rem', color: '#a0aec0' }}>예: 전원, 페달, 케이블, 소음</span>
                     </div>
 
                   </div>
@@ -442,4 +474,3 @@ export default function SearchModal({ isOpen, onClose, onSelect }) {
     </AnimatePresence>
   );
 }
-

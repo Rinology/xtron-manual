@@ -283,6 +283,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 .hero-title {
   font-size: 3rem;
+  font-weight: 500;
 }
 .hero-subtitle {
   font-size: 1.2rem;
@@ -390,6 +391,8 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 2.1rem !important;
     margin-bottom: 2rem !important;
     margin-top: 0 !important;
+    word-break: keep-all;
+    line-height: 1.25;
   }
   .hero-search-dropdown {
     max-height: 380px !important;

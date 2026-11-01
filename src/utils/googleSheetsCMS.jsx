@@ -86,7 +86,7 @@ export async function fetchGuidesFromGoogleSheet(csvUrl) {
               CategoryID, CategoryTitle, 
               SubCategoryID, SubCategoryTitle, 
               ChildCategoryID, ChildCategoryTitle,
-              ItemID, ItemTitle, IconName, Summary, MarkdownFile, YoutubeLink, Pinned, Status
+              ItemID, ItemTitle, IconName, Summary, Keywords, MarkdownFile, YoutubeLink, Pinned, Status
             } = row;
 
             // ID나 Title이 없는 완전히 비정상적인 쓰레기 행(예: 빈 줄에 FALSE만 있는 행)은 무시
@@ -120,6 +120,7 @@ export async function fetchGuidesFromGoogleSheet(csvUrl) {
               title: ItemTitle,
               icon: <IconComponent size={18} />,
               summary: Summary ? Summary.split('|').map(s => s.trim()) : [], // | 문자로 줄바꿈 분리
+              keywords: Keywords ? String(Keywords).trim() : '',
               markdownFile: MarkdownFile,
               youtubeLink: YoutubeLink,
               pinned: parsePinnedOrder(Pinned)
@@ -308,6 +309,7 @@ export async function fetchFaqFromGoogleSheet(csvUrl) {
               answer: Answer ? Answer.trim() : '',
               keywords: Keywords ? Keywords.trim() : '',
               relatedItemId: RelatedItemID ? RelatedItemID.trim() : '',
+              relatedItemIds: RelatedItemID ? String(RelatedItemID).split(',').map(s => s.trim()).filter(Boolean) : [],
               pinned: pinnedOrder
             });
           });

@@ -369,7 +369,7 @@ export default function GuideContent({ activePage, setActivePage }) {
         <img 
           src={fullSrc}
           alt={alt}
-          style={{ width: '100%', maxWidth: '600px', maxHeight: '600px', objectFit: 'contain', borderRadius: '8px', border: '1px solid var(--surface-border)', display: 'block', margin: '1.5rem auto' }} 
+          style={{ width: 'auto', maxWidth: 'min(100%, 600px)', maxHeight: '600px', objectFit: 'contain', borderRadius: '8px', border: '1px solid var(--surface-border)', display: 'block', margin: '1.5rem auto' }} 
           {...props} 
         />
       );

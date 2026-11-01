@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Sparkles, X, ChevronRight, Lightbulb, FileText, HelpCircle } from 'lucide-react';
 import { allGuideItems } from '../data/guides';
@@ -22,6 +22,7 @@ export default function Hero({ setActivePage }) {
   const query = localSearch.toLowerCase();
   const matchedGuides = guideItems.filter(item => 
     item.title.toLowerCase().includes(query) || 
+    (item.keywords && item.keywords.toLowerCase().includes(query)) ||
     (item.summary && (Array.isArray(item.summary) ? item.summary.some(text => text.toLowerCase().includes(query)) : item.summary.toLowerCase().includes(query)))
   );
 
@@ -51,34 +52,60 @@ export default function Hero({ setActivePage }) {
     setLocalSearch('');
   };
 
-  // Pinned 추천 항목 (1번 탭: 매뉴얼, 3번 탭: FAQ)
-  const pinnedGuides = (guideItems || [])
-    .filter(item => item.pinned)
-    .map((item, index) => ({
-      title: item.title.replace(/^ㄴ\s*/, ''),
-      id: item.id,
-      pinnedOrder: Number(item.pinned) || 99,
-      sourcePriority: 1,
-      rowIndex: index,
-      type: 'manual'
-    }));
+  // 롤링 추천 항목: Pinned 순서가 지정된 항목을 우선 노출하고, 빈칸(미지정) 항목은 뒤이어 랜덤 노출
+  const suggestions = useMemo(() => {
+    const pGuides = (guideItems || [])
+      .filter(item => item.pinned && item.id && item.title)
+      .map((item, index) => ({
+        title: item.title.replace(/^ㄴ\s*/, ''),
+        id: item.id,
+        pinnedOrder: Number(item.pinned) || 99,
+        sourcePriority: 1,
+        rowIndex: index,
+        type: 'manual'
+      }));
 
-  const pinnedFaqs = (faqItems || [])
-    .filter(faq => faq.pinned)
-    .map((faq, index) => ({
-      title: faq.question,
-      id: faq.id,
-      pinnedOrder: Number(faq.pinned) || 99,
-      sourcePriority: 2,
-      rowIndex: index,
-      type: 'faq'
-    }));
+    const pFaqs = (faqItems || [])
+      .filter(faq => faq.pinned && faq.id && faq.question)
+      .map((faq, index) => ({
+        title: faq.question,
+        id: faq.id,
+        pinnedOrder: Number(faq.pinned) || 99,
+        sourcePriority: 2,
+        rowIndex: index,
+        type: 'faq'
+      }));
 
-  const suggestions = [...pinnedGuides, ...pinnedFaqs].sort((a, b) => {
-    if (a.pinnedOrder !== b.pinnedOrder) return a.pinnedOrder - b.pinnedOrder;
-    if (a.sourcePriority !== b.sourcePriority) return a.sourcePriority - b.sourcePriority;
-    return a.rowIndex - b.rowIndex;
-  });
+    const sortedPinned = [...pGuides, ...pFaqs].sort((a, b) => {
+      if (a.pinnedOrder !== b.pinnedOrder) return a.pinnedOrder - b.pinnedOrder;
+      if (a.sourcePriority !== b.sourcePriority) return a.sourcePriority - b.sourcePriority;
+      return a.rowIndex - b.rowIndex;
+    });
+
+    const uGuides = (guideItems || [])
+      .filter(item => !item.pinned && item.id && item.title && item.id !== 'admin')
+      .map(item => ({
+        title: item.title.replace(/^ㄴ\s*/, ''),
+        id: item.id,
+        type: 'manual'
+      }));
+
+    const uFaqs = (faqItems || [])
+      .filter(faq => !faq.pinned && faq.id && faq.question)
+      .map(faq => ({
+        title: faq.question,
+        id: faq.id,
+        type: 'faq'
+      }));
+
+    const unpinnedPool = [...uGuides, ...uFaqs];
+    for (let i = unpinnedPool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [unpinnedPool[i], unpinnedPool[j]] = [unpinnedPool[j], unpinnedPool[i]];
+    }
+
+    return [...sortedPinned, ...unpinnedPool];
+  }, [guideItems, faqItems]);
 
   // 롤링 상태 (라벨 및 1/3 카운터 없는 순수 질문 롤링)
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -134,9 +161,10 @@ export default function Hero({ setActivePage }) {
 
       <div className="hero-content-wrapper" style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '620px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         
-        {/* 헤드라인 타이틀 (단독 노출) */}
-        <h2 className="hero-title" style={{ marginBottom: '2.5rem', letterSpacing: '-0.02em', color: 'var(--ci-primary)' }}>
-          무엇을 <span style={{ color: 'var(--ci-secondary)' }}>도와드릴까요?</span>
+        {/* 헤드라인 타이틀 (단어 단위 줄바꿈 방지) */}
+        <h2 className="hero-title" style={{ marginBottom: '2.5rem', letterSpacing: '-0.02em', color: 'var(--ci-primary)', fontWeight: 500, wordBreak: 'keep-all', overflowWrap: 'break-word' }}>
+          <span style={{ display: 'inline-block' }}>어떤 도움이</span>{' '}
+          <span style={{ color: 'var(--ci-secondary)', display: 'inline-block' }}>필요하신가요?</span>
         </h2>
         
         {/* 메인 인라인 검색창 */}
@@ -276,7 +304,10 @@ export default function Hero({ setActivePage }) {
                           <Sparkles size={18} color="var(--ci-primary)" style={{ flexShrink: 0 }} />
                           <div style={{ display: 'flex', flexDirection: 'column' }}>
                             <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--ci-primary)' }}>
-                              증상별 자가진단 마법사
+                              <span style={{ fontWeight: 800 }}>
+                                <span style={{ color: 'var(--ci-secondary)' }}>X</span>
+                                <span style={{ color: 'var(--ci-primary)' }}>enie</span>
+                              </span> (자가진단 마법사)
                             </span>
                             <span style={{ fontSize: '0.76rem', color: 'var(--text-secondary)' }}>
                               어떤 키워드로 검색해야 할지 애매할 때 단계별 문답으로 해결
@@ -324,7 +355,7 @@ export default function Hero({ setActivePage }) {
                         <div style={{ flex: 1, minWidth: 0, height: '1.35rem', position: 'relative', overflow: 'hidden' }}>
                           <AnimatePresence mode="wait">
                             <motion.div
-                              key={`${currentSuggestion.sourcePriority}-${currentSuggestion.id}-${currentIndex}`}
+                              key={`${currentSuggestion.type}-${currentSuggestion.id}-${currentIndex}`}
                               initial={{ opacity: 0, y: 12 }}
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, y: -12 }}
@@ -421,6 +452,3 @@ export default function Hero({ setActivePage }) {
     </motion.section>
   );
 }
-
-
-

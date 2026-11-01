@@ -256,7 +256,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                     }}
                   >
                     <Sparkles size={18} color={activePage === 'troubleshooting-wizard' ? 'var(--ci-primary)' : 'var(--text-secondary)'} />
-                    자가진단 마법사
+                    <span><strong style={{ fontWeight: 700 }}><span style={{ color: 'var(--ci-secondary)' }}>X</span><span style={{ color: 'var(--ci-primary)' }}>enie</span></strong> (자가진단 마법사)</span>
                   </button>
                 )}
                 {hasFaq && (
@@ -282,7 +282,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                     }}
                   >
                     <HelpCircle size={18} color={isFaqActive ? 'var(--ci-primary)' : 'var(--text-secondary)'} />
-                    자주 묻는 질문 (FAQ)
+                    <span>자주 묻는 질문 <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', opacity: 0.65, fontWeight: 400 }}>(FAQ)</span></span>
                   </button>
                 )}
                 <button
@@ -301,7 +301,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                   onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                 >
                   <Search size={18} color="var(--text-secondary)" />
-                  검색 Ctrl + K
+                  <span>검색 <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', opacity: 0.65, fontWeight: 400 }}>(Ctrl + K)</span></span>
                 </button>
               </>
             ) : (
@@ -332,7 +332,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                     >
                       <Sparkles size={18} />
                     </button>
-                    <Tooltip text="자가진단 마법사" visible={hoveredButton === 'wizard'} />
+                    <Tooltip text="Xenie (자가진단 마법사)" visible={hoveredButton === 'wizard'} />
                   </div>
                 )}
 
