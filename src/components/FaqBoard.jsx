@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  HelpCircle, Search, ChevronDown, ChevronUp, ChevronRight, ExternalLink,
+  HelpCircle, Search, ChevronDown, ChevronUp, ChevronRight, ChevronLeft, ExternalLink,
   Link as LinkIcon, Check, Info, Lightbulb, AlertTriangle,
   ShieldAlert, MessageCircle, BookOpen, FileDown, X
 } from 'lucide-react';
@@ -45,7 +45,13 @@ export default function FaqBoard({ activePage, setActivePage }) {
   const [copiedId, setCopiedId] = useState(null);
   const [tickerIndex, setTickerIndex] = useState(0);
   const [isTickerHovered, setIsTickerHovered] = useState(false);
+  const [openRelatedPopupId, setOpenRelatedPopupId] = useState(null);
+
   const itemRefs = useRef({});
+  const relatedPopupRef = useRef(null);
+  const categoryScrollRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
 
   // 카테고리 목록 추출 ('전체' + 시트에 등장하는 고유 분류명)
   const categories = useMemo(() => {
@@ -57,6 +63,41 @@ export default function FaqBoard({ activePage, setActivePage }) {
     });
     return ['전체', ...uniqueCats];
   }, [faqItems]);
+
+  // 카테고리 스크롤 화살표(< >) 활성화 상태 계산
+  const updateCategoryScrollState = useCallback(() => {
+    const el = categoryScrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+  }, []);
+
+  useEffect(() => {
+    updateCategoryScrollState();
+    window.addEventListener('resize', updateCategoryScrollState);
+    return () => window.removeEventListener('resize', updateCategoryScrollState);
+  }, [categories, updateCategoryScrollState]);
+
+  const scrollCategories = (direction) => {
+    const el = categoryScrollRef.current;
+    if (!el) return;
+    const scrollAmount = Math.max(el.clientWidth * 0.65, 180);
+    el.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth'
+    });
+  };
+
+  // 외부 클릭 시 관련 매뉴얼 팝업 닫기
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (relatedPopupRef.current && !relatedPopupRef.current.contains(event.target)) {
+        setOpenRelatedPopupId(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // 전체 탭 상단 1줄 롤링용 질문 풀 (Pinned 순서 우선 + 미지정 항목 랜덤 셔플)
   const rollingFaqs = useMemo(() => {
@@ -101,6 +142,7 @@ export default function FaqBoard({ activePage, setActivePage }) {
         setSelectedCategory('전체');
         setSearchQuery('');
         setOpenIds({ [targetFaq.id]: true });
+        setOpenRelatedPopupId(null);
         setTimeout(() => {
           const el = itemRefs.current[targetFaq.id];
           if (el) {
@@ -110,16 +152,20 @@ export default function FaqBoard({ activePage, setActivePage }) {
       }
     } else if (activePage === 'faq') {
       setOpenIds({});
+      setOpenRelatedPopupId(null);
     }
   }, [activePage, faqItems]);
 
+  // 단일 아코디언 토글: 선택한 질문만 열리고 다른 질문은 자동으로 닫힘
   const toggleItem = (id) => {
-    setOpenIds(prev => ({ ...prev, [id]: !prev[id] }));
+    setOpenRelatedPopupId(null);
+    setOpenIds(prev => prev[id] ? {} : { [id]: true });
   };
 
   const handleRollingFaqClick = (faq) => {
     if (!faq) return;
-    setOpenIds(prev => ({ ...prev, [faq.id]: true }));
+    setOpenRelatedPopupId(null);
+    setOpenIds({ [faq.id]: true });
     setTimeout(() => {
       const el = itemRefs.current[faq.id];
       if (el) {
@@ -139,34 +185,32 @@ export default function FaqBoard({ activePage, setActivePage }) {
     });
   };
 
-  // 필터링 및 Pinned 순서 우선 정렬
+  // 카테고리 + 검색어 필터링 및 정렬 (Pinned 1~10 순위 우선)
+  // '전체' 탭이고 검색어가 없을 때는 Pinned(숫자 또는 TRUE)로 지정된 핵심 질문만 최대 10개 노출
   const filteredFaqs = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
+    const query = searchQuery.trim().toLowerCase();
 
     const filtered = faqItems.filter(item => {
-      const matchCat = selectedCategory === '전체' || item.category === selectedCategory;
-      if (!matchCat) return false;
-      if (!q) return true;
+      const matchesCat = selectedCategory === '전체' || item.category === selectedCategory;
+      if (!matchesCat) return false;
+      if (!query) return true;
 
-      return (
-        item.question.toLowerCase().includes(q) ||
-        item.answer.toLowerCase().includes(q) ||
-        (item.keywords && item.keywords.toLowerCase().includes(q)) ||
-        (item.category && item.category.toLowerCase().includes(q))
-      );
+      const inQ = (item.question || '').toLowerCase().includes(query);
+      const inA = (item.answer || '').toLowerCase().includes(query);
+      const inK = (item.keywords || '').toLowerCase().includes(query);
+      const inCat = (item.category || '').toLowerCase().includes(query);
+      return inQ || inA || inK || inCat;
     });
 
-    // Pinned 항목을 숫자 순서대로 상단에 배치하고, 일반 항목은 시트 순서 보존
-    const sorted = [...filtered].sort((a, b) => {
-      if (a.pinned && b.pinned) return a.pinned - b.pinned;
+    const sorted = filtered.sort((a, b) => {
       if (a.pinned && !b.pinned) return -1;
       if (!a.pinned && b.pinned) return 1;
+      if (a.pinned && b.pinned) return a.pinned - b.pinned;
       return 0;
     });
 
-    // '전체' 탭이고 검색어가 없을 때는 Pinned(숫자 또는 TRUE)된 핵심 질문만 최대 10개까지 노출
-    // (단, 롤링 티커 클릭이나 직통 링크로 열린 일반 질문이 있다면 함께 표시)
-    if (selectedCategory === '전체' && !q) {
+    // '전체' 탭 + 검색어 없음: Pinned 핵심 항목 최대 10개 + 현재 해시/롤링 클릭으로 열려있는 항목 포함
+    if (selectedCategory === '전체' && !query) {
       const pinnedTop = sorted.filter(item => Boolean(item.pinned)).slice(0, 10);
       const openedExtras = sorted.filter(item => !item.pinned && openIds[item.id]);
       const combined = [...pinnedTop, ...openedExtras];
@@ -201,6 +245,7 @@ export default function FaqBoard({ activePage, setActivePage }) {
       );
     },
     ul: ({ node, ...props }) => <ul style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.7, paddingLeft: '1.5rem', marginBottom: '0.75rem' }} {...props} />,
+    ol: ({ node, ...props }) => <ol style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.7, paddingLeft: '1.5rem', marginBottom: '0.75rem' }} {...props} />,
     li: ({ node, ...props }) => <li style={{ whiteSpace: 'pre-line', marginBottom: '0.25rem' }} {...props} />,
     blockquote: ({ node, children, ...props }) => {
       let type = null;
@@ -298,15 +343,16 @@ export default function FaqBoard({ activePage, setActivePage }) {
         <img
           src={fullSrc}
           alt={alt}
-          style={{ width: 'auto', maxWidth: 'min(100%, 520px)', maxHeight: '520px', objectFit: 'contain', borderRadius: '8px', border: '1px solid var(--surface-border)', display: 'block', margin: '1rem auto' }}
+          style={{
+            width: 'auto', maxWidth: 'min(100%, 520px)', maxHeight: '480px',
+            objectFit: 'contain', borderRadius: '8px',
+            border: '1px solid var(--surface-border)', display: 'block', margin: '1rem auto'
+          }}
           {...props}
         />
       );
     },
-    video: ({ node, src }) => {
-      const fullSrc = resolveMediaUrl(src);
-      return <VideoPlayer src={fullSrc} />;
-    }
+    video: ({ node, src }) => <VideoPlayer src={resolveMediaUrl(src)} />
   };
 
   if (isFaqLoading) {
@@ -394,35 +440,108 @@ export default function FaqBoard({ activePage, setActivePage }) {
           )}
         </div>
 
-        {/* 카테고리 필터 탭 */}
+        {/* 카테고리 필터 탭 (1줄 가로 스크롤 + < > 네비게이션 버튼으로 모바일 줄바꿈 완벽 방지) */}
         {categories.length > 1 && (
-          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.75rem' }}>
-            {categories.map(cat => {
-              const isActive = selectedCategory === cat;
-              return (
-                <button
-                  key={cat}
-                  onClick={() => {
-                    setSelectedCategory(cat);
-                    setOpenIds({});
-                  }}
-                  style={{
-                    padding: '0.5rem 1rem',
-                    borderRadius: 'var(--radius-full)',
-                    border: isActive ? '1px solid var(--ci-primary)' : '1px solid var(--surface-border)',
-                    background: isActive ? 'var(--ci-primary)' : 'var(--ci-white)',
-                    color: isActive ? 'var(--ci-white)' : 'var(--text-secondary)',
-                    fontSize: '0.9rem',
-                    fontWeight: isActive ? 600 : 500,
-                    cursor: 'pointer',
-                    transition: 'all 0.2s',
-                    boxShadow: isActive ? 'var(--shadow-sm)' : 'none'
-                  }}
-                >
-                  {cat}
-                </button>
-              );
-            })}
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '1.75rem' }}>
+            {/* 좌측 스크롤 버튼 (<) */}
+            {canScrollLeft && (
+              <button
+                onClick={() => scrollCategories('left')}
+                aria-label="이전 카테고리 보기"
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  border: '1px solid var(--surface-border)',
+                  background: 'var(--ci-white)',
+                  color: 'var(--text-primary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  flexShrink: 0,
+                  boxShadow: 'var(--shadow-sm)',
+                  transition: 'all 0.2s',
+                  zIndex: 2
+                }}
+              >
+                <ChevronLeft size={16} />
+              </button>
+            )}
+
+            <div
+              ref={categoryScrollRef}
+              onScroll={updateCategoryScrollState}
+              className="faq-category-scroll"
+              style={{
+                display: 'flex',
+                gap: '0.5rem',
+                flexWrap: 'nowrap',
+                overflowX: 'auto',
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
+                WebkitOverflowScrolling: 'touch',
+                padding: '0.15rem 0',
+                flex: 1
+              }}
+            >
+              <style>{`.faq-category-scroll::-webkit-scrollbar { display: none; }`}</style>
+              {categories.map(cat => {
+                const isActive = selectedCategory === cat;
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => {
+                      setSelectedCategory(cat);
+                      setOpenIds({});
+                      setOpenRelatedPopupId(null);
+                    }}
+                    style={{
+                      padding: '0.5rem 1.05rem',
+                      borderRadius: 'var(--radius-full)',
+                      border: isActive ? '1px solid var(--ci-primary)' : '1px solid var(--surface-border)',
+                      background: isActive ? 'var(--ci-primary)' : 'var(--ci-white)',
+                      color: isActive ? 'var(--ci-white)' : 'var(--text-secondary)',
+                      fontSize: '0.9rem',
+                      fontWeight: isActive ? 600 : 500,
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      boxShadow: isActive ? 'var(--shadow-sm)' : 'none',
+                      whiteSpace: 'nowrap',
+                      flexShrink: 0
+                    }}
+                  >
+                    {cat}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* 우측 스크롤 버튼 (>) */}
+            {canScrollRight && (
+              <button
+                onClick={() => scrollCategories('right')}
+                aria-label="다음 카테고리 보기"
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  border: '1px solid var(--surface-border)',
+                  background: 'var(--ci-white)',
+                  color: 'var(--text-primary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  flexShrink: 0,
+                  boxShadow: 'var(--shadow-sm)',
+                  transition: 'all 0.2s',
+                  zIndex: 2
+                }}
+              >
+                <ChevronRight size={16} />
+              </button>
+            )}
           </div>
         )}
 
@@ -449,39 +568,47 @@ export default function FaqBoard({ activePage, setActivePage }) {
                 background: 'var(--surface-color)',
                 border: '1px solid var(--surface-border)',
                 cursor: 'pointer',
-                transition: 'all 0.2s',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
-                userSelect: 'none'
+                transition: 'all 0.2s ease',
+                boxShadow: 'var(--shadow-sm)'
               }}
-              onMouseEnterCapture={(e) => {
-                e.currentTarget.style.background = 'var(--ci-primary-light)';
-                e.currentTarget.style.borderColor = 'rgba(47, 98, 134, 0.3)';
-                e.currentTarget.style.transform = 'translateY(-1px)';
+              onMouseOver={(e) => {
+                e.currentTarget.style.borderColor = 'var(--ci-primary)';
                 e.currentTarget.style.boxShadow = 'var(--shadow-md)';
               }}
-              onMouseLeaveCapture={(e) => {
-                e.currentTarget.style.background = 'var(--surface-color)';
+              onMouseOut={(e) => {
                 e.currentTarget.style.borderColor = 'var(--surface-border)';
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.03)';
+                e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
               }}
             >
-              <Lightbulb size={18} color="var(--ci-secondary)" style={{ flexShrink: 0 }} />
+              <span style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                background: 'var(--ci-primary-light)',
+                color: 'var(--ci-primary)',
+                padding: '0.25rem 0.65rem',
+                borderRadius: '6px',
+                fontSize: '0.78rem',
+                fontWeight: 700,
+                flexShrink: 0
+              }}>
+                <Lightbulb size={14} color="var(--ci-secondary)" /> 추천
+              </span>
 
-              <div style={{ flex: 1, minWidth: 0, height: '1.5rem', position: 'relative', overflow: 'hidden' }}>
+              <div style={{ flex: 1, overflow: 'hidden', position: 'relative', height: '24px', display: 'flex', alignItems: 'center' }}>
                 <AnimatePresence mode="wait">
                   <motion.div
-                    key={`${currentRollingFaq.id}-${tickerIndex}`}
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -12 }}
-                    transition={{ duration: 0.28, ease: 'easeOut' }}
+                    key={currentRollingFaq.id}
+                    initial={{ y: 14, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -14, opacity: 0 }}
+                    transition={{ duration: 0.22 }}
                     style={{
-                      position: 'absolute',
-                      inset: 0,
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '0.5rem'
+                      gap: '0.5rem',
+                      width: '100%',
+                      overflow: 'hidden'
                     }}
                   >
                     {currentRollingFaq.category && (
@@ -522,7 +649,7 @@ export default function FaqBoard({ activePage, setActivePage }) {
 
         {/* '전체' 탭이고 검색어가 없을 때 하단 핵심 질문 섹션 타이틀 */}
         {selectedCategory === '전체' && !searchQuery.trim() && filteredFaqs.length > 0 && (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.4rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <div style={{ width: '4px', height: '15px', background: 'var(--ci-primary)', borderRadius: '2px' }}></div>
               <span style={{ fontSize: '0.92rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
@@ -563,6 +690,7 @@ export default function FaqBoard({ activePage, setActivePage }) {
                 .filter(Boolean);
 
               const isHighlighted = activePage && activePage.toLowerCase() === item.id.toLowerCase();
+              const isRelatedPopupOpen = openRelatedPopupId === item.id;
 
               return (
                 <div
@@ -574,9 +702,15 @@ export default function FaqBoard({ activePage, setActivePage }) {
                       ? '1.5px solid var(--ci-primary)'
                       : '1px solid var(--surface-border)',
                     background: isOpen ? 'var(--ci-white)' : 'var(--bg-color)',
-                    boxShadow: isOpen ? 'var(--shadow-md)' : 'var(--shadow-sm)',
-                    overflow: 'hidden',
-                    transition: 'all 0.2s ease'
+                    // 기존 대비 약 20% 이상 진하고 넓어진 3D 뎁스 그림자 적용
+                    boxShadow: isOpen
+                      ? '0 14px 32px -4px rgba(47, 98, 134, 0.24), 0 6px 14px -2px rgba(0, 0, 0, 0.10)'
+                      : 'var(--shadow-sm)',
+                    transform: isOpen ? 'translateY(-3px)' : 'none',
+                    position: 'relative',
+                    zIndex: isOpen ? 10 : 1,
+                    overflow: 'visible',
+                    transition: 'all 0.22s ease'
                   }}
                 >
                   {/* 질문 헤더 (클릭 시 아코디언 토글) */}
@@ -641,7 +775,7 @@ export default function FaqBoard({ activePage, setActivePage }) {
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.22 }}
-                        style={{ overflow: 'hidden' }}
+                        style={{ overflow: isRelatedPopupOpen ? 'visible' : 'hidden' }}
                       >
                         <div style={{
                           padding: '0 1.35rem 1.35rem 1.35rem',
@@ -658,7 +792,7 @@ export default function FaqBoard({ activePage, setActivePage }) {
                             </ReactMarkdown>
                           </div>
 
-                          {/* 하단 액션 바: 연관 상세 가이드 이동 버튼 배열 & 개별 질문 링크 복사 */}
+                          {/* 하단 액션 바: 관련 매뉴얼 (단일/퀵메뉴 팝업) & 개별 질문 링크 복사 */}
                           <div style={{
                             display: 'flex',
                             alignItems: 'center',
@@ -669,12 +803,11 @@ export default function FaqBoard({ activePage, setActivePage }) {
                             paddingTop: '0.85rem',
                             borderTop: '1px dashed var(--surface-border)'
                           }}>
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', flex: 1 }}>
-                              {matchedRelatedGuides.map(guide => (
+                            <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+                              {matchedRelatedGuides.length === 1 && (
                                 <button
-                                  key={guide.id}
                                   onClick={() => {
-                                    setActivePage(guide.id);
+                                    setActivePage(matchedRelatedGuides[0].id);
                                     window.scrollTo({ top: 0, behavior: 'instant' });
                                   }}
                                   style={{
@@ -684,9 +817,9 @@ export default function FaqBoard({ activePage, setActivePage }) {
                                     background: 'var(--ci-primary)',
                                     color: 'var(--ci-white)',
                                     border: 'none',
-                                    padding: '0.55rem 1rem',
+                                    padding: '0.52rem 0.95rem',
                                     borderRadius: 'var(--radius-md)',
-                                    fontSize: '0.88rem',
+                                    fontSize: '0.86rem',
                                     fontWeight: 600,
                                     cursor: 'pointer',
                                     boxShadow: 'var(--shadow-sm)',
@@ -696,10 +829,116 @@ export default function FaqBoard({ activePage, setActivePage }) {
                                   onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
                                 >
                                   <BookOpen size={15} />
-                                  {`관련 매뉴얼: ${guide.title.replace(/^ㄴ\s*/, '')}`}
-                                  <ExternalLink size={14} />
+                                  <span>{matchedRelatedGuides[0].title.replace(/^ㄴ\s*/, '')}</span>
+                                  <ExternalLink size={13} />
                                 </button>
-                              ))}
+                              )}
+
+                              {matchedRelatedGuides.length > 1 && (
+                                <div style={{ position: 'relative' }} ref={isRelatedPopupOpen ? relatedPopupRef : null}>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setOpenRelatedPopupId(isRelatedPopupOpen ? null : item.id);
+                                    }}
+                                    style={{
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: '0.45rem',
+                                      background: 'var(--ci-primary)',
+                                      color: 'var(--ci-white)',
+                                      border: 'none',
+                                      padding: '0.52rem 0.95rem',
+                                      borderRadius: 'var(--radius-md)',
+                                      fontSize: '0.86rem',
+                                      fontWeight: 600,
+                                      cursor: 'pointer',
+                                      boxShadow: 'var(--shadow-sm)',
+                                      transition: 'opacity 0.2s'
+                                    }}
+                                    onMouseEnter={e => { e.currentTarget.style.opacity = '0.92'; }}
+                                    onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
+                                  >
+                                    <BookOpen size={15} />
+                                    <span>관련 매뉴얼 ({matchedRelatedGuides.length})</span>
+                                    {isRelatedPopupOpen ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+                                  </button>
+
+                                  <AnimatePresence>
+                                    {isRelatedPopupOpen && (
+                                      <motion.div
+                                        initial={{ opacity: 0, y: 6, scale: 0.96 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: 6, scale: 0.96 }}
+                                        transition={{ duration: 0.18 }}
+                                        style={{
+                                          position: 'absolute',
+                                          bottom: 'calc(100% + 8px)',
+                                          left: 0,
+                                          background: 'var(--ci-white)',
+                                          padding: '0.45rem',
+                                          borderRadius: '14px',
+                                          boxShadow: 'var(--shadow-lg)',
+                                          border: '1px solid var(--surface-border)',
+                                          display: 'flex',
+                                          flexDirection: 'column',
+                                          gap: '0.15rem',
+                                          minWidth: '220px',
+                                          maxWidth: 'min(290px, 82vw)',
+                                          zIndex: 500
+                                        }}
+                                      >
+                                        <span style={{ fontSize: '0.73rem', color: 'var(--text-secondary)', padding: '0.35rem 0.75rem', fontWeight: 600 }}>
+                                          관련 매뉴얼 바로가기
+                                        </span>
+                                        {matchedRelatedGuides.map(guide => (
+                                          <button
+                                            key={guide.id}
+                                            onClick={() => {
+                                              setOpenRelatedPopupId(null);
+                                              setActivePage(guide.id);
+                                              window.scrollTo({ top: 0, behavior: 'instant' });
+                                            }}
+                                            style={{
+                                              display: 'flex',
+                                              alignItems: 'center',
+                                              justifyContent: 'space-between',
+                                              gap: '0.6rem',
+                                              padding: '0.62rem 0.75rem',
+                                              borderRadius: '10px',
+                                              background: 'transparent',
+                                              border: 'none',
+                                              color: 'var(--text-primary)',
+                                              fontSize: '0.85rem',
+                                              fontWeight: 500,
+                                              cursor: 'pointer',
+                                              textAlign: 'left',
+                                              fontFamily: 'inherit',
+                                              transition: 'background 0.15s'
+                                            }}
+                                            onMouseEnter={e => {
+                                              e.currentTarget.style.background = 'var(--surface-border)';
+                                              e.currentTarget.style.color = 'var(--ci-primary)';
+                                            }}
+                                            onMouseLeave={e => {
+                                              e.currentTarget.style.background = 'transparent';
+                                              e.currentTarget.style.color = 'var(--text-primary)';
+                                            }}
+                                          >
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', overflow: 'hidden' }}>
+                                              <BookOpen size={15} color="var(--ci-primary)" style={{ flexShrink: 0 }} />
+                                              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                                {guide.title.replace(/^ㄴ\s*/, '')}
+                                              </span>
+                                            </div>
+                                            <ExternalLink size={13} color="var(--text-secondary)" style={{ flexShrink: 0 }} />
+                                          </button>
+                                        ))}
+                                      </motion.div>
+                                    )}
+                                  </AnimatePresence>
+                                </div>
+                              )}
                             </div>
 
                             <button
@@ -716,7 +955,8 @@ export default function FaqBoard({ activePage, setActivePage }) {
                                 fontSize: '0.8rem',
                                 fontWeight: 600,
                                 cursor: 'pointer',
-                                transition: 'all 0.2s'
+                                transition: 'all 0.2s',
+                                flexShrink: 0
                               }}
                               title="이 질문의 직통 링크 복사"
                             >

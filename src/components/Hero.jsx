@@ -83,7 +83,7 @@ export default function Hero({ setActivePage }) {
     });
 
     const uGuides = (guideItems || [])
-      .filter(item => !item.pinned && item.id && item.title && item.id !== 'admin')
+      .filter(item => !item.pinned && item.id && !String(item.id).startsWith('unlinked-') && item.title && item.id !== 'admin')
       .map(item => ({
         title: item.title.replace(/^ㄴ\s*/, ''),
         id: item.id,

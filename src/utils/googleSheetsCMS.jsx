@@ -81,7 +81,7 @@ export async function fetchGuidesFromGoogleSheet(csvUrl) {
             (typeof __VERCEL_ENV__ !== 'undefined' && __VERCEL_ENV__ === 'production') ||
             (typeof __GIT_BRANCH__ !== 'undefined' && __GIT_BRANCH__ === 'main');
 
-          data.forEach(row => {
+          data.forEach((row, rowIndex) => {
             const { 
               CategoryID, CategoryTitle, 
               SubCategoryID, SubCategoryTitle, 
@@ -115,13 +115,18 @@ export async function fetchGuidesFromGoogleSheet(csvUrl) {
             // 3. 아이콘 동적 렌더링 처리
             const IconComponent = Icons[IconName] || Icons.HelpCircle;
 
+            // ItemID가 비어있더라도 사이드바 클릭 시 메인화면(null)으로 가지 않고 '존재하지 않는 마법서' 안내 화면으로 이동하도록 고유 폴백 ID 부여
+            const safeItemId = ItemID && String(ItemID).trim() !== ""
+              ? String(ItemID).trim()
+              : `unlinked-${CategoryID || 'cat'}-${rowIndex}`;
+
             const newItem = {
-              id: ItemID,
+              id: safeItemId,
               title: ItemTitle,
               icon: <IconComponent size={18} />,
               summary: Summary ? Summary.split('|').map(s => s.trim()) : [], // | 문자로 줄바꿈 분리
               keywords: Keywords ? String(Keywords).trim() : '',
-              markdownFile: MarkdownFile,
+              markdownFile: MarkdownFile ? String(MarkdownFile).trim() : '',
               youtubeLink: YoutubeLink,
               pinned: parsePinnedOrder(Pinned)
             };

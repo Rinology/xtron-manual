@@ -76,28 +76,33 @@ export default function GuideContent({ activePage, setActivePage }) {
   const guide = allGuideItems[guideIndex];
   const [copied, setCopied] = useState(false);
   const [markdownContent, setMarkdownContent] = useState('');
+  const [isMarkdownMissing, setIsMarkdownMissing] = useState(false);
 
   useEffect(() => {
-    if (guide?.markdownFile) {
+    const cleanFile = guide?.markdownFile ? String(guide.markdownFile).trim() : '';
+    if (cleanFile) {
       // 파일명만 입력해도 하위 폴더에서 자동으로 찾을 수 있도록 개선
       const moduleKey = Object.keys(markdownModules).find(key => 
-        key === `../data/markdown/${guide.markdownFile}` || 
-        key.endsWith(`/${guide.markdownFile}`)
+        key === `../data/markdown/${cleanFile}` || 
+        key.endsWith(`/${cleanFile}`)
       );
       
       const loader = moduleKey ? markdownModules[moduleKey] : null;
 
       if (loader) {
+        setIsMarkdownMissing(false);
         loader().then(content => setMarkdownContent(content));
       } else {
-        setMarkdownContent('설명 문서를 찾을 수 없습니다');
+        setMarkdownContent('');
+        setIsMarkdownMissing(true);
       }
     } else {
       setMarkdownContent('');
+      setIsMarkdownMissing(Boolean(guide && !guide.customComponent && !guide.jsonData));
     }
   }, [guide]);
 
-  if (!guide) {
+  if (!guide || isMarkdownMissing) {
     return (
       <div className="guide-error-container">
         <h2 className="guide-error-title">해당 마법서를 찾을 수 없습니다 😢</h2>
@@ -228,6 +233,7 @@ export default function GuideContent({ activePage, setActivePage }) {
       return <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '1rem' }} {...props}>{filteredChildren}</p>;
     },
     ul: ({node, ...props}) => <ul style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6, paddingLeft: '1.5rem', marginBottom: '1rem' }} {...props} />,
+    ol: ({node, ...props}) => <ol style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6, paddingLeft: '1.5rem', marginBottom: '1rem' }} {...props} />,
     blockquote: ({node, children, ...props}) => {
       let type = null;
       let title = '';
@@ -481,25 +487,7 @@ export default function GuideContent({ activePage, setActivePage }) {
               </div>
             )}
           </div>
-        ) : (
-          <React.Fragment>
-            <div style={{
-              width: '100%',
-              aspectRatio: '16/9',
-              background: 'var(--surface-border)',
-              border: '2px dashed var(--text-secondary)',
-              borderRadius: 'var(--radius-md)',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'var(--text-secondary)',
-              margin: '2rem 0'
-            }}>
-              <span style={{ fontWeight: 600, fontSize: '1.2rem', color: 'var(--text-primary)' }}>상세 내용 준비중</span>
-            </div>
-          </React.Fragment>
-        )}
+        ) : null}
 
         <NavigationButtons />
       </div>

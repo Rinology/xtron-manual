@@ -70,7 +70,7 @@ export default function Header({ activePage, setActivePage, isOpen, setIsOpen })
               {/* 처음으로 아이콘 버튼 및 사이드바 일관 다크 플로팅 툴팁 */}
               <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
                 <button 
-                  onClick={() => setActivePage(null)}
+                  onClick={() => { setActivePage(null); setHoveredButton(null); }}
                   style={{
                     display: 'flex',
                     alignItems: 'center',

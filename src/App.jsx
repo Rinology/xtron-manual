@@ -56,6 +56,39 @@ function App() {
     }
   }, [allGuideItems, faqItems, initialHash, isGuidesLoading, isFaqLoading]);
 
+  // 브라우저 탭(파비콘 우측) 타이틀 동적 동기화
+  useEffect(() => {
+    if (!activePage) {
+      document.title = '엑스트론 가이드';
+      return;
+    }
+
+    if (activePage === 'troubleshooting-wizard') {
+      document.title = 'Xenie (자가진단 마법사) - 엑스트론 가이드';
+      return;
+    }
+
+    if (isFaqRoute(activePage, faqItems)) {
+      if (activePage !== 'faq' && Array.isArray(faqItems)) {
+        const matchedFaq = faqItems.find(f => f.id.toLowerCase() === activePage.toLowerCase());
+        if (matchedFaq && matchedFaq.question) {
+          document.title = `${matchedFaq.question} - 자주 묻는 질문 | 엑스트론 가이드`;
+          return;
+        }
+      }
+      document.title = '자주 묻는 질문 (FAQ) - 엑스트론 가이드';
+      return;
+    }
+
+    const matchedGuide = allGuideItems.find(item => item.id === activePage);
+    if (matchedGuide && matchedGuide.title) {
+      const cleanTitle = matchedGuide.title.replace(/^ㄴ\s*/, '');
+      document.title = `${cleanTitle} - 엑스트론 가이드`;
+    } else {
+      document.title = '엑스트론 가이드';
+    }
+  }, [activePage, allGuideItems, faqItems]);
+
   // Cmd+K / Ctrl+K 단축키 리스너 (한글 IME, Caps Lock, e.code 지원)
   useEffect(() => {
     const handleKeyDown = (e) => {

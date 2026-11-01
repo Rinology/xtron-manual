@@ -51,7 +51,7 @@ export default function SearchModal({ isOpen, onClose, onSelect }) {
     });
 
     const uGuides = (allGuideItems || [])
-      .filter(item => !item.pinned && item.id && item.title && item.id !== 'admin')
+      .filter(item => !item.pinned && item.id && !String(item.id).startsWith('unlinked-') && item.title && item.id !== 'admin')
       .map(item => ({
         title: item.title.replace(/^ㄴ\s*/, ''),
         id: item.id,

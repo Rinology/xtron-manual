@@ -201,6 +201,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();
+                    setHoveredButton(null);
                     setIsOpen(true);
                   }}
                   style={{ 
