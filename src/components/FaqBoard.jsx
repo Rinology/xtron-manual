@@ -8,8 +8,200 @@ import {
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
+import mermaid from 'mermaid';
 import { useGuides } from '../context/GuideContext';
 import VideoPlayer from './VideoPlayer';
+
+const REMARK_PLUGINS = [remarkGfm];
+const REHYPE_PLUGINS = [rehypeRaw];
+
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'default',
+  securityLevel: 'loose',
+});
+
+const faqMermaidSvgCache = new Map();
+
+const MermaidChart = React.memo(({ chart }) => {
+  const [svg, setSvg] = useState(() => faqMermaidSvgCache.get(chart) || '');
+  useEffect(() => {
+    if (faqMermaidSvgCache.has(chart)) {
+      setSvg(faqMermaidSvgCache.get(chart));
+      return;
+    }
+    let cancelled = false;
+    const renderChart = async () => {
+      try {
+        const id = 'faq-mermaid-' + Math.random().toString(36).substr(2, 9);
+        const { svg: renderedSvg } = await mermaid.render(id, chart);
+        faqMermaidSvgCache.set(chart, renderedSvg);
+        if (!cancelled) setSvg(renderedSvg);
+      } catch (e) {
+        console.error('FAQ Mermaid render error:', e);
+        if (!cancelled) {
+          setSvg('<div style="color: #d1242f; padding: 0.85rem 1rem; border: 1px solid rgba(209,36,47,0.3); border-radius: 8px; font-size: 0.85rem;">순서도 표시 중 오류가 발생했습니다. 문법을 확인해 주세요.</div>');
+        }
+      }
+    };
+    renderChart();
+    return () => {
+      cancelled = true;
+    };
+  }, [chart]);
+
+  return (
+    <div style={{
+      width: '100%',
+      overflowX: 'auto',
+      margin: '1rem 0',
+      padding: '1rem 0.75rem',
+      background: 'var(--bg-secondary)',
+      border: '1px solid var(--surface-border)',
+      borderRadius: '10px'
+    }}>
+      <div
+        dangerouslySetInnerHTML={{ __html: svg }}
+        style={{ display: 'flex', justifyContent: 'center', minWidth: 'min(100%, 480px)' }}
+      />
+    </div>
+  );
+});
+
+/**
+ * FAQ 시트 전용 간편 문법 전처리기 (Pre-processor)
+ * 1) [표] ... [/표] (또는 표 ... /표): '|' 구분자 텍스트를 마크다운 표(Table)로 자동 변환
+ * 2) [순서도] ... [/순서도] (또는 순서도 ... /순서도): '>' 구분자 텍스트를 Mermaid 순서도로 자동 변환
+ * 3) 본문 내 '버튼이름 | https://...' 한 줄 입력 시 링크 바로가기 버튼으로 자동 변환
+ */
+const preprocessFaqAnswer = (rawText) => {
+  if (!rawText || typeof rawText !== 'string') return '';
+
+  let processed = rawText.replace(/\r\n/g, '\n');
+
+  // 1. [표] ... [/표] 블록 변환 (대괄호 필수: 일반 텍스트 내 '표' 단어와의 오작동 방지)
+  processed = processed.replace(
+    /(?:^|\n)[ \t]*\[표\][ \t]*\n([\s\S]*?)\n[ \t]*\[\/표\](?=[ \t]*(?:\n|$))/g,
+    (_, tableBody) => {
+      const rows = tableBody
+        .split('\n')
+        .map(line => line.trim())
+        .filter(Boolean);
+
+      if (rows.length === 0) return '';
+
+      const normalizeRow = (line) => {
+        const stripped = line.replace(/^\|/, '').replace(/\|$/, '');
+        const cells = stripped.includes('|')
+          ? stripped.split('|').map(c => c.trim())
+          : stripped.split('\t').map(c => c.trim());
+        return cells;
+      };
+
+      const parsedCells = rows.map(normalizeRow);
+      // 전체 행 중 가장 칸 수가 많은 행을 기준으로 열 개수(colCount) 확정
+      const colCount = Math.max(...parsedCells.map(c => c.length), 1);
+
+      // 두 번째 줄이 마크다운 구분선(|---|)인지 검사
+      const hasSeparator =
+        parsedCells.length > 1 &&
+        parsedCells[1].every(c => /^:?-{2,}:?$/.test(c));
+
+      // 헤더 행: 데이터 행보다 열이 부족해도 colCount에 맞게 빈 칸을 채워 깨짐 방지
+      const headerCells = [...parsedCells[0]];
+      while (headerCells.length < colCount) headerCells.push('');
+      const headerLine = `| ${headerCells.join(' | ')} |`;
+
+      // 구분선 행 (| --- | --- |)
+      const separatorLine = `| ${Array(colCount).fill('---').join(' | ')} |`;
+
+      // 본문 데이터 행: 열이 부족한 행은 자동으로 빈칸('')을 채워 넣어 정렬 유지
+      const dataRows = hasSeparator ? parsedCells.slice(2) : parsedCells.slice(1);
+      const bodyLines = dataRows.map(cells => {
+        const padded = [...cells];
+        while (padded.length < colCount) padded.push('');
+        return `| ${padded.join(' | ')} |`;
+      });
+
+      return `\n\n${[headerLine, separatorLine, ...bodyLines].join('\n')}\n\n`;
+    }
+  );
+
+  // 2. [순서도] ... [/순서도] 블록 변환 (대괄호 필수: 일반 텍스트 내 '순서도' 단어와의 오작동 방지)
+  processed = processed.replace(
+    /(?:^|\n)[ \t]*\[순서도\][ \t]*\n([\s\S]*?)\n[ \t]*\[\/순서도\](?=[ \t]*(?:\n|$))/g,
+    (_, flowBody) => {
+      const lines = flowBody
+        .split('\n')
+        .map(line => line.trim())
+        .filter(Boolean);
+
+      if (lines.length === 0) return '';
+
+      if (/^(graph|flowchart)\s+(TD|TB|BT|RL|LR)/i.test(lines[0])) {
+        return `\n\n\`\`\`mermaid\n${lines.join('\n')}\n\`\`\`\n\n`;
+      }
+
+      const nodeMap = new Map();
+      let nodeCounter = 0;
+      const getNodeId = (label) => {
+        const cleanLabel = label.trim();
+        if (!nodeMap.has(cleanLabel)) {
+          nodeCounter += 1;
+          nodeMap.set(cleanLabel, `N${nodeCounter}`);
+        }
+        return nodeMap.get(cleanLabel);
+      };
+
+      const edges = [];
+      let totalSteps = 0;
+
+      lines.forEach(line => {
+        const steps = line
+          .split(/\s*(?:->|>)\s*/)
+          .map(s => s.trim())
+          .filter(Boolean);
+
+        totalSteps += steps.length;
+        for (let i = 0; i < steps.length - 1; i++) {
+          const fromId = getNodeId(steps[i]);
+          const toId = getNodeId(steps[i + 1]);
+          edges.push(`  ${fromId}["${steps[i].replace(/"/g, "'")}"] --> ${toId}["${steps[i + 1].replace(/"/g, "'")}"]`);
+        }
+      });
+
+      if (edges.length === 0) return '';
+
+      const direction = totalSteps > 6 || lines.length > 2 ? 'TD' : 'LR';
+      const mermaidCode = [
+        `flowchart ${direction}`,
+        ...edges
+      ].join('\n');
+
+      return `\n\n\`\`\`mermaid\n${mermaidCode}\n\`\`\`\n\n`;
+    }
+  );
+
+  // 3. 본문 내 '버튼이름 | https://...' 형태를 액션 버튼 링크로 자동 변환 (마크다운 표 내부 행은 제외)
+  processed = processed
+    .split('\n')
+    .map(line => {
+      const trimmed = line.trim();
+      if (trimmed.startsWith('|') && trimmed.endsWith('|')) return line;
+
+      const match = trimmed.match(/^\[?([^|\n\]]+?)\s*\|\s*(https?:\/\/[^\s\]]+)\]?$/i);
+      if (match) {
+        const label = match[1].trim();
+        const url = match[2].trim();
+        const separator = url.includes('#') ? '&' : '#';
+        return `[${label}](${url}${separator}faq-action-btn)`;
+      }
+      return line;
+    })
+    .join('\n');
+
+  return processed;
+};
 
 // R2 미디어 경로 자동 보정 헬퍼 (GuideContent.jsx와 동일 규격)
 const resolveMediaUrl = (src) => {
@@ -128,7 +320,74 @@ const MarkdownComponents = {
       </blockquote>
     );
   },
+  code: ({ node, inline, className, children, ...props }) => {
+    const match = /language-(\w+)/.exec(className || '');
+    if (!inline && match && match[1] === 'mermaid') {
+      return <MermaidChart chart={String(children).replace(/\n$/, '')} />;
+    }
+    return (
+      <code
+        className={className}
+        style={inline ? {
+          background: 'rgba(0,0,0,0.05)',
+          padding: '0.18rem 0.4rem',
+          borderRadius: '4px',
+          color: '#d1242f',
+          fontFamily: 'monospace',
+          fontSize: '0.85em'
+        } : {}}
+        {...props}
+      >
+        {children}
+      </code>
+    );
+  },
+  table: ({ node, children, ...props }) => (
+    <div style={{ width: '100%', overflowX: 'auto', margin: '0.85rem 0' }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }} {...props}>
+        {children}
+      </table>
+    </div>
+  ),
   a: ({ node, href, children, ...props }) => {
+    if (href && (href.endsWith('#faq-action-btn') || href.endsWith('&faq-action-btn'))) {
+      const cleanHref = href.replace(/[#&]faq-action-btn$/, '');
+      return (
+        <a
+          href={cleanHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.45rem',
+            background: 'rgba(47, 98, 134, 0.08)',
+            color: 'var(--ci-primary)',
+            border: '1px solid rgba(47, 98, 134, 0.28)',
+            padding: '0.48rem 0.9rem',
+            borderRadius: 'var(--radius-md)',
+            textDecoration: 'none',
+            fontWeight: 600,
+            fontSize: '0.85rem',
+            marginTop: '0.35rem',
+            marginRight: '0.5rem',
+            boxShadow: 'var(--shadow-sm)',
+            transition: 'all 0.18s ease'
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.background = 'var(--ci-primary)';
+            e.currentTarget.style.color = 'var(--ci-white)';
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.background = 'rgba(47, 98, 134, 0.08)';
+            e.currentTarget.style.color = 'var(--ci-primary)';
+          }}
+        >
+          <span>{children}</span>
+          <ExternalLink size={14} />
+        </a>
+      );
+    }
     if (href && href.endsWith('.pdf')) {
       const r2Url = import.meta.env.VITE_R2_URL || import.meta.env.VITE_R2_PDF_URL || import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr';
       const fullHref = href.startsWith('http') ? href : `${r2Url}/${href.replace(/^\//, '')}`;
@@ -778,11 +1037,11 @@ function FaqBoard({ activePage, setActivePage }) {
                         }}>
                           <div className="markdown-body">
                             <ReactMarkdown
-                              remarkPlugins={[remarkGfm]}
-                              rehypePlugins={[rehypeRaw]}
+                              remarkPlugins={REMARK_PLUGINS}
+                              rehypePlugins={REHYPE_PLUGINS}
                               components={MarkdownComponents}
                             >
-                              {item.answer}
+                              {preprocessFaqAnswer(item.answer)}
                             </ReactMarkdown>
                           </div>
 

@@ -7,6 +7,11 @@
 ## 📅 [2026-11-01] 메인 화면 미니멀화, 구글 제미나이 스타일 검색 UI 및 마법사 롤링 티커 개편
 
 ### ✨ 신규 기능 및 UX 개선 (Features & UX Improvements)
+- **FAQ 시트 전용 초간편 표(`[표] ~ [/표]`), 순서도(`[순서도] ~ [/순서도]`), 외부 링크 버튼(`버튼명 | URL`) 자동 변환 파서 탑재 (`src/components/FaqBoard.jsx`)**
+  - 마크다운이나 IDE에 익숙하지 않은 실무 직원이 구글 스프레드시트 3번 탭(`FAQ`)의 `Answer` 셀 안에서 한글 키워드만으로 **표(Table)**, **순서도(Mermaid Flowchart)**, **외부 구매/안내 링크 바로가기 버튼**을 손쉽게 작성할 수 있도록 전처리기(`preprocessFaqAnswer`) 및 Mermaid 렌더링 엔진(`MermaidChart`)을 탑재했습니다.
+  - **간편 표(`[표]` ~ `[/표]`)** (오작동 방지 대괄호 필수, 열·행 불일치 자동 패딩 보정): 복잡한 `|---|---|` 구분선 없이 첫 줄에 열 제목, 다음 줄부터 내용을 `|` 기호로만 구분해 적으면 자동으로 깔끔한 마크다운 표로 변환됩니다.
+  - **간편 순서도(`[순서도]` ~ `[/순서도]`)** (오작동 방지 대괄호 필수): 영문 노드 ID나 Mermaid 문법 없이 `단계1 > 단계2 > 단계3` 처럼 `>` 기호만 적으면 자동으로 Mermaid 플로우차트로 변환·렌더링됩니다.
+  - **본문 내 링크 바로가기 버튼(`버튼이름 | https://...`)**: 본문 줄에 `페달 구매하기 | https://...` 형태로 작성하면 즉시 세련된 외부 링크 바로가기 버튼(`ExternalLink` 아이콘 포함)으로 변환됩니다.
 - **동영상 플레이어(`VideoPlayer`) 기본값 정지(Paused) 전환 및 Xenie 그라데이션 타이포그래피 적용 (`src/components/VideoPlayer.jsx`, `src/index.css`, `Sidebar.jsx`, `Hero.jsx`, `SearchModal.jsx`, `TroubleshootingWizard.jsx`)**
   - 자전거 접기/펴기 등 본문 내 MP4 시연 영상 진입 시 자동 재생으로 인한 산만함을 방지하기 위해 기본 재생 상태를 **정지(Paused, `autoPlay = false`)**로 전환했습니다. 사용자가 영상 클릭 시 재생되고 재생 상태가 직관적으로 표시됩니다.
   - Xenie 브랜드 명칭에 적용되었던 산만한 개별 단색(`X` 녹색, `enie` 남색)을 자연스러운 **녹색 ➡️ 남색 원톤 그라데이션(`.xenie-gradient-text`, `linear-gradient(135deg, var(--ci-secondary) 0%, var(--ci-primary) 100%)`)**으로 통일하여 시각적 피로도를 없애고 세련된 프리미엄 BI를 구현했습니다.
