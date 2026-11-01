@@ -312,6 +312,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
+                        setHoveredButton(null);
                         setActivePage('troubleshooting-wizard');
                         if (isMobile) setIsOpen(false);
                       }}
@@ -342,6 +343,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
+                        setHoveredButton(null);
                         setActivePage('faq');
                         if (isMobile) setIsOpen(false);
                       }}
@@ -371,6 +373,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
+                      setHoveredButton(null);
                       onOpenSearch();
                     }}
                     style={{
@@ -593,6 +596,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
           <button
             onClick={(e) => {
               e.stopPropagation();
+              setHoveredButton(null);
               setIsQuickLinksOpen(!isQuickLinksOpen);
             }}
             style={{

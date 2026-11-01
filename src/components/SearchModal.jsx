@@ -95,7 +95,6 @@ export default function SearchModal({ isOpen, onClose, onSelect }) {
     if (isOpen) {
       setQuery('');
       setSelectedIndex(0);
-      setTimeout(() => inputRef.current?.focus(), 100);
     }
   }, [isOpen]);
 
@@ -165,312 +164,297 @@ export default function SearchModal({ isOpen, onClose, onSelect }) {
     }
   }, [selectedIndex, results.length]);
 
+  if (!isOpen) return null;
+
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <React.Fragment>
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
+    <div
+      onClick={onClose}
+      className="search-modal-container"
+      style={{
+        position: 'fixed',
+        inset: 0,
+        background: 'rgba(15, 23, 42, 0.45)',
+        display: 'flex',
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+        paddingTop: '6vh',
+        zIndex: 10000
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: '100%', maxWidth: '680px', margin: '0 1rem',
+          background: 'var(--surface-color)',
+          borderRadius: 'var(--radius-lg)',
+          boxShadow: '0 25px 50px -12px rgba(15, 23, 42, 0.35), var(--shadow-lg)',
+          overflow: 'hidden', pointerEvents: 'auto',
+          border: '1px solid var(--surface-border)',
+          maxHeight: '84vh',
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+      >
+        {/* Search Input Area */}
+        <div style={{
+          display: 'flex', alignItems: 'center',
+          padding: '1.1rem 1.35rem', borderBottom: '1px solid var(--surface-border)',
+          background: 'var(--surface-color)'
+        }}>
+          <Search size={22} color="var(--ci-primary)" style={{ flexShrink: 0 }} />
+          <input
+            ref={inputRef}
+            autoFocus
+            type="text"
+            placeholder="매뉴얼 본문 및 제목 검색... (예: 전원, 페달)"
+            value={query}
+            onChange={e => setQuery(e.target.value)}
             style={{
-              position: 'fixed', inset: 0,
-              background: 'rgba(15, 23, 42, 0.45)',
-              backdropFilter: 'blur(5px)',
-              zIndex: 9999
+              flex: 1, border: 'none', outline: 'none',
+              background: 'transparent', padding: '0 1rem',
+              fontSize: '1.1rem', color: 'var(--text-primary)',
+              fontFamily: 'inherit'
             }}
           />
-
-          {/* Modal Container (세로 확장 및 시원한 크기 확보) */}
-          <div 
-            className="search-modal-container"
+          <button
+            onClick={onClose}
             style={{
-              position: 'fixed', inset: 0,
-              display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
-              paddingTop: '6vh', pointerEvents: 'none', zIndex: 10000
+              background: 'var(--surface-border)', border: 'none',
+              padding: '0.3rem', borderRadius: 'var(--radius-sm)',
+              cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'var(--text-secondary)'
             }}
+            title="닫기 (Esc)"
           >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96, y: -16 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.96, y: -16 }}
-              transition={{ duration: 0.22 }}
-              style={{
-                width: '100%', maxWidth: '680px', margin: '0 1rem',
-                background: 'var(--surface-color)',
-                borderRadius: 'var(--radius-lg)',
-                boxShadow: '0 25px 50px -12px rgba(15, 23, 42, 0.35), var(--shadow-lg)',
-                overflow: 'hidden', pointerEvents: 'auto',
-                border: '1px solid var(--surface-border)',
-                maxHeight: '84vh',
-                display: 'flex',
-                flexDirection: 'column'
-              }}
-            >
-              {/* Search Input Area */}
-              <div style={{
-                display: 'flex', alignItems: 'center',
-                padding: '1.1rem 1.35rem', borderBottom: '1px solid var(--surface-border)',
-                background: 'var(--surface-color)'
-              }}>
-                <Search size={22} color="var(--ci-primary)" style={{ flexShrink: 0 }} />
-                <input
-                  ref={inputRef}
-                  type="text"
-                  placeholder="매뉴얼 본문 및 제목 검색... (예: 전원, 페달)"
-                  value={query}
-                  onChange={e => setQuery(e.target.value)}
-                  style={{
-                    flex: 1, border: 'none', outline: 'none',
-                    background: 'transparent', padding: '0 1rem',
-                    fontSize: '1.1rem', color: 'var(--text-primary)',
-                    fontFamily: 'inherit'
+            <X size={16} />
+          </button>
+        </div>
+
+        {/* Main Content Area (Results or Launchpad) */}
+        <div style={{ flex: 1, overflowY: 'auto', minHeight: '340px' }} ref={resultsRef}>
+          {query.trim() === '' ? (
+            /* 1. 검색어 입력 전 (빈 상태): 풍부한 런치패드 탐색 허브 */
+            <div style={{ padding: '1.25rem' }}>
+              
+              {/* 상단 1: 증상별 자가진단 마법사 카드 */}
+              {hasWizard && (
+                <div
+                  onClick={() => {
+                    onSelect('troubleshooting-wizard');
+                    onClose();
                   }}
-                />
-                <button
-                  onClick={onClose}
                   style={{
-                    background: 'var(--surface-border)', border: 'none',
-                    padding: '0.3rem', borderRadius: 'var(--radius-sm)',
-                    cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: 'var(--text-secondary)'
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '0.9rem 1.15rem',
+                    borderRadius: 'var(--radius-md)',
+                    background: 'rgba(47, 98, 134, 0.05)',
+                    border: '1px solid rgba(47, 98, 134, 0.14)',
+                    cursor: 'pointer',
+                    marginBottom: '0.75rem',
+                    transition: 'all 0.18s'
                   }}
-                  title="닫기 (Esc)"
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'var(--ci-primary-light)';
+                    e.currentTarget.style.borderColor = 'var(--ci-primary)';
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(47, 98, 134, 0.05)';
+                    e.currentTarget.style.borderColor = 'rgba(47, 98, 134, 0.14)';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }}
                 >
-                  <X size={16} />
-                </button>
-              </div>
-
-              {/* Main Content Area (Results or Launchpad) */}
-              <div style={{ flex: 1, overflowY: 'auto', minHeight: '340px' }} ref={resultsRef}>
-                {query.trim() === '' ? (
-                  /* 1. 검색어 입력 전 (빈 상태): 풍부한 런치패드 탐색 허브 */
-                  <div style={{ padding: '1.25rem' }}>
-                    
-                    {/* 상단 1: 증상별 자가진단 마법사 카드 */}
-                    {hasWizard && (
-                      <div
-                        onClick={() => {
-                          onSelect('troubleshooting-wizard');
-                          onClose();
-                        }}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          padding: '0.9rem 1.15rem',
-                          borderRadius: 'var(--radius-md)',
-                          background: 'rgba(47, 98, 134, 0.05)',
-                          border: '1px solid rgba(47, 98, 134, 0.14)',
-                          cursor: 'pointer',
-                          marginBottom: '0.75rem',
-                          transition: 'all 0.18s'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.background = 'var(--ci-primary-light)';
-                          e.currentTarget.style.borderColor = 'var(--ci-primary)';
-                          e.currentTarget.style.transform = 'translateY(-1px)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.background = 'rgba(47, 98, 134, 0.05)';
-                          e.currentTarget.style.borderColor = 'rgba(47, 98, 134, 0.14)';
-                          e.currentTarget.style.transform = 'translateY(0)';
-                        }}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0 }}>
-                          <div style={{
-                            width: '34px', height: '34px', borderRadius: '8px',
-                            background: 'var(--ci-primary)', color: 'var(--ci-white)',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
-                          }}>
-                            <Sparkles size={18} />
-                          </div>
-                          <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            <span style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--ci-primary)' }}>
-                              <span style={{ fontWeight: 800 }}>
-                                <span style={{ color: 'var(--ci-secondary)' }}>X</span>
-                                <span style={{ color: 'var(--ci-primary)' }}>enie</span>
-                              </span> (자가진단 마법사)
-                            </span>
-                            <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                              어떤 키워드로 검색해야 할지 애매할 때 단계별 질문으로 즉시 해결
-                            </span>
-                          </div>
-                        </div>
-                        <ChevronRight size={18} color="var(--ci-primary)" style={{ flexShrink: 0 }} />
-                      </div>
-                    )}
-
-                    {/* 상단 2: 라벨과 카운터가 없는 순수 질문 롤링 티커 */}
-                    {suggestions.length > 0 && currentSuggestion && (
-                      <div
-                        onMouseEnter={() => setIsTickerHovered(true)}
-                        onMouseLeave={() => setIsTickerHovered(false)}
-                        onClick={() => {
-                          onSelect(currentSuggestion.id);
-                          onClose();
-                        }}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '0.75rem',
-                          padding: '0.75rem 1.1rem',
-                          borderRadius: 'var(--radius-md)',
-                          background: 'var(--surface-color)',
-                          border: '1px solid var(--surface-border)',
-                          cursor: 'pointer',
-                          marginBottom: '1.25rem',
-                          transition: 'all 0.18s',
-                          userSelect: 'none'
-                        }}
-                        onMouseEnterCapture={(e) => {
-                          e.currentTarget.style.background = 'var(--ci-primary-light)';
-                          e.currentTarget.style.borderColor = 'rgba(47, 98, 134, 0.3)';
-                        }}
-                        onMouseLeaveCapture={(e) => {
-                          e.currentTarget.style.background = 'var(--surface-color)';
-                          e.currentTarget.style.borderColor = 'var(--surface-border)';
-                        }}
-                      >
-                        <Lightbulb size={18} color="var(--ci-secondary)" style={{ flexShrink: 0 }} />
-                        
-                        <div style={{ flex: 1, minWidth: 0, height: '1.4rem', position: 'relative', overflow: 'hidden' }}>
-                          <AnimatePresence mode="wait">
-                            <motion.div
-                              key={`${currentSuggestion.id}-${tickerIndex}`}
-                              initial={{ opacity: 0, y: 12 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              exit={{ opacity: 0, y: -12 }}
-                              transition={{ duration: 0.28, ease: 'easeOut' }}
-                              style={{
-                                position: 'absolute',
-                                inset: 0,
-                                display: 'flex',
-                                alignItems: 'center'
-                              }}
-                            >
-                              <span style={{
-                                fontSize: '0.88rem',
-                                fontWeight: 600,
-                                color: 'var(--text-primary)',
-                                whiteSpace: 'nowrap',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                width: '100%'
-                              }}>
-                                {currentSuggestion.title}
-                              </span>
-                            </motion.div>
-                          </AnimatePresence>
-                        </div>
-
-                        <ChevronRight size={16} color="var(--text-secondary)" style={{ flexShrink: 0 }} />
-                      </div>
-                    )}
-
-                    {/* 하단 심플 검색 안내 힌트 */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0 }}>
                     <div style={{
-                      marginTop: '2.5rem',
-                      padding: '1.5rem 1rem',
-                      textAlign: 'center',
-                      color: '#94a3b8',
-                      fontSize: '0.86rem',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      gap: '0.45rem'
+                      width: '34px', height: '34px', borderRadius: '8px',
+                      background: 'var(--ci-primary)', color: 'var(--ci-white)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
                     }}>
-                      <span>찾으시는 매뉴얼 항목이나 증상의 키워드를 검색창에 입력해 보세요.</span>
-                      <span style={{ fontSize: '0.78rem', color: '#a0aec0' }}>예: 전원, 페달, 케이블, 소음</span>
+                      <Sparkles size={18} />
                     </div>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--ci-primary)' }}>
+                        <span style={{ fontWeight: 800 }}>
+                          <span style={{ color: 'var(--ci-secondary)' }}>X</span>
+                          <span style={{ color: 'var(--ci-primary)' }}>enie</span>
+                        </span> (자가진단 마법사)
+                      </span>
+                      <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+                        어떤 키워드로 검색해야 할지 애매할 때 단계별 질문으로 즉시 해결
+                      </span>
+                    </div>
+                  </div>
+                  <ChevronRight size={18} color="var(--ci-primary)" style={{ flexShrink: 0 }} />
+                </div>
+              )}
 
+              {/* 상단 2: 라벨과 카운터가 없는 순수 질문 롤링 티커 */}
+              {suggestions.length > 0 && currentSuggestion && (
+                <div
+                  onMouseEnter={() => setIsTickerHovered(true)}
+                  onMouseLeave={() => setIsTickerHovered(false)}
+                  onClick={() => {
+                    onSelect(currentSuggestion.id);
+                    onClose();
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    padding: '0.75rem 1.1rem',
+                    borderRadius: 'var(--radius-md)',
+                    background: 'var(--surface-color)',
+                    border: '1px solid var(--surface-border)',
+                    cursor: 'pointer',
+                    marginBottom: '1.25rem',
+                    transition: 'all 0.18s',
+                    userSelect: 'none'
+                  }}
+                  onMouseEnterCapture={(e) => {
+                    e.currentTarget.style.background = 'var(--ci-primary-light)';
+                    e.currentTarget.style.borderColor = 'rgba(47, 98, 134, 0.3)';
+                  }}
+                  onMouseLeaveCapture={(e) => {
+                    e.currentTarget.style.background = 'var(--surface-color)';
+                    e.currentTarget.style.borderColor = 'var(--surface-border)';
+                  }}
+                >
+                  <Lightbulb size={18} color="var(--ci-secondary)" style={{ flexShrink: 0 }} />
+                  
+                  <div style={{ flex: 1, minWidth: 0, height: '1.4rem', position: 'relative', overflow: 'hidden' }}>
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={`${currentSuggestion.id}-${tickerIndex}`}
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -12 }}
+                        transition={{ duration: 0.28, ease: 'easeOut' }}
+                        style={{
+                          position: 'absolute',
+                          inset: 0,
+                          display: 'flex',
+                          alignItems: 'center'
+                        }}
+                      >
+                        <span style={{
+                          fontSize: '0.88rem',
+                          fontWeight: 600,
+                          color: 'var(--text-primary)',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          width: '100%'
+                        }}>
+                          {currentSuggestion.title}
+                        </span>
+                      </motion.div>
+                    </AnimatePresence>
                   </div>
-                ) : results.length === 0 ? (
-                  /* 검색 결과 없음 */
-                  <div style={{ padding: '3.5rem 2rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
-                    <p style={{ fontWeight: 600, fontSize: '1rem' }}>검색 결과가 없습니다.</p>
-                    <p style={{ fontSize: '0.85rem', marginTop: '0.5rem', opacity: 0.7 }}>
-                      단어의 철자를 확인하시거나 다른 키워드로 검색해보세요.
-                    </p>
-                  </div>
-                ) : (
-                  /* 2. 검색 결과 리스트 */
-                  <div style={{ padding: '0.5rem' }}>
-                    {results.map((item, index) => {
-                      const isSelected = index === selectedIndex;
-                      return (
-                        <div
-                          key={item.id}
-                          onMouseEnter={() => setSelectedIndex(index)}
-                          onClick={() => {
-                            onSelect(item.id);
-                            onClose();
-                          }}
-                          style={{
-                            display: 'flex', alignItems: 'center', gap: '1rem',
-                            padding: '0.9rem 1rem', cursor: 'pointer',
-                            borderRadius: 'var(--radius-md)',
-                            background: isSelected ? 'var(--ci-primary-light)' : 'transparent',
-                            transition: 'background 0.1s'
-                          }}
-                        >
-                          <div style={{
-                            width: '32px', height: '32px', borderRadius: '8px',
-                            background: isSelected ? 'var(--ci-primary)' : 'var(--surface-border)',
-                            color: isSelected ? 'var(--ci-white)' : 'var(--text-secondary)',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
-                          }}>
-                            {item.icon || <FileText size={16} />}
-                          </div>
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{
-                              fontWeight: 600, fontSize: '0.95rem',
-                              color: isSelected ? 'var(--ci-primary)' : 'var(--text-primary)',
-                              marginBottom: '0.15rem',
-                              whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
-                            }}>
-                              {item.title}
-                            </div>
-                            {item.summary && (
-                              <div style={{
-                                fontSize: '0.8rem', color: 'var(--text-secondary)',
-                                whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
-                              }}>
-                                {(Array.isArray(item.summary) ? item.summary.join(', ') : item.summary)}
-                              </div>
-                            )}
-                          </div>
-                          {isSelected && <ChevronRight size={18} color="var(--ci-primary)" />}
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
 
-              {/* Footer Guide */}
+                  <ChevronRight size={16} color="var(--text-secondary)" style={{ flexShrink: 0 }} />
+                </div>
+              )}
+
+              {/* 하단 심플 검색 안내 힌트 */}
               <div style={{
-                padding: '0.75rem 1.25rem', borderTop: '1px solid var(--surface-border)',
-                background: 'rgba(248, 250, 252, 0.5)', display: 'flex', gap: '1.5rem',
-                fontSize: '0.75rem', color: 'var(--text-secondary)'
+                marginTop: '2.5rem',
+                padding: '1.5rem 1rem',
+                textAlign: 'center',
+                color: '#94a3b8',
+                fontSize: '0.86rem',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '0.45rem'
               }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                  <kbd style={{ background: 'var(--surface-border)', padding: '0.1rem 0.35rem', borderRadius: '4px', fontFamily: 'inherit' }}>↓</kbd>
-                  <kbd style={{ background: 'var(--surface-border)', padding: '0.1rem 0.35rem', borderRadius: '4px', fontFamily: 'inherit' }}>↑</kbd> 이동
-                </span>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                  <kbd style={{ background: 'var(--surface-border)', padding: '0.1rem 0.35rem', borderRadius: '4px', fontFamily: 'inherit' }}>Enter</kbd> 선택
-                </span>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                  <kbd style={{ background: 'var(--surface-border)', padding: '0.1rem 0.35rem', borderRadius: '4px', fontFamily: 'inherit' }}>Esc</kbd> 닫기
-                </span>
+                <span>찾으시는 매뉴얼 항목이나 증상의 키워드를 검색창에 입력해 보세요.</span>
+                <span style={{ fontSize: '0.78rem', color: '#a0aec0' }}>예: 전원, 페달, 케이블, 소음</span>
               </div>
-            </motion.div>
-          </div>
-        </React.Fragment>
-      )}
-    </AnimatePresence>
+
+            </div>
+          ) : results.length === 0 ? (
+            /* 검색 결과 없음 */
+            <div style={{ padding: '3.5rem 2rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
+              <p style={{ fontWeight: 600, fontSize: '1rem' }}>검색 결과가 없습니다.</p>
+              <p style={{ fontSize: '0.85rem', marginTop: '0.5rem', opacity: 0.7 }}>
+                단어의 철자를 확인하시거나 다른 키워드로 검색해보세요.
+              </p>
+            </div>
+          ) : (
+            /* 2. 검색 결과 리스트 */
+            <div style={{ padding: '0.5rem' }}>
+              {results.map((item, index) => {
+                const isSelected = index === selectedIndex;
+                return (
+                  <div
+                    key={item.id}
+                    onMouseEnter={() => setSelectedIndex(index)}
+                    onClick={() => {
+                      onSelect(item.id);
+                      onClose();
+                    }}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '1rem',
+                      padding: '0.9rem 1rem', cursor: 'pointer',
+                      borderRadius: 'var(--radius-md)',
+                      background: isSelected ? 'var(--ci-primary-light)' : 'transparent',
+                      transition: 'background 0.1s'
+                    }}
+                  >
+                    <div style={{
+                      width: '32px', height: '32px', borderRadius: '8px',
+                      background: isSelected ? 'var(--ci-primary)' : 'var(--surface-border)',
+                      color: isSelected ? 'var(--ci-white)' : 'var(--text-secondary)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
+                    }}>
+                      {item.icon || <FileText size={16} />}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{
+                        fontWeight: 600, fontSize: '0.95rem',
+                        color: isSelected ? 'var(--ci-primary)' : 'var(--text-primary)',
+                        marginBottom: '0.15rem',
+                        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
+                      }}>
+                        {item.title}
+                      </div>
+                      {item.summary && (
+                        <div style={{
+                          fontSize: '0.8rem', color: 'var(--text-secondary)',
+                          whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
+                        }}>
+                          {(Array.isArray(item.summary) ? item.summary.join(', ') : item.summary)}
+                        </div>
+                      )}
+                    </div>
+                    {isSelected && <ChevronRight size={18} color="var(--ci-primary)" />}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Footer Guide */}
+        <div style={{
+          padding: '0.75rem 1.25rem', borderTop: '1px solid var(--surface-border)',
+          background: 'rgba(248, 250, 252, 0.5)', display: 'flex', gap: '1.5rem',
+          fontSize: '0.75rem', color: 'var(--text-secondary)'
+        }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+            <kbd style={{ background: 'var(--surface-border)', padding: '0.1rem 0.35rem', borderRadius: '4px', fontFamily: 'inherit' }}>↓</kbd>
+            <kbd style={{ background: 'var(--surface-border)', padding: '0.1rem 0.35rem', borderRadius: '4px', fontFamily: 'inherit' }}>↑</kbd> 이동
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+            <kbd style={{ background: 'var(--surface-border)', padding: '0.1rem 0.35rem', borderRadius: '4px', fontFamily: 'inherit' }}>Enter</kbd> 선택
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+            <kbd style={{ background: 'var(--surface-border)', padding: '0.1rem 0.35rem', borderRadius: '4px', fontFamily: 'inherit' }}>Esc</kbd> 닫기
+          </span>
+        </div>
+      </div>
+    </div>
   );
 }

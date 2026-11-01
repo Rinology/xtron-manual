@@ -53,7 +53,8 @@
   - 스프레드시트에 `MarkdownFile` 또는 `ItemID`가 비어있거나 매칭되는 `.md` 파일이 없을 때, 메인 화면으로 이동하거나 빈 화면이 나오지 않고 **"해당 마법서를 찾을 수 없습니다 😢"** 에러 안내 화면이 일관되게 표시되도록 개선했습니다.
 - **웹 브라우저 탭(파비콘 우측) 동적 페이지 타이틀 적용 (`src/App.jsx`)**
   - 현재 보고 있는 매뉴얼 제목, 자주 묻는 질문, Xenie(자가진단 마법사), 메인 홈 상태에 맞춰 브라우저 탭 타이틀(`document.title`)이 실시간으로 업데이트되도록 구현했습니다.
-- **메뉴 전환 화면 반짝임(깜빡임) 제거 및 스프레드시트 환경별 캐싱·병렬 로딩 최적화 (`src/components/GuideContent.jsx`, `src/components/FaqBoard.jsx`, `src/components/TroubleshootingWizard.jsx`, `src/components/Hero.jsx`, `src/App.jsx`, `src/index.css`, `src/utils/googleSheetsCMS.jsx`, `src/context/GuideContext.jsx`)**
+- **메뉴 전환 및 검색창(Ctrl + K) 진입/종료 시 화면 반짝임(깜빡임) 제거, 스프레드시트 환경별 캐싱·병렬 로딩 최적화 (src/components/SearchModal.jsx, src/components/Sidebar.jsx 포함)
+  - 좌측 통합 검색 모달(SearchModal.jsx) 진입/종료 시 전체 화면 ackdropFilter: blur(5px)와 opacity 애니메이션이 충돌하며 발생하던 GPU 합성 레이어 깜빡임(Repaint Flash)을 제거하고, utoFocus 및 단일 레이어 즉시 렌더링으로 전환하여 열리고 닫힐 때 깜빡임 없이 깔끔하게 동작하도록 개선했습니다. (`src/components/GuideContent.jsx`, `src/components/FaqBoard.jsx`, `src/components/TroubleshootingWizard.jsx`, `src/components/Hero.jsx`, `src/App.jsx`, `src/index.css`, `src/utils/googleSheetsCMS.jsx`, `src/context/GuideContext.jsx`)**
   - 마크다운(`.md`) 파일을 빌드 타임에 동기식(`eager: true`)으로 즉시 로드하여, 메뉴 클릭 시 비동기 로딩 지연으로 인해 빈 화면이 잠깐 보였다가 본문이 튀어나오던 레이아웃 출렁임을 완전히 제거했습니다.
   - `App.jsx`의 `<GuideContent key={activePage}>` 강제 언마운트/리마운트 속성과 각 페이지 컨테이너(`GuideContent`, `FaqBoard`, `TroubleshootingWizard`, `Hero`)의 전체 화면 투명도(`opacity`) 애니메이션을 제거하여, 메뉴 이동 시 흰 배경이 번쩍이지 않고 내부 텍스트만 제자리에서 즉시 교체되도록 개선했습니다.
   - `GuideContent.jsx` 및 `FaqBoard.jsx`에서 매 렌더링마다 함수 내부에서 새로 생성되던 `MarkdownComponents` 객체를 모듈 최상단 스코프로 분리하여, 상태 변경 시 본문 내 이미지와 스마트 비디오 플레이어(`VideoPlayer`)가 언마운트 후 재마운트되며 깜빡이던 현상을 차단했습니다.
