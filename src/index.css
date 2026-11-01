@@ -523,7 +523,7 @@ mark {
   align-items: center;
   gap: 0.75rem;
   flex: 1;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .header-logo-container {
@@ -718,7 +718,7 @@ mark {
   align-items: center;
   gap: 0.75rem;
   flex: 1;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .header-logo-container {

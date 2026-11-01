@@ -11,6 +11,9 @@ export default function Header({ activePage, setActivePage, isOpen, setIsOpen })
   const showBreadcrumb = guide || isWizard || isFaq;
   const titleText = isWizard ? 'Xenie (자가진단 마법사)' : isFaq ? '자주 묻는 질문' : (guide ? guide.title : '');
 
+  // 툴팁 상태 관리 (홈 버튼, 퀵메뉴 버튼)
+  const [hoveredButton, setHoveredButton] = useState(null);
+
   // 우측 상단 퀵링크 팝업 상태
   const [isQuickLinksOpen, setIsQuickLinksOpen] = useState(false);
   const quickLinksRef = useRef(null);
@@ -64,37 +67,42 @@ export default function Header({ activePage, setActivePage, isOpen, setIsOpen })
           )}
           {showBreadcrumb && (
             <>
-              <button 
-                onClick={() => setActivePage(null)}
-                title="처음으로"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '0.35rem',
-                  background: 'var(--ci-white)',
-                  border: '1px solid var(--surface-border)',
-                  color: 'var(--text-secondary)',
-                  cursor: 'pointer',
-                  padding: '0.4rem 0.85rem 0.4rem 0.6rem',
-                  borderRadius: 'var(--radius-full)',
-                  fontSize: '0.9rem',
-                  fontWeight: 600,
-                  boxShadow: 'var(--shadow-sm)',
-                  transition: 'all 0.2s',
-                  flexShrink: 0
-                }}
-                onMouseEnter={e => {
-                   e.currentTarget.style.background = 'var(--bg-color)';
-                   e.currentTarget.style.color = 'var(--ci-primary)';
-                }}
-                onMouseLeave={e => {
-                   e.currentTarget.style.background = 'var(--ci-white)';
-                   e.currentTarget.style.color = 'var(--text-secondary)';
-                }}
-              >
-                <Home size={16} /> 처음으로
-              </button>
+              {/* 처음으로 아이콘 버튼 및 사이드바 일관 다크 플로팅 툴팁 */}
+              <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
+                <button 
+                  onClick={() => setActivePage(null)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: 'transparent',
+                    border: 'none',
+                    color: 'var(--text-secondary)',
+                    cursor: 'pointer',
+                    width: '38px',
+                    height: '38px',
+                    borderRadius: '8px',
+                    transition: 'all 0.2s',
+                    flexShrink: 0
+                  }}
+                  onMouseEnter={e => {
+                     e.currentTarget.style.background = 'var(--surface-border)';
+                     e.currentTarget.style.color = 'var(--ci-primary)';
+                     setHoveredButton('home');
+                  }}
+                  onMouseLeave={e => {
+                     e.currentTarget.style.background = 'transparent';
+                     e.currentTarget.style.color = 'var(--text-secondary)';
+                     setHoveredButton(null);
+                  }}
+                >
+                  <Home size={19} />
+                </button>
+
+                {/* 사이드바와 동일한 형태의 툴팁 */}
+                <HeaderTooltip text="처음으로" visible={hoveredButton === 'home'} position="bottom" />
+              </div>
+
               <div className="header-guide-title" style={{
                 color: 'var(--text-primary)',
                 fontSize: 'clamp(0.95rem, 3.5vw, 1.15rem)',
@@ -116,8 +124,10 @@ export default function Header({ activePage, setActivePage, isOpen, setIsOpen })
         {/* 우측 상단 퀵링크 버튼 (PC / 모바일 공통 접근성 강화) */}
         <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }} ref={quickLinksRef}>
           <button
-            onClick={() => setIsQuickLinksOpen(!isQuickLinksOpen)}
-            title="퀵메뉴 (주요 서비스 바로가기)"
+            onClick={() => {
+              setIsQuickLinksOpen(!isQuickLinksOpen);
+              setHoveredButton(null);
+            }}
             style={{
               width: '38px',
               height: '38px',
@@ -131,11 +141,20 @@ export default function Header({ activePage, setActivePage, isOpen, setIsOpen })
               color: 'var(--text-secondary)',
               transition: 'background 0.2s'
             }}
-            onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-border)'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = isQuickLinksOpen ? 'var(--surface-border)' : 'transparent'; }}
+            onMouseEnter={e => {
+              e.currentTarget.style.background = 'var(--surface-border)';
+              if (!isQuickLinksOpen) setHoveredButton('quicklinks');
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = isQuickLinksOpen ? 'var(--surface-border)' : 'transparent';
+              setHoveredButton(null);
+            }}
           >
             <LayoutGrid size={19} />
           </button>
+
+          {/* 퀵링크 버튼 호버 시 표시되는 사이드바 스타일 툴팁 */}
+          <HeaderTooltip text="QUICK LINKS" visible={!isQuickLinksOpen && hoveredButton === 'quicklinks'} position="bottom-right" />
 
           <AnimatePresence>
             {isQuickLinksOpen && (
@@ -173,6 +192,60 @@ export default function Header({ activePage, setActivePage, isOpen, setIsOpen })
 
       </div>
     </header>
+  );
+}
+
+// 사이드바 gemini-tooltip과 동일한 디자인의 헤더 전용 툴팁 컴포넌트
+function HeaderTooltip({ text, visible, position = 'bottom' }) {
+  const isRightAligned = position === 'bottom-right';
+
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          initial={{ opacity: 0, y: -4, x: isRightAligned ? 0 : '-50%' }}
+          animate={{ opacity: 1, y: 0, x: isRightAligned ? 0 : '-50%' }}
+          exit={{ opacity: 0, y: -4, x: isRightAligned ? 0 : '-50%' }}
+          transition={{ duration: 0.15 }}
+          style={{
+            position: 'absolute',
+            top: 'calc(100% + 8px)',
+            left: isRightAligned ? 'auto' : '50%',
+            right: isRightAligned ? 0 : 'auto',
+            transform: isRightAligned ? 'none' : 'translateX(-50%)',
+            background: '#1f2937',
+            color: '#ffffff',
+            padding: '0.4rem 0.85rem',
+            borderRadius: 'var(--radius-md, 12px)',
+            fontSize: '0.8rem',
+            fontWeight: 600,
+            whiteSpace: 'nowrap',
+            pointerEvents: 'none',
+            zIndex: 200,
+            display: 'flex',
+            alignItems: 'center',
+            boxShadow: 'var(--shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06))'
+          }}
+        >
+          {/* 화살표 핀 */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '-4px',
+              left: isRightAligned ? 'auto' : '50%',
+              right: isRightAligned ? '12px' : 'auto',
+              marginLeft: isRightAligned ? 0 : '-4px',
+              width: '10px',
+              height: '10px',
+              background: 'inherit',
+              transform: 'rotate(45deg)',
+              borderRadius: '1px'
+            }}
+          />
+          <span style={{ position: 'relative', zIndex: 2 }}>{text}</span>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
