@@ -244,6 +244,7 @@ h1, h2, h3, h4, h5, h6 {
   position: relative;
   overflow-y: auto; /* Changed to auto so scrollbar is here */
   overflow-x: hidden;
+  scrollbar-gutter: stable;
   display: flex;
   flex-direction: column;
 }

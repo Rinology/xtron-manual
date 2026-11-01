@@ -37,6 +37,141 @@ const isVideoUrl = (url) => {
   return /\.(mp4|webm|mov|ogg)(\?.*)?$/i.test(url || '');
 };
 
+// 마크다운 컴포넌트 설정 (모듈 스코프에 고정하여 리렌더링 시 이미지/동영상이 깜빡이며 재마운트되는 현상 방지)
+const MarkdownComponents = {
+  h3: ({ node, ...props }) => <h3 style={{ fontSize: '1.2rem', color: 'var(--ci-primary)', marginTop: '1.25rem', marginBottom: '0.75rem', paddingBottom: '0.4rem', borderBottom: '1px solid var(--surface-border)' }} {...props} />,
+  h4: ({ node, ...props }) => <h4 style={{ fontSize: '1.05rem', color: 'var(--text-primary)', marginTop: '1rem', marginBottom: '0.5rem' }} {...props} />,
+  p: ({ node, children, ...props }) => {
+    let filteredChildren = children;
+    if (node.children?.[0]?.type === 'text') {
+      const textValue = node.children[0].value;
+      const match = textValue.match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/i);
+      if (match) {
+        filteredChildren = React.Children.map(children, (child, idx) => {
+          if (idx === 0 && typeof child === 'string') {
+            return child.replace(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/i, '');
+          }
+          return child;
+        });
+      }
+    }
+    return (
+      <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '0.75rem', whiteSpace: 'pre-line' }} {...props}>
+        {filteredChildren}
+      </p>
+    );
+  },
+  ul: ({ node, ...props }) => <ul style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.7, paddingLeft: '1.5rem', marginBottom: '0.75rem' }} {...props} />,
+  ol: ({ node, ...props }) => <ol style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.7, paddingLeft: '1.5rem', marginBottom: '0.75rem' }} {...props} />,
+  li: ({ node, ...props }) => <li style={{ whiteSpace: 'pre-line', marginBottom: '0.25rem' }} {...props} />,
+  blockquote: ({ node, children, ...props }) => {
+    let type = null;
+    let title = '';
+    let Icon = Info;
+    let color = 'var(--text-secondary)';
+    let bg = 'rgba(0,0,0,0.05)';
+    let borderColor = 'var(--surface-border)';
+
+    const getAllText = (n) => {
+      if (n.type === 'text') return n.value;
+      if (n.children) return n.children.map(getAllText).join('');
+      return '';
+    };
+
+    const fullText = getAllText(node);
+    const match = fullText.trim().match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/i);
+
+    if (match) {
+      type = match[1].toLowerCase();
+      if (type === 'note') {
+        title = 'Note'; Icon = Info; color = '#0969da'; bg = 'rgba(9, 105, 218, 0.05)'; borderColor = '#0969da';
+      } else if (type === 'tip') {
+        title = 'Tip'; Icon = Lightbulb; color = '#1a7f37'; bg = 'rgba(26, 127, 55, 0.05)'; borderColor = '#1a7f37';
+      } else if (type === 'important') {
+        title = 'Important'; Icon = MessageCircle; color = '#8250df'; bg = 'rgba(130, 80, 223, 0.05)'; borderColor = '#8250df';
+      } else if (type === 'warning') {
+        title = 'Warning'; Icon = AlertTriangle; color = '#9a6700'; bg = 'rgba(154, 103, 0, 0.05)'; borderColor = '#9a6700';
+      } else if (type === 'caution') {
+        title = 'Caution'; Icon = ShieldAlert; color = '#d1242f'; bg = 'rgba(209, 36, 47, 0.05)'; borderColor = '#d1242f';
+      }
+    }
+
+    if (type) {
+      return (
+        <div style={{
+          borderLeft: `4px solid ${borderColor}`,
+          padding: '0.85rem 1.25rem',
+          margin: '1rem 0',
+          backgroundColor: bg,
+          borderRadius: '0 8px 8px 0',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color, fontWeight: 'bold', marginBottom: '0.35rem' }}>
+            <Icon size={17} />
+            <span>{title}</span>
+          </div>
+          <div style={{ color: 'var(--text-secondary)' }}>
+            {children}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <blockquote style={{
+        background: 'rgba(47, 98, 134, 0.05)',
+        borderLeft: '4px solid var(--ci-primary)',
+        padding: '0.85rem 1.25rem',
+        margin: '1rem 0',
+        borderRadius: '0 var(--radius-md) var(--radius-md) 0'
+      }} {...props}>
+        {children}
+      </blockquote>
+    );
+  },
+  a: ({ node, href, children, ...props }) => {
+    if (href && href.endsWith('.pdf')) {
+      const r2Url = import.meta.env.VITE_R2_URL || import.meta.env.VITE_R2_PDF_URL || import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr';
+      const fullHref = href.startsWith('http') ? href : `${r2Url}/${href.replace(/^\//, '')}`;
+      return (
+        <a
+          href={fullHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          download
+          style={{
+            display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+            background: 'var(--ci-primary-light)', color: 'var(--ci-primary)',
+            padding: '0.6rem 1rem', borderRadius: '8px', textDecoration: 'none',
+            fontWeight: 600, fontSize: '0.9rem', marginTop: '0.5rem'
+          }}
+        >
+          <FileDown size={16} /> {children}
+        </a>
+      );
+    }
+    return <a href={href} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--ci-primary)', textDecoration: 'underline' }} {...props}>{children}</a>;
+  },
+  img: ({ node, src, alt, ...props }) => {
+    const fullSrc = resolveMediaUrl(src);
+    if (isVideoUrl(fullSrc)) {
+      return <VideoPlayer src={fullSrc} title={alt || undefined} />;
+    }
+    return (
+      <img
+        src={fullSrc}
+        alt={alt}
+        style={{
+          width: 'auto', maxWidth: 'min(100%, 520px)', maxHeight: '480px',
+          objectFit: 'contain', borderRadius: '8px',
+          border: '1px solid var(--surface-border)', display: 'block', margin: '1rem auto'
+        }}
+        {...props}
+      />
+    );
+  },
+  video: ({ node, src }) => <VideoPlayer src={resolveMediaUrl(src)} />
+};
+
 export default function FaqBoard({ activePage, setActivePage }) {
   const { faqItems, isFaqLoading, allGuideItems } = useGuides();
   const [selectedCategory, setSelectedCategory] = useState('전체');
@@ -220,141 +355,6 @@ export default function FaqBoard({ activePage, setActivePage }) {
     return sorted;
   }, [faqItems, selectedCategory, searchQuery, openIds]);
 
-  // 마크다운 컴포넌트 설정 (구글 시트 Alt+Enter 줄바꿈 및 R2 이미지/동영상 완벽 호환)
-  const MarkdownComponents = {
-    h3: ({ node, ...props }) => <h3 style={{ fontSize: '1.2rem', color: 'var(--ci-primary)', marginTop: '1.25rem', marginBottom: '0.75rem', paddingBottom: '0.4rem', borderBottom: '1px solid var(--surface-border)' }} {...props} />,
-    h4: ({ node, ...props }) => <h4 style={{ fontSize: '1.05rem', color: 'var(--text-primary)', marginTop: '1rem', marginBottom: '0.5rem' }} {...props} />,
-    p: ({ node, children, ...props }) => {
-      let filteredChildren = children;
-      if (node.children?.[0]?.type === 'text') {
-        const textValue = node.children[0].value;
-        const match = textValue.match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/i);
-        if (match) {
-          filteredChildren = React.Children.map(children, (child, idx) => {
-            if (idx === 0 && typeof child === 'string') {
-              return child.replace(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/i, '');
-            }
-            return child;
-          });
-        }
-      }
-      return (
-        <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '0.75rem', whiteSpace: 'pre-line' }} {...props}>
-          {filteredChildren}
-        </p>
-      );
-    },
-    ul: ({ node, ...props }) => <ul style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.7, paddingLeft: '1.5rem', marginBottom: '0.75rem' }} {...props} />,
-    ol: ({ node, ...props }) => <ol style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.7, paddingLeft: '1.5rem', marginBottom: '0.75rem' }} {...props} />,
-    li: ({ node, ...props }) => <li style={{ whiteSpace: 'pre-line', marginBottom: '0.25rem' }} {...props} />,
-    blockquote: ({ node, children, ...props }) => {
-      let type = null;
-      let title = '';
-      let Icon = Info;
-      let color = 'var(--text-secondary)';
-      let bg = 'rgba(0,0,0,0.05)';
-      let borderColor = 'var(--surface-border)';
-
-      const getAllText = (n) => {
-        if (n.type === 'text') return n.value;
-        if (n.children) return n.children.map(getAllText).join('');
-        return '';
-      };
-
-      const fullText = getAllText(node);
-      const match = fullText.trim().match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/i);
-
-      if (match) {
-        type = match[1].toLowerCase();
-        if (type === 'note') {
-          title = 'Note'; Icon = Info; color = '#0969da'; bg = 'rgba(9, 105, 218, 0.05)'; borderColor = '#0969da';
-        } else if (type === 'tip') {
-          title = 'Tip'; Icon = Lightbulb; color = '#1a7f37'; bg = 'rgba(26, 127, 55, 0.05)'; borderColor = '#1a7f37';
-        } else if (type === 'important') {
-          title = 'Important'; Icon = MessageCircle; color = '#8250df'; bg = 'rgba(130, 80, 223, 0.05)'; borderColor = '#8250df';
-        } else if (type === 'warning') {
-          title = 'Warning'; Icon = AlertTriangle; color = '#9a6700'; bg = 'rgba(154, 103, 0, 0.05)'; borderColor = '#9a6700';
-        } else if (type === 'caution') {
-          title = 'Caution'; Icon = ShieldAlert; color = '#d1242f'; bg = 'rgba(209, 36, 47, 0.05)'; borderColor = '#d1242f';
-        }
-      }
-
-      if (type) {
-        return (
-          <div style={{
-            borderLeft: `4px solid ${borderColor}`,
-            padding: '0.85rem 1.25rem',
-            margin: '1rem 0',
-            backgroundColor: bg,
-            borderRadius: '0 8px 8px 0',
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color, fontWeight: 'bold', marginBottom: '0.35rem' }}>
-              <Icon size={17} />
-              <span>{title}</span>
-            </div>
-            <div style={{ color: 'var(--text-secondary)' }}>
-              {children}
-            </div>
-          </div>
-        );
-      }
-
-      return (
-        <blockquote style={{
-          background: 'rgba(47, 98, 134, 0.05)',
-          borderLeft: '4px solid var(--ci-primary)',
-          padding: '0.85rem 1.25rem',
-          margin: '1rem 0',
-          borderRadius: '0 var(--radius-md) var(--radius-md) 0'
-        }} {...props}>
-          {children}
-        </blockquote>
-      );
-    },
-    a: ({ node, href, children, ...props }) => {
-      if (href && href.endsWith('.pdf')) {
-        const r2Url = import.meta.env.VITE_R2_URL || import.meta.env.VITE_R2_PDF_URL || import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr';
-        const fullHref = href.startsWith('http') ? href : `${r2Url}/${href.replace(/^\//, '')}`;
-        return (
-          <a
-            href={fullHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            download
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
-              background: 'var(--ci-primary-light)', color: 'var(--ci-primary)',
-              padding: '0.6rem 1rem', borderRadius: '8px', textDecoration: 'none',
-              fontWeight: 600, fontSize: '0.9rem', marginTop: '0.5rem'
-            }}
-          >
-            <FileDown size={16} /> {children}
-          </a>
-        );
-      }
-      return <a href={href} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--ci-primary)', textDecoration: 'underline' }} {...props}>{children}</a>;
-    },
-    img: ({ node, src, alt, ...props }) => {
-      const fullSrc = resolveMediaUrl(src);
-      if (isVideoUrl(fullSrc)) {
-        return <VideoPlayer src={fullSrc} title={alt || undefined} />;
-      }
-      return (
-        <img
-          src={fullSrc}
-          alt={alt}
-          style={{
-            width: 'auto', maxWidth: 'min(100%, 520px)', maxHeight: '480px',
-            objectFit: 'contain', borderRadius: '8px',
-            border: '1px solid var(--surface-border)', display: 'block', margin: '1rem auto'
-          }}
-          {...props}
-        />
-      );
-    },
-    video: ({ node, src }) => <VideoPlayer src={resolveMediaUrl(src)} />
-  };
-
   if (isFaqLoading) {
     return (
       <div style={{ padding: '6rem 2rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
@@ -370,13 +370,7 @@ export default function FaqBoard({ activePage, setActivePage }) {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      transition={{ duration: 0.4 }}
-      style={{ paddingBottom: '4rem', paddingTop: '1rem' }}
-    >
+    <div style={{ paddingBottom: '4rem', paddingTop: '1rem' }}>
       <div className="glass-panel guide-panel">
         {/* 상단 타이틀 헤더 */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1.5rem', flexWrap: 'wrap' }}>
@@ -974,6 +968,6 @@ export default function FaqBoard({ activePage, setActivePage }) {
           </div>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }

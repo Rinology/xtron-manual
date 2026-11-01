@@ -128,11 +128,7 @@ export default function Hero({ setActivePage }) {
   const currentSuggestion = suggestions[currentIndex] || suggestions[0];
 
   return (
-    <motion.section 
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.6 }}
+    <section 
       className="hero-section"
       style={{
         textAlign: 'center',
@@ -449,6 +445,6 @@ export default function Hero({ setActivePage }) {
         </form>
 
       </div>
-    </motion.section>
+    </section>
   );
 }

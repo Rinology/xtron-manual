@@ -56,6 +56,15 @@ function App() {
     }
   }, [allGuideItems, faqItems, initialHash, isGuidesLoading, isFaqLoading]);
 
+  // 페이지 이동 시 실제 스크롤 컨테이너(.main-content)를 최상단으로 이동
+  useEffect(() => {
+    const mainEl = document.querySelector('.main-content');
+    if (mainEl) {
+      mainEl.scrollTo({ top: 0, behavior: 'instant' });
+    }
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [activePage]);
+
   // 브라우저 탭(파비콘 우측) 타이틀 동적 동기화
   useEffect(() => {
     if (!activePage) {
@@ -163,23 +172,21 @@ function App() {
       >
         <Header activePage={activePage} setActivePage={setActivePage} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
         <main className="page-container">
-          <AnimatePresence mode="wait">
-            {isGuidesLoading || isFaqLoading || !isInitialRouteResolved ? (
-              <div key="loading" style={{ height: '70vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', color: 'var(--text-secondary)' }}>
-                <div style={{ width: '30px', height: '30px', border: '3px solid var(--surface-border)', borderTop: '3px solid var(--ci-primary)', borderRadius: '50%', animation: 'spin 1s linear infinite', marginBottom: '1rem' }}></div>
-                <p>가이드를 불러오는 중입니다...</p>
-                <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
-              </div>
-            ) : !activePage ? (
-              <Hero key="hero" setActivePage={setActivePage} onOpenSearch={() => setIsSearchOpen(true)} />
-            ) : activePage === 'troubleshooting-wizard' ? (
-              <TroubleshootingWizard key="wizard" setActivePage={setActivePage} />
-            ) : isFaqRoute(activePage, faqItems) ? (
-              <FaqBoard key="faq" activePage={activePage} setActivePage={setActivePage} />
-            ) : (
-              <GuideContent key={activePage} activePage={activePage} setActivePage={setActivePage} />
-            )}
-          </AnimatePresence>
+          {isGuidesLoading || isFaqLoading || !isInitialRouteResolved ? (
+            <div key="loading" style={{ height: '70vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', color: 'var(--text-secondary)' }}>
+              <div style={{ width: '30px', height: '30px', border: '3px solid var(--surface-border)', borderTop: '3px solid var(--ci-primary)', borderRadius: '50%', animation: 'spin 1s linear infinite', marginBottom: '1rem' }}></div>
+              <p>가이드를 불러오는 중입니다...</p>
+              <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+            </div>
+          ) : !activePage ? (
+            <Hero key="hero" setActivePage={setActivePage} onOpenSearch={() => setIsSearchOpen(true)} />
+          ) : activePage === 'troubleshooting-wizard' ? (
+            <TroubleshootingWizard key="wizard" setActivePage={setActivePage} />
+          ) : isFaqRoute(activePage, faqItems) ? (
+            <FaqBoard key="faq" activePage={activePage} setActivePage={setActivePage} />
+          ) : (
+            <GuideContent activePage={activePage} setActivePage={setActivePage} />
+          )}
         </main>
         <Footer activePage={activePage} />
         <BackToTop />

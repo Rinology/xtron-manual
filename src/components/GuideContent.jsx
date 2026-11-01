@@ -67,40 +67,205 @@ const isVideoUrl = (url) => {
   return /\.(mp4|webm|mov|ogg)(\?.*)?$/i.test(url || '');
 };
 
-// Load all markdown files at build time
-const markdownModules = import.meta.glob('../data/markdown/**/*.md', { query: '?raw', import: 'default' });
+// Load all markdown files synchronously at build time to prevent flash of empty content on menu switch
+const markdownModules = import.meta.glob('../data/markdown/**/*.md', { query: '?raw', import: 'default', eager: true });
+
+// Markdown renderer components (defined at module scope so references stay stable across renders and media never remounts)
+const MarkdownComponents = {
+  h3: ({node, ...props}) => <h3 style={{ fontSize: '1.4rem', color: 'var(--ci-primary)', marginTop: '2rem', marginBottom: '1rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--surface-border)' }} {...props} />,
+  h4: ({node, ...props}) => <h4 style={{ fontSize: '1.2rem', color: 'var(--text-primary)', marginTop: '1.5rem', marginBottom: '0.5rem' }} {...props} />,
+  p: ({node, children, ...props}) => {
+    let filteredChildren = children;
+    if (node.children?.[0]?.type === 'text') {
+      const textValue = node.children[0].value;
+      const match = textValue.match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/i);
+      if (match) {
+        filteredChildren = React.Children.map(children, (child, idx) => {
+          if (idx === 0 && typeof child === 'string') {
+            return child.replace(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/i, '');
+          }
+          return child;
+        });
+      }
+    }
+    return <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '1rem' }} {...props}>{filteredChildren}</p>;
+  },
+  ul: ({node, ...props}) => <ul style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6, paddingLeft: '1.5rem', marginBottom: '1rem' }} {...props} />,
+  ol: ({node, ...props}) => <ol style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6, paddingLeft: '1.5rem', marginBottom: '1rem' }} {...props} />,
+  blockquote: ({node, children, ...props}) => {
+    let type = null;
+    let title = '';
+    let Icon = Info;
+    let color = 'var(--text-secondary)';
+    let bg = 'rgba(0,0,0,0.05)';
+    let borderColor = 'var(--surface-border)';
+
+    const getAllText = (n) => {
+      if (n.type === 'text') return n.value;
+      if (n.children) return n.children.map(getAllText).join('');
+      return '';
+    };
+
+    const fullText = getAllText(node);
+    const match = fullText.trim().match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/i);
+    
+    if (match) {
+      type = match[1].toLowerCase();
+      if (type === 'note') {
+        title = 'Note'; Icon = Info; color = '#0969da'; bg = 'rgba(9, 105, 218, 0.05)'; borderColor = '#0969da';
+      } else if (type === 'tip') {
+        title = 'Tip'; Icon = Lightbulb; color = '#1a7f37'; bg = 'rgba(26, 127, 55, 0.05)'; borderColor = '#1a7f37';
+      } else if (type === 'important') {
+        title = 'Important'; Icon = MessageCircle; color = '#8250df'; bg = 'rgba(130, 80, 223, 0.05)'; borderColor = '#8250df';
+      } else if (type === 'warning') {
+        title = 'Warning'; Icon = AlertTriangle; color = '#9a6700'; bg = 'rgba(154, 103, 0, 0.05)'; borderColor = '#9a6700';
+      } else if (type === 'caution') {
+        title = 'Caution'; Icon = ShieldAlert; color = '#d1242f'; bg = 'rgba(209, 36, 47, 0.05)'; borderColor = '#d1242f';
+      }
+    }
+
+    if (type) {
+      return (
+        <div className={`markdown-alert markdown-alert-${type}`} style={{
+          borderLeft: `4px solid ${borderColor}`,
+          padding: '1rem 1.5rem',
+          margin: '1.5rem 0',
+          backgroundColor: bg,
+          borderRadius: '0 8px 8px 0',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: color, fontWeight: 'bold', marginBottom: '0.5rem' }}>
+            <Icon size={18} />
+            <span>{title}</span>
+          </div>
+          <div className="markdown-alert-content" style={{ color: 'var(--text-secondary)' }}>
+            {children}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <blockquote style={{
+        background: 'rgba(47, 98, 134, 0.05)',
+        borderLeft: '4px solid var(--ci-primary)',
+        padding: '1rem 1.5rem',
+        margin: '1.5rem 0',
+        borderRadius: '0 var(--radius-md) var(--radius-md) 0'
+      }} {...props}>
+        {children}
+      </blockquote>
+    );
+  },
+  code: ({node, inline, className, children, ...props}) => {
+    const match = /language-(\w+)/.exec(className || '');
+    if (!inline && match && match[1] === 'mermaid') {
+      return <MermaidChart chart={String(children).replace(/\n$/, '')} />;
+    }
+    return <code className={className} style={inline ? { background: 'rgba(0,0,0,0.05)', padding: '0.2rem 0.4rem', borderRadius: '4px', color: '#d1242f', fontFamily: 'monospace' } : {}} {...props}>{children}</code>;
+  },
+  a: ({node, href, children, ...props}) => {
+    if (href && href.endsWith('.pdf')) {
+      const r2Url = import.meta.env.VITE_R2_URL || import.meta.env.VITE_R2_PDF_URL || import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr';
+      const fullHref = href.startsWith('http') ? href : `${r2Url}/${href.replace(/^\//, '')}`;
+      
+      let title = '';
+      let desc = '';
+      const text = String(children);
+      if (text.includes('|')) {
+        const parts = text.split('|');
+        title = parts[0].trim();
+        desc = parts[1].trim();
+      } else {
+        title = text;
+      }
+
+      return (
+        <a
+          href={fullHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          download
+          style={{
+            display: 'flex', flexDirection: 'column', gap: '0.75rem',
+            background: 'var(--ci-white)', border: '1px solid var(--surface-border)',
+            borderRadius: '12px', padding: '1.25rem', textDecoration: 'none',
+            boxShadow: 'var(--shadow-sm)', marginBottom: '1rem',
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{ padding: '0.5rem', background: 'var(--ci-primary-light)', borderRadius: '8px', color: 'var(--ci-primary)' }}>
+              <BookOpen size={20} />
+            </div>
+            <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)' }}>{title}</h3>
+          </div>
+          {desc && <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: '1.4' }}>{desc}</p>}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--ci-primary)', fontWeight: '600', fontSize: '0.9rem', marginTop: '0.5rem' }}>
+            <FileDown size={16} /> PDF 다운로드
+          </div>
+        </a>
+      );
+    }
+    return <a href={href} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--ci-primary)', textDecoration: 'underline' }} {...props}>{children}</a>;
+  },
+  img: ({node, src, alt, ...props}) => {
+    const fullSrc = resolveMediaUrl(src);
+    const isVideo = isVideoUrl(fullSrc);
+
+    if (isVideo) {
+      return (
+        <VideoPlayer 
+          src={fullSrc}
+          title={alt || undefined}
+        />
+      );
+    }
+
+    return (
+      <img 
+        src={fullSrc}
+        alt={alt}
+        style={{ width: 'auto', maxWidth: 'min(100%, 600px)', maxHeight: '600px', objectFit: 'contain', borderRadius: '8px', border: '1px solid var(--surface-border)', display: 'block', margin: '1.5rem auto' }} 
+        {...props} 
+      />
+    );
+  },
+  video: ({node, src, children, ...props}) => {
+    const fullSrc = resolveMediaUrl(src);
+    return (
+      <VideoPlayer 
+        src={fullSrc}
+      />
+    );
+  }
+};
 
 export default function GuideContent({ activePage, setActivePage }) {
   const { allGuideItems } = useGuides();
   const guideIndex = allGuideItems.findIndex(item => item.id === activePage);
   const guide = allGuideItems[guideIndex];
   const [copied, setCopied] = useState(false);
-  const [markdownContent, setMarkdownContent] = useState('');
-  const [isMarkdownMissing, setIsMarkdownMissing] = useState(false);
 
-  useEffect(() => {
-    const cleanFile = guide?.markdownFile ? String(guide.markdownFile).trim() : '';
-    if (cleanFile) {
-      // 파일명만 입력해도 하위 폴더에서 자동으로 찾을 수 있도록 개선
-      const moduleKey = Object.keys(markdownModules).find(key => 
-        key === `../data/markdown/${cleanFile}` || 
+  const cleanFile = guide?.markdownFile ? String(guide.markdownFile).trim() : '';
+  const matchedModuleKey = cleanFile
+    ? Object.keys(markdownModules).find(key =>
+        key === `../data/markdown/${cleanFile}` ||
         key.endsWith(`/${cleanFile}`)
-      );
-      
-      const loader = moduleKey ? markdownModules[moduleKey] : null;
+      )
+    : null;
 
-      if (loader) {
-        setIsMarkdownMissing(false);
-        loader().then(content => setMarkdownContent(content));
-      } else {
-        setMarkdownContent('');
-        setIsMarkdownMissing(true);
-      }
-    } else {
-      setMarkdownContent('');
-      setIsMarkdownMissing(Boolean(guide && !guide.customComponent && !guide.jsonData));
-    }
-  }, [guide]);
+  const markdownContent = matchedModuleKey ? (markdownModules[matchedModuleKey] || '') : '';
+  const isMarkdownMissing = cleanFile
+    ? !matchedModuleKey
+    : Boolean(guide && !guide.customComponent && !guide.jsonData);
 
   if (!guide || isMarkdownMissing) {
     return (
@@ -212,209 +377,19 @@ export default function GuideContent({ activePage, setActivePage }) {
     </div>
   );
 
-  // Markdown renderer components
-  const MarkdownComponents = {
-    h3: ({node, ...props}) => <h3 style={{ fontSize: '1.4rem', color: 'var(--ci-primary)', marginTop: '2rem', marginBottom: '1rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--surface-border)' }} {...props} />,
-    h4: ({node, ...props}) => <h4 style={{ fontSize: '1.2rem', color: 'var(--text-primary)', marginTop: '1.5rem', marginBottom: '0.5rem' }} {...props} />,
-    p: ({node, children, ...props}) => {
-      let filteredChildren = children;
-      if (node.children?.[0]?.type === 'text') {
-        const textValue = node.children[0].value;
-        const match = textValue.match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/i);
-        if (match) {
-          filteredChildren = React.Children.map(children, (child, idx) => {
-            if (idx === 0 && typeof child === 'string') {
-              return child.replace(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/i, '');
-            }
-            return child;
-          });
-        }
-      }
-      return <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '1rem' }} {...props}>{filteredChildren}</p>;
-    },
-    ul: ({node, ...props}) => <ul style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6, paddingLeft: '1.5rem', marginBottom: '1rem' }} {...props} />,
-    ol: ({node, ...props}) => <ol style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6, paddingLeft: '1.5rem', marginBottom: '1rem' }} {...props} />,
-    blockquote: ({node, children, ...props}) => {
-      let type = null;
-      let title = '';
-      let Icon = Info;
-      let color = 'var(--text-secondary)';
-      let bg = 'rgba(0,0,0,0.05)';
-      let borderColor = 'var(--surface-border)';
-
-      const getAllText = (n) => {
-        if (n.type === 'text') return n.value;
-        if (n.children) return n.children.map(getAllText).join('');
-        return '';
-      };
-
-      const fullText = getAllText(node);
-      const match = fullText.trim().match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/i);
-      
-      if (match) {
-        type = match[1].toLowerCase();
-          if (type === 'note') {
-            title = 'Note'; Icon = Info; color = '#0969da'; bg = 'rgba(9, 105, 218, 0.05)'; borderColor = '#0969da';
-          } else if (type === 'tip') {
-            title = 'Tip'; Icon = Lightbulb; color = '#1a7f37'; bg = 'rgba(26, 127, 55, 0.05)'; borderColor = '#1a7f37';
-          } else if (type === 'important') {
-            title = 'Important'; Icon = MessageCircle; color = '#8250df'; bg = 'rgba(130, 80, 223, 0.05)'; borderColor = '#8250df';
-          } else if (type === 'warning') {
-            title = 'Warning'; Icon = AlertTriangle; color = '#9a6700'; bg = 'rgba(154, 103, 0, 0.05)'; borderColor = '#9a6700';
-          } else if (type === 'caution') {
-            title = 'Caution'; Icon = ShieldAlert; color = '#d1242f'; bg = 'rgba(209, 36, 47, 0.05)'; borderColor = '#d1242f';
-          }
-        }
-
-      if (type) {
-        return (
-          <div className={`markdown-alert markdown-alert-${type}`} style={{
-            borderLeft: `4px solid ${borderColor}`,
-            padding: '1rem 1.5rem',
-            margin: '1.5rem 0',
-            backgroundColor: bg,
-            borderRadius: '0 8px 8px 0',
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: color, fontWeight: 'bold', marginBottom: '0.5rem' }}>
-              <Icon size={18} />
-              <span>{title}</span>
-            </div>
-            <div className="markdown-alert-content" style={{ color: 'var(--text-secondary)' }}>
-              {children}
-            </div>
-          </div>
-        );
-      }
-
-      return (
-        <blockquote style={{
-          background: 'rgba(47, 98, 134, 0.05)',
-          borderLeft: '4px solid var(--ci-primary)',
-          padding: '1rem 1.5rem',
-          margin: '1.5rem 0',
-          borderRadius: '0 var(--radius-md) var(--radius-md) 0'
-        }} {...props}>
-          {children}
-        </blockquote>
-      );
-    },
-    code: ({node, inline, className, children, ...props}) => {
-      const match = /language-(\w+)/.exec(className || '');
-      if (!inline && match && match[1] === 'mermaid') {
-        return <MermaidChart chart={String(children).replace(/\n$/, '')} />;
-      }
-      return <code className={className} style={inline ? { background: 'rgba(0,0,0,0.05)', padding: '0.2rem 0.4rem', borderRadius: '4px', color: '#d1242f', fontFamily: 'monospace' } : {}} {...props}>{children}</code>;
-    },
-    a: ({node, href, children, ...props}) => {
-      if (href && href.endsWith('.pdf')) {
-        const r2Url = import.meta.env.VITE_R2_URL || import.meta.env.VITE_R2_PDF_URL || import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr';
-        const fullHref = href.startsWith('http') ? href : `${r2Url}/${href.replace(/^\//, '')}`;
-        
-        let title = '';
-        let desc = '';
-        const text = String(children);
-        if (text.includes('|')) {
-          const parts = text.split('|');
-          title = parts[0].trim();
-          desc = parts[1].trim();
-        } else {
-          title = text;
-        }
-
-        return (
-          <a
-            href={fullHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            download
-            style={{
-              display: 'flex', flexDirection: 'column', gap: '0.75rem',
-              background: 'var(--ci-white)', border: '1px solid var(--surface-border)',
-              borderRadius: '12px', padding: '1.25rem', textDecoration: 'none',
-              boxShadow: 'var(--shadow-sm)', marginBottom: '1rem',
-              transition: 'transform 0.2s ease, box-shadow 0.2s ease'
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = 'var(--shadow-md)';
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <div style={{ padding: '0.5rem', background: 'var(--ci-primary-light)', borderRadius: '8px', color: 'var(--ci-primary)' }}>
-                <BookOpen size={20} />
-              </div>
-              <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)' }}>{title}</h3>
-            </div>
-            {desc && <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: '1.4' }}>{desc}</p>}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--ci-primary)', fontWeight: '600', fontSize: '0.9rem', marginTop: '0.5rem' }}>
-              <FileDown size={16} /> PDF 다운로드
-            </div>
-          </a>
-        );
-      }
-      return <a href={href} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--ci-primary)', textDecoration: 'underline' }} {...props}>{children}</a>;
-    },
-    img: ({node, src, alt, ...props}) => {
-      const fullSrc = resolveMediaUrl(src);
-      const isVideo = isVideoUrl(fullSrc);
-
-      if (isVideo) {
-        return (
-          <VideoPlayer 
-            src={fullSrc}
-            title={alt || undefined}
-          />
-        );
-      }
-
-      return (
-        <img 
-          src={fullSrc}
-          alt={alt}
-          style={{ width: 'auto', maxWidth: 'min(100%, 600px)', maxHeight: '600px', objectFit: 'contain', borderRadius: '8px', border: '1px solid var(--surface-border)', display: 'block', margin: '1.5rem auto' }} 
-          {...props} 
-        />
-      );
-    },
-    video: ({node, src, children, ...props}) => {
-      const fullSrc = resolveMediaUrl(src);
-      return (
-        <VideoPlayer 
-          src={fullSrc}
-        />
-      );
-    }
-  };
-
   // Legacy rendering for non-migrated components
   if (CustomComponent && !guide.markdownFile) {
     return (
-      <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -20 }}
-        transition={{ duration: 0.4 }}
-        style={{ paddingBottom: '4rem', paddingTop: '1rem' }}
-      >
+      <div style={{ paddingBottom: '4rem', paddingTop: '1rem' }}>
         <TopActions />
         <CustomComponent />
         <NavigationButtons />
-      </motion.div>
+      </div>
     );
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      transition={{ duration: 0.4 }}
-      style={{ paddingBottom: '4rem', paddingTop: '1rem' }}
-    >
+    <div style={{ paddingBottom: '4rem', paddingTop: '1rem' }}>
       <TopActions />
       <div className="glass-panel guide-panel">
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
@@ -491,6 +466,6 @@ export default function GuideContent({ activePage, setActivePage }) {
 
         <NavigationButtons />
       </div>
-    </motion.div>
+    </div>
   );
 }

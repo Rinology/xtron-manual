@@ -95,13 +95,7 @@ export default function TroubleshootingWizard({ setActivePage }) {
     : null;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      transition={{ duration: 0.4 }}
-      style={{ paddingBottom: '4rem', paddingTop: '1rem' }}
-    >
+    <div style={{ paddingBottom: '4rem', paddingTop: '1rem' }}>
       <div className="glass-panel guide-panel">
         
         {/* 상단 타이틀 헤더 (FAQ 보드와 통일된 규격 및 설명 문구) */}
@@ -324,6 +318,6 @@ export default function TroubleshootingWizard({ setActivePage }) {
         )}
 
       </div>
-    </motion.div>
+    </div>
   );
 }

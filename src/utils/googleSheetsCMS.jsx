@@ -4,26 +4,36 @@ import React from 'react';
 import * as Icons from 'lucide-react';
 
 const CACHE_PREFIX = 'xtron_sheet_cache_';
-// 현재 테스트를 위해 캐시 만료 시간을 0으로 설정 (실시간 반영)
-// 향후 실 서비스 배포 시 1000 * 60 * 5 (5분)으로 변경 예정
-const CACHE_EXPIRATION_MS = 0;
+
+// 실서버(Production) 여부 판별 헬퍼
+function isLiveEnvironment() {
+  return (
+    (typeof window !== 'undefined' && window.location.hostname.includes('xtron-guide.kr')) ||
+    (typeof __VERCEL_ENV__ !== 'undefined' && __VERCEL_ENV__ === 'production') ||
+    (typeof __GIT_BRANCH__ !== 'undefined' && __GIT_BRANCH__ === 'main')
+  );
+}
+
+// 실서버는 5분(300,000ms) 캐시 적용, 로컬 및 테스트(브랜치) 환경은 0ms(실시간 반영)
+const LIVE_CACHE_EXPIRATION_MS = 1000 * 60 * 5;
 
 async function fetchWithCache(url) {
   const cacheKey = CACHE_PREFIX + url;
+  const expirationMs = isLiveEnvironment() ? LIVE_CACHE_EXPIRATION_MS : 0;
   
-  // 1. 캐시 확인
-  try {
-    const cachedItem = sessionStorage.getItem(cacheKey);
-    if (cachedItem) {
-      const { timestamp, data } = JSON.parse(cachedItem);
-      // 유효 시간(10분) 이내인지 확인
-      if (Date.now() - timestamp < CACHE_EXPIRATION_MS) {
-        console.log("Using cached CSV data for:", url);
-        return data; // CSV 텍스트 반환
+  // 1. 캐시 확인 (실서버 5분 캐시 유효 시 네트워크 요청 생략)
+  if (expirationMs > 0) {
+    try {
+      const cachedItem = sessionStorage.getItem(cacheKey);
+      if (cachedItem) {
+        const { timestamp, data } = JSON.parse(cachedItem);
+        if (Date.now() - timestamp < expirationMs) {
+          return data; // 캐시된 CSV 텍스트 반환
+        }
       }
+    } catch (e) {
+      console.warn("Session storage read failed", e);
     }
-  } catch (e) {
-    console.warn("Session storage read failed", e);
   }
 
   // 2. 캐시가 없거나 만료된 경우 네트워크 요청
