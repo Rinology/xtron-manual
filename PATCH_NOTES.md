@@ -7,6 +7,9 @@
 ## 📅 [2026-11-01] 메인 화면 미니멀화, 구글 제미나이 스타일 검색 UI 및 마법사 롤링 티커 개편
 
 ### ✨ 신규 기능 및 UX 개선 (Features & UX Improvements)
+- **MD 가이드 메인 타이틀 및 본문 타이포그래피 비율 축소 정돈 (`src/components/GuideContent.jsx`, `src/index.css`)**
+  - 사이드바 메뉴(15px / `0.9rem`) 및 메인 화면 폰트 크기 비율에 자연스럽게 조화되도록 가이드 상단 대형 제목(`h2`) 크기를 기존 `2rem(30px)`에서 **`1.5rem(22.5px)`**로 축소 조정했습니다.
+  - 마크다운 본문 내부 소제목(`h1`: 1.35rem, `h2`: 1.25rem, `h3`: 1.15rem, `h4`: 1.05rem)과 본문 문단(`p`, `ul`, `ol`을 기존 0.95rem에서 `0.9rem(13.5px)`)의 크기 및 상하 여백을 컴팩트하게 정돈하여 정보 밀도와 가독성을 향상시켰습니다.
 - **메인 인라인 검색 vs 좌측 모달 검색(`Ctrl + K`) 역할 분리 (`src/components/Hero.jsx`, `src/components/SearchModal.jsx`)**
   - 메인 화면의 빠른 인라인 검색과 사이드바의 전문 커맨드 팔레트 검색(`Ctrl + K`)의 고유 역할을 분리하여 각 환경에 최적화된 UX를 제공합니다.
 - **메인 화면 극단적 미니멀화 및 구글 제미나이 스타일 소프트 알약 검색창 적용 (`src/components/Hero.jsx`, `src/index.css`)**

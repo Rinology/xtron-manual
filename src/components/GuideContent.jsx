@@ -89,8 +89,10 @@ const REHYPE_PLUGINS = [rehypeRaw];
 
 // Markdown renderer components (defined at module scope so references stay stable across renders and media never remounts)
 const MarkdownComponents = {
-  h3: ({node, ...props}) => <h3 style={{ fontSize: '1.4rem', color: 'var(--ci-primary)', marginTop: '2rem', marginBottom: '1rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--surface-border)' }} {...props} />,
-  h4: ({node, ...props}) => <h4 style={{ fontSize: '1.2rem', color: 'var(--text-primary)', marginTop: '1.5rem', marginBottom: '0.5rem' }} {...props} />,
+  h1: ({node, ...props}) => <h1 style={{ fontSize: '1.35rem', color: 'var(--ci-primary)', marginTop: '1.8rem', marginBottom: '0.8rem', paddingBottom: '0.4rem', borderBottom: '1px solid var(--surface-border)' }} {...props} />,
+  h2: ({node, ...props}) => <h2 style={{ fontSize: '1.25rem', color: 'var(--ci-primary)', marginTop: '1.6rem', marginBottom: '0.75rem', paddingBottom: '0.4rem', borderBottom: '1px solid var(--surface-border)' }} {...props} />,
+  h3: ({node, ...props}) => <h3 style={{ fontSize: '1.15rem', color: 'var(--ci-primary)', marginTop: '1.5rem', marginBottom: '0.75rem', paddingBottom: '0.35rem', borderBottom: '1px solid var(--surface-border)' }} {...props} />,
+  h4: ({node, ...props}) => <h4 style={{ fontSize: '1.05rem', color: 'var(--text-primary)', marginTop: '1.2rem', marginBottom: '0.4rem' }} {...props} />,
   p: ({node, children, ...props}) => {
     let filteredChildren = children;
     if (node.children?.[0]?.type === 'text') {
@@ -105,10 +107,11 @@ const MarkdownComponents = {
         });
       }
     }
-    return <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '1rem' }} {...props}>{filteredChildren}</p>;
+    return <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '0.85rem' }} {...props}>{filteredChildren}</p>;
   },
-  ul: ({node, ...props}) => <ul style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6, paddingLeft: '1.5rem', marginBottom: '1rem' }} {...props} />,
-  ol: ({node, ...props}) => <ol style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6, paddingLeft: '1.5rem', marginBottom: '1rem' }} {...props} />,
+  ul: ({node, ...props}) => <ul style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6, paddingLeft: '1.4rem', marginBottom: '0.85rem' }} {...props} />,
+  ol: ({node, ...props}) => <ol style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6, paddingLeft: '1.4rem', marginBottom: '0.85rem' }} {...props} />,
+  li: ({node, ...props}) => <li style={{ marginBottom: '0.25rem' }} {...props} />,
   blockquote: ({node, children, ...props}) => {
     let type = null;
     let title = '';
@@ -426,7 +429,7 @@ function GuideContent({ activePage, setActivePage }) {
           <div style={{ background: 'var(--ci-primary-light)', color: 'var(--ci-primary)', padding: '0.75rem', borderRadius: '12px' }}>
             {guide.icon}
           </div>
-          <h2 style={{ fontSize: '2rem', color: 'var(--ci-primary)', margin: 0 }}>{guide.title}</h2>
+          <h2 style={{ fontSize: '1.5rem', color: 'var(--ci-primary)', margin: 0, fontWeight: 700 }}>{guide.title}</h2>
         </div>
 
         {guide.markdownFile ? (
