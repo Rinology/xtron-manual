@@ -17,6 +17,7 @@ export default defineConfig({
         enabled: false, // 로컬 개발 환경에서는 MD 파일 실시간 반영을 위해 캐싱 끄기
       },
       workbox: {
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB
         // 기본 캐싱 설정만 사용 (네이티브 브라우저 캐시 활용)
         runtimeCaching: [
           {

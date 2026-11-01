@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGuides } from '../context/GuideContext';
-import { ChevronDown, ChevronRight, Search, Menu, MessageCircle, ShoppingBag, MapPin, Tag, Youtube, Sparkles, LayoutGrid, PanelLeftClose } from 'lucide-react';
+import { ChevronDown, ChevronRight, Search, Menu, MessageCircle, ShoppingBag, MapPin, Tag, Youtube, Sparkles, LayoutGrid, PanelLeftClose, HelpCircle } from 'lucide-react';
 
 export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch }) {
-  const { guidesData, wizardFlow } = useGuides();
+  const { guidesData, wizardFlow, faqItems } = useGuides();
   const hasWizard = Boolean(
     wizardFlow &&
     wizardFlow.start &&
     wizardFlow.start.options &&
     wizardFlow.start.options.length > 0
   );
+  const hasFaq = Boolean(faqItems && faqItems.length > 0);
+  const isFaqActive = activePage === 'faq' || Boolean(activePage && faqItems && faqItems.some(f => f.id.toLowerCase() === activePage.toLowerCase()));
   const [openCategories, setOpenCategories] = useState({
     "basic": true,
     "battery-guide": true,
@@ -199,6 +201,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();
+                    setHoveredButton(null);
                     setIsOpen(true);
                   }}
                   style={{ 
@@ -254,7 +257,33 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                     }}
                   >
                     <Sparkles size={18} color={activePage === 'troubleshooting-wizard' ? 'var(--ci-primary)' : 'var(--text-secondary)'} />
-                    자가진단 마법사
+                    <span><strong style={{ fontWeight: 700 }}><span style={{ color: 'var(--ci-secondary)' }}>X</span><span style={{ color: 'var(--ci-primary)' }}>enie</span></strong> (자가진단 마법사)</span>
+                  </button>
+                )}
+                {hasFaq && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActivePage('faq');
+                      if (isMobile) setIsOpen(false);
+                    }}
+                    style={{
+                      width: '100%', display: 'flex', alignItems: 'center', gap: '0.75rem',
+                      padding: '0.65rem 1rem', borderRadius: 'var(--radius-full)',
+                      background: isFaqActive ? 'var(--ci-primary-light)' : 'transparent',
+                      color: isFaqActive ? 'var(--ci-primary)' : 'var(--text-primary)',
+                      fontSize: '0.9rem', border: 'none', cursor: 'pointer',
+                      transition: 'all 0.2s', marginBottom: '0.25rem'
+                    }}
+                    onMouseEnter={e => {
+                      if (!isFaqActive) e.currentTarget.style.background = 'var(--surface-border)';
+                    }}
+                    onMouseLeave={e => {
+                      if (!isFaqActive) e.currentTarget.style.background = 'transparent';
+                    }}
+                  >
+                    <HelpCircle size={18} color={isFaqActive ? 'var(--ci-primary)' : 'var(--text-secondary)'} />
+                    <span>자주 묻는 질문 <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', opacity: 0.65, fontWeight: 400 }}>(FAQ)</span></span>
                   </button>
                 )}
                 <button
@@ -273,7 +302,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                   onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                 >
                   <Search size={18} color="var(--text-secondary)" />
-                  검색 Ctrl + K
+                  <span>검색 <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', opacity: 0.65, fontWeight: 400 }}>(Ctrl + K)</span></span>
                 </button>
               </>
             ) : (
@@ -304,7 +333,37 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
                     >
                       <Sparkles size={18} />
                     </button>
-                    <Tooltip text="자가진단 마법사" visible={hoveredButton === 'wizard'} />
+                    <Tooltip text="Xenie (자가진단 마법사)" visible={hoveredButton === 'wizard'} />
+                  </div>
+                )}
+
+                {hasFaq && (
+                  <div style={{ position: 'relative' }}>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setActivePage('faq');
+                        if (isMobile) setIsOpen(false);
+                      }}
+                      style={{
+                        width: '40px', height: '40px', borderRadius: '50%', border: 'none',
+                        background: isFaqActive ? 'var(--ci-primary-light)' : 'transparent',
+                        color: isFaqActive ? 'var(--ci-primary)' : 'var(--text-secondary)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        cursor: 'pointer', transition: 'all 0.2s'
+                      }}
+                      onMouseEnter={e => {
+                        if (!isFaqActive) e.currentTarget.style.background = 'var(--surface-border)';
+                        setHoveredButton('faq');
+                      }}
+                      onMouseLeave={e => {
+                        if (!isFaqActive) e.currentTarget.style.background = 'transparent';
+                        setHoveredButton(null);
+                      }}
+                    >
+                      <HelpCircle size={18} />
+                    </button>
+                    <Tooltip text="자주 묻는 질문 (FAQ)" visible={hoveredButton === 'faq'} />
                   </div>
                 )}
 

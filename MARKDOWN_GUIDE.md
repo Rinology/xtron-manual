@@ -120,4 +120,34 @@ graph TD
 > **💡 동영상(MP4) 꿀팁:**
 > 움직이는 사진(GIF)은 파일 용량이 너무 커서 웹페이지를 느리게 만듭니다. MP4 영상 파일로 올리시면 파일 용량이 80~90% 줄어들며, 사이트에서 GIF처럼 **자동 무한 반복 재생**됩니다!
 
+---
+
+## 7. 🔘 빠른 연결 버튼 (CTA 버튼) 넣는 법
+
+문서 하단이나 주의 상자 안에 고객센터 상담 링크나 다른 매뉴얼로 이동하는 예쁜 나란히 버튼을 손쉽게 넣을 수 있습니다.
+
+```html
+<div class="md-cta-container">
+  <!-- 카카오톡 노란색 버튼 -->
+  <a href="http://pf.kakao.com/_xhxhRZxl/chat" target="_blank" class="md-btn md-btn-kakao">
+    💬 카카오톡 상담
+  </a>
+
+  <!-- 다른 매뉴얼 바로가기 버튼 (예: 스로틀 교체 매뉴얼 #throttle) -->
+  <a href="/#throttle" class="md-btn">
+    🔧 스로틀 교체 바로가기
+  </a>
+
+  <!-- 외부 링크 버튼 (예: 대리점 위치) -->
+  <a href="https://qualisports.kr/board/free/agency_list_with_map.html" target="_blank" class="md-btn md-btn-dealer">
+    📍 전국 대리점 위치
+  </a>
+</div>
+```
+
+> **💡 매뉴얼 내부 이동 팁:**
+> 우리 매뉴얼 사이트 안의 다른 페이지로 이동할 때는 전체 도메인 주소를 적을 필요 없이 **`/#해시아이디` (예: `/#throttle`, `/#folding`)**만 적으시면 페이지 새로고침 없이 즉시 이동합니다!
+
+---
+
 이제 이 문법들을 조합해서 다채롭고 가독성 높은 최고 수준의 AS 가이드 문서를 완성해 보세요! 🚀

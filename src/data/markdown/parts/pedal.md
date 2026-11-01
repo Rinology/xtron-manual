@@ -11,8 +11,8 @@
   - **우측(R):** 체인이 **있는** 방향
   - **좌측(L):** 체인이 **없는** 방향
 
-![페달 스핀들 L/R 각인 식별](project/xtron-guide/parts/Pedal/pedal_install_1.webp)
-![자전거 L/R식별](project/xtron-guide/parts/Pedal/pedal_install_2.webp)
+![페달 스핀들 L/R 각인 식별](project/xtron-guide/parts/Pedal/pedal_install_1_v2.webp)
+![자전거 L/R식별](project/xtron-guide/parts/Pedal/pedal_install_2_v2.webp)
 
 <br>
 
@@ -24,14 +24,14 @@
 #### 👉 우측 페달(R): 시계 방향 회전
 우측은 일반 나사선이므로 **시계 방향(오른쪽)** 으로 돌려 결합합니다.
 
-![우측 가결합](project/xtron-guide/parts/Pedal/pedal_install_3.webp)
+![우측 가결합](project/xtron-guide/parts/Pedal/pedal_install_3_v2.webp)
 
 <br>
 
 #### 👉 좌측 페달(L): 반시계 방향 회전 (주의 구간)
 풀림 방지를 위해 <span style="color: #ef4444; font-weight: bold;">역방향 나사산</span>이 적용되어 있습니다. 우측과 반대인 **반시계 방향(왼쪽)** 으로 결합하세요.
 
-![좌측 가결합](project/xtron-guide/parts/Pedal/pedal_install_4.webp)
+![좌측 가결합](project/xtron-guide/parts/Pedal/pedal_install_4_v2.webp)
 
 <br>
 
@@ -43,8 +43,8 @@
 > [!TIP]
 > **💡 공통 조임 팁:** 양쪽 페달 모두 렌치를 쥔 상태에서 **자전거 앞바퀴(전륜) 방향** 으로 돌리면 꽉 조여집니다.
 
-![우측 렌치 고정](project/xtron-guide/parts/Pedal/pedal_install_5.webp)
-![좌측 렌치 고정](project/xtron-guide/parts/Pedal/pedal_install_6.webp)
+![우측 렌치 고정](project/xtron-guide/parts/Pedal/pedal_install_5_v2.webp)
+![좌측 렌치 고정](project/xtron-guide/parts/Pedal/pedal_install_6_v2.webp)
 
 **마무리:** 페달을 뒤로 헛돌려 뻑뻑함이 없는지 확인하세요.
 
@@ -55,16 +55,10 @@
 
 <div class="md-cta-container">
   <a href="http://pf.kakao.com/_xhxhRZxl/chat" target="_blank" class="md-btn md-btn-kakao">
-    <span class="md-btn-icon-circle">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
-    </span>
-    카카오톡 상담
+    💬 카카오톡 상담
   </a>
   <a href="https://qualisports.kr/board/free/agency_list_with_map.html" target="_blank" class="md-btn md-btn-dealer">
-    <span class="md-btn-icon-circle">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ci-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-    </span>
-    전국 대리점 위치
+    📍 전국 대리점 위치
   </a>
 </div>
 
