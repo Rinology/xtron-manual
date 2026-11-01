@@ -89,9 +89,9 @@ const REHYPE_PLUGINS = [rehypeRaw];
 
 // Markdown renderer components (defined at module scope so references stay stable across renders and media never remounts)
 const MarkdownComponents = {
-  h1: ({node, ...props}) => <h1 style={{ fontSize: '1.25rem', color: 'var(--ci-primary)', marginTop: '1.6rem', marginBottom: '0.75rem', paddingBottom: '0.35rem', borderBottom: '1px solid var(--surface-border)' }} {...props} />,
-  h2: ({node, ...props}) => <h2 style={{ fontSize: '1.15rem', color: 'var(--ci-primary)', marginTop: '1.4rem', marginBottom: '0.65rem', paddingBottom: '0.35rem', borderBottom: '1px solid var(--surface-border)' }} {...props} />,
-  h3: ({node, ...props}) => <h3 style={{ fontSize: '1.05rem', color: 'var(--ci-primary)', marginTop: '1.35rem', marginBottom: '0.65rem', paddingBottom: '0.3rem', borderBottom: '1px solid var(--surface-border)' }} {...props} />,
+  h1: ({node, ...props}) => <h1 style={{ fontSize: '1.25rem', color: 'var(--text-primary)', marginTop: '1.6rem', marginBottom: '0.75rem', paddingBottom: '0.35rem', borderBottom: '1px solid var(--surface-border)' }} {...props} />,
+  h2: ({node, ...props}) => <h2 style={{ fontSize: '1.15rem', color: 'var(--text-primary)', marginTop: '1.4rem', marginBottom: '0.65rem', paddingBottom: '0.35rem', borderBottom: '1px solid var(--surface-border)' }} {...props} />,
+  h3: ({node, ...props}) => <h3 style={{ fontSize: '1.05rem', color: 'var(--text-primary)', marginTop: '1.35rem', marginBottom: '0.65rem', paddingBottom: '0.3rem', borderBottom: '1px solid var(--surface-border)' }} {...props} />,
   h4: ({node, ...props}) => <h4 style={{ fontSize: '0.95rem', color: 'var(--text-primary)', marginTop: '1.1rem', marginBottom: '0.35rem' }} {...props} />,
   p: ({node, children, ...props}) => {
     let filteredChildren = children;
@@ -107,10 +107,10 @@ const MarkdownComponents = {
         });
       }
     }
-    return <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.65, marginBottom: '0.8rem' }} {...props}>{filteredChildren}</p>;
+    return <p style={{ fontSize: '0.85rem', color: 'var(--text-primary)', lineHeight: 1.65, marginBottom: '0.8rem' }} {...props}>{filteredChildren}</p>;
   },
-  ul: ({node, ...props}) => <ul style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.65, paddingLeft: '1.35rem', marginBottom: '0.8rem' }} {...props} />,
-  ol: ({node, ...props}) => <ol style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.65, paddingLeft: '1.35rem', marginBottom: '0.8rem' }} {...props} />,
+  ul: ({node, ...props}) => <ul style={{ fontSize: '0.85rem', color: 'var(--text-primary)', lineHeight: 1.65, paddingLeft: '1.35rem', marginBottom: '0.8rem' }} {...props} />,
+  ol: ({node, ...props}) => <ol style={{ fontSize: '0.85rem', color: 'var(--text-primary)', lineHeight: 1.65, paddingLeft: '1.35rem', marginBottom: '0.8rem' }} {...props} />,
   li: ({node, ...props}) => <li style={{ marginBottom: '0.2rem' }} {...props} />,
   blockquote: ({node, children, ...props}) => {
     let type = null;
@@ -430,7 +430,7 @@ function GuideContent({ activePage, setActivePage }) {
           <div style={{ background: 'var(--ci-primary-light)', color: 'var(--ci-primary)', padding: '0.75rem', borderRadius: '12px' }}>
             {guide.icon}
           </div>
-          <h2 style={{ fontSize: '1.35rem', color: 'var(--ci-primary)', margin: 0, fontWeight: 700 }}>{guide.title}</h2>
+          <h2 style={{ fontSize: '1.35rem', color: 'var(--text-primary)', margin: 0, fontWeight: 600 }}>{guide.title}</h2>
         </div>
 
         {guide.markdownFile ? (

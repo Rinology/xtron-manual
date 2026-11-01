@@ -98,11 +98,11 @@ function App() {
       if (activePage !== 'faq' && Array.isArray(faqItems)) {
         const matchedFaq = faqItems.find(f => f.id.toLowerCase() === activePage.toLowerCase());
         if (matchedFaq && matchedFaq.question) {
-          document.title = `${matchedFaq.question} - 자주 묻는 질문 | 엑스트론 가이드`;
+          document.title = `${matchedFaq.question} - 빠른 답변 | 엑스트론 가이드`;
           return;
         }
       }
-      document.title = '자주 묻는 질문 (FAQ) - 엑스트론 가이드';
+      document.title = '빠른 답변 (FAQ) - 엑스트론 가이드';
       return;
     }
 

@@ -51,18 +51,23 @@ const MermaidChart = React.memo(({ chart }) => {
   }, [chart]);
 
   return (
-    <div style={{
-      width: '100%',
-      overflowX: 'auto',
-      margin: '1rem 0',
-      padding: '1rem 0.75rem',
-      background: 'var(--bg-secondary)',
-      border: '1px solid var(--surface-border)',
-      borderRadius: '10px'
-    }}>
+    <div
+      className="custom-scrollbar"
+      style={{
+        width: '100%',
+        overflowX: 'auto',
+        WebkitOverflowScrolling: 'touch',
+        margin: '1.25rem 0',
+        padding: '1.25rem 0.85rem',
+        background: 'var(--bg-secondary)',
+        border: '1px solid var(--surface-border)',
+        borderRadius: '12px'
+      }}
+    >
       <div
+        className="faq-mermaid-svg-wrap"
         dangerouslySetInnerHTML={{ __html: svg }}
-        style={{ display: 'flex', justifyContent: 'center', minWidth: 'min(100%, 480px)' }}
+        style={{ display: 'flex', justifyContent: 'center', minWidth: 'max-content', margin: '0 auto' }}
       />
     </div>
   );
@@ -74,7 +79,7 @@ const MermaidChart = React.memo(({ chart }) => {
  * 2) [순서도] ... [/순서도] (또는 순서도 ... /순서도): '>' 구분자 텍스트를 Mermaid 순서도로 자동 변환
  * 3) 본문 내 '버튼이름 | https://...' 한 줄 입력 시 링크 바로가기 버튼으로 자동 변환
  */
-const preprocessFaqAnswer = (rawText) => {
+const preprocessFaqAnswer = (rawText, isMobile = false) => {
   if (!rawText || typeof rawText !== 'string') return '';
 
   let processed = rawText.replace(/\r\n/g, '\n');
@@ -127,10 +132,11 @@ const preprocessFaqAnswer = (rawText) => {
     }
   );
 
-  // 2. [순서도] ... [/순서도] 블록 변환 (대괄호 필수: 일반 텍스트 내 '순서도' 단어와의 오작동 방지)
+  // 2. [순서도], [세로순서도], [가로순서도] 블록 변환
+  // 모바일에서는 [순서도]가 항시 세로(TD)로 렌더링되며, 명시적 [세로순서도]/[가로순서도]도 완벽 지원
   processed = processed.replace(
-    /(?:^|\n)[ \t]*\[순서도\][ \t]*\n([\s\S]*?)\n[ \t]*\[\/순서도\](?=[ \t]*(?:\n|$))/g,
-    (_, flowBody) => {
+    /(?:^|\n)[ \t]*\[(순서도|가로순서도|세로순서도)\][ \t]*\n([\s\S]*?)\n[ \t]*\[\/(?:순서도|가로순서도|세로순서도)\](?=[ \t]*(?:\n|$))/g,
+    (_, tagType, flowBody) => {
       const lines = flowBody
         .split('\n')
         .map(line => line.trim())
@@ -154,15 +160,12 @@ const preprocessFaqAnswer = (rawText) => {
       };
 
       const edges = [];
-      let totalSteps = 0;
-
       lines.forEach(line => {
         const steps = line
           .split(/\s*(?:->|>)\s*/)
           .map(s => s.trim())
           .filter(Boolean);
 
-        totalSteps += steps.length;
         for (let i = 0; i < steps.length - 1; i++) {
           const fromId = getNodeId(steps[i]);
           const toId = getNodeId(steps[i + 1]);
@@ -172,7 +175,19 @@ const preprocessFaqAnswer = (rawText) => {
 
       if (edges.length === 0) return '';
 
-      const direction = totalSteps > 6 || lines.length > 2 ? 'TD' : 'LR';
+      // 방향 결정:
+      // - [세로순서도]: 무조건 TD
+      // - [가로순서도]: 무조건 LR
+      // - [순서도]: 모바일(isMobile === true)이면 항시 세로(TD), PC에서는 가로(LR)
+      let direction = 'TD';
+      if (tagType === '세로순서도') {
+        direction = 'TD';
+      } else if (tagType === '가로순서도') {
+        direction = 'LR';
+      } else {
+        direction = isMobile ? 'TD' : 'LR';
+      }
+
       const mermaidCode = [
         `flowchart ${direction}`,
         ...edges
@@ -231,7 +246,7 @@ const isVideoUrl = (url) => {
 
 // 마크다운 컴포넌트 설정 (모듈 스코프에 고정하여 리렌더링 시 이미지/동영상이 깜빡이며 재마운트되는 현상 방지)
 const MarkdownComponents = {
-  h3: ({ node, ...props }) => <h3 style={{ fontSize: '1.2rem', color: 'var(--ci-primary)', marginTop: '1.25rem', marginBottom: '0.75rem', paddingBottom: '0.4rem', borderBottom: '1px solid var(--surface-border)' }} {...props} />,
+  h3: ({ node, ...props }) => <h3 style={{ fontSize: '1.2rem', color: 'var(--text-primary)', marginTop: '1.25rem', marginBottom: '0.75rem', paddingBottom: '0.4rem', borderBottom: '1px solid var(--surface-border)' }} {...props} />,
   h4: ({ node, ...props }) => <h4 style={{ fontSize: '1.05rem', color: 'var(--text-primary)', marginTop: '1rem', marginBottom: '0.5rem' }} {...props} />,
   p: ({ node, children, ...props }) => {
     let filteredChildren = children;
@@ -248,13 +263,13 @@ const MarkdownComponents = {
       }
     }
     return (
-      <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '0.75rem', whiteSpace: 'pre-line' }} {...props}>
+      <p style={{ fontSize: '0.95rem', color: 'var(--text-primary)', lineHeight: 1.7, marginBottom: '0.75rem', whiteSpace: 'pre-line' }} {...props}>
         {filteredChildren}
       </p>
     );
   },
-  ul: ({ node, ...props }) => <ul style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.7, paddingLeft: '1.5rem', marginBottom: '0.75rem' }} {...props} />,
-  ol: ({ node, ...props }) => <ol style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.7, paddingLeft: '1.5rem', marginBottom: '0.75rem' }} {...props} />,
+  ul: ({ node, ...props }) => <ul style={{ fontSize: '0.95rem', color: 'var(--text-primary)', lineHeight: 1.7, paddingLeft: '1.5rem', marginBottom: '0.75rem' }} {...props} />,
+  ol: ({ node, ...props }) => <ol style={{ fontSize: '0.95rem', color: 'var(--text-primary)', lineHeight: 1.7, paddingLeft: '1.5rem', marginBottom: '0.75rem' }} {...props} />,
   li: ({ node, ...props }) => <li style={{ whiteSpace: 'pre-line', marginBottom: '0.25rem' }} {...props} />,
   blockquote: ({ node, children, ...props }) => {
     let type = null;
@@ -343,11 +358,46 @@ const MarkdownComponents = {
     );
   },
   table: ({ node, children, ...props }) => (
-    <div style={{ width: '100%', overflowX: 'auto', margin: '0.85rem 0' }}>
-      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }} {...props}>
+    <div
+      className="custom-scrollbar"
+      style={{
+        width: '100%',
+        overflowX: 'auto',
+        WebkitOverflowScrolling: 'touch',
+        margin: '1.25rem 0',
+        borderRadius: '8px',
+        border: '1px solid var(--surface-border)'
+      }}
+    >
+      <table style={{ width: '100%', minWidth: '440px', borderCollapse: 'collapse', fontSize: '0.86rem' }} {...props}>
         {children}
       </table>
     </div>
+  ),
+  th: ({ node, ...props }) => (
+    <th
+      style={{
+        background: 'var(--ci-primary-light)',
+        color: 'var(--text-primary)',
+        fontWeight: 600,
+        textAlign: 'left',
+        padding: '0.75rem 0.95rem',
+        borderBottom: '2px solid rgba(47, 98, 134, 0.2)',
+        whiteSpace: 'nowrap'
+      }}
+      {...props}
+    />
+  ),
+  td: ({ node, ...props }) => (
+    <td
+      style={{
+        padding: '0.75rem 0.95rem',
+        borderBottom: '1px solid var(--surface-border)',
+        color: 'var(--text-primary)',
+        lineHeight: 1.5
+      }}
+      {...props}
+    />
   ),
   a: ({ node, href, children, ...props }) => {
     if (href && (href.endsWith('#faq-action-btn') || href.endsWith('&faq-action-btn'))) {
@@ -433,6 +483,13 @@ const MarkdownComponents = {
 
 function FaqBoard({ activePage, setActivePage }) {
   const { faqItems, isFaqLoading, allGuideItems } = useGuides();
+  const [isMobile, setIsMobile] = useState(() => (typeof window !== 'undefined' ? window.innerWidth <= 768 : false));
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   const [selectedCategory, setSelectedCategory] = useState('전체');
   const [searchQuery, setSearchQuery] = useState('');
   const [openIds, setOpenIds] = useState({});
@@ -623,7 +680,7 @@ function FaqBoard({ activePage, setActivePage }) {
           borderRadius: '50%', animation: 'spin 1s linear infinite', marginBottom: '1rem'
         }} />
         <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
-        <p>자주 묻는 질문을 불러오고 있습니다...</p>
+        <p>빠른 답변을 불러오고 있습니다...</p>
       </div>
     );
   }
@@ -638,8 +695,8 @@ function FaqBoard({ activePage, setActivePage }) {
               <HelpCircle size={24} />
             </div>
             <div>
-              <h2 style={{ fontSize: '1.8rem', color: 'var(--ci-primary)', margin: 0, fontWeight: 700 }}>
-                자주 묻는 질문 (FAQ)
+              <h2 style={{ fontSize: '1.35rem', color: 'var(--text-primary)', margin: 0, fontWeight: 600 }}>
+                빠른 답변 (FAQ)
               </h2>
               <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
                 간단한 궁금증과 조치 방법을 빠르게 확인해 보세요.
@@ -833,20 +890,6 @@ function FaqBoard({ activePage, setActivePage }) {
                 e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
               }}
             >
-              <span style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.35rem',
-                background: 'var(--ci-primary-light)',
-                color: 'var(--ci-primary)',
-                padding: '0.25rem 0.65rem',
-                borderRadius: '6px',
-                fontSize: '0.78rem',
-                fontWeight: 700,
-                flexShrink: 0
-              }}>
-                <Lightbulb size={14} color="var(--ci-secondary)" /> 추천
-              </span>
 
               <div style={{ flex: 1, overflow: 'hidden', position: 'relative', height: '24px', display: 'flex', alignItems: 'center' }}>
                 <AnimatePresence mode="wait">
@@ -886,15 +929,14 @@ function FaqBoard({ activePage, setActivePage }) {
                       textOverflow: 'ellipsis',
                       width: '100%'
                     }}>
-                      Q. {currentRollingFaq.question}
+                      {currentRollingFaq.question}
                     </span>
                   </motion.div>
                 </AnimatePresence>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: 'var(--ci-primary)', fontSize: '0.85rem', fontWeight: 600, flexShrink: 0 }}>
-                <span>답변 보기</span>
-                <ChevronRight size={16} />
+              <div style={{ display: 'flex', alignItems: 'center', color: 'var(--text-secondary)', flexShrink: 0, paddingLeft: '0.25rem' }}>
+                <ChevronRight size={18} />
               </div>
             </div>
           </div>
@@ -906,7 +948,7 @@ function FaqBoard({ activePage, setActivePage }) {
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <div style={{ width: '4px', height: '15px', background: 'var(--ci-primary)', borderRadius: '2px' }}></div>
               <span style={{ fontSize: '0.92rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
-                자주 찾는 핵심 질문
+                핵심 빠른 답변
               </span>
             </div>
             <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
@@ -1007,11 +1049,11 @@ function FaqBoard({ activePage, setActivePage }) {
                       {/* 질문 텍스트 */}
                       <span style={{
                         fontSize: '1.05rem',
-                        fontWeight: isOpen ? 700 : 600,
-                        color: isOpen ? 'var(--ci-primary)' : 'var(--text-primary)',
+                        fontWeight: isOpen ? 600 : 500,
+                        color: 'var(--text-primary)',
                         lineHeight: 1.4
                       }}>
-                        Q. {item.question}
+                        {item.question}
                       </span>
                     </div>
 
@@ -1041,7 +1083,7 @@ function FaqBoard({ activePage, setActivePage }) {
                               rehypePlugins={REHYPE_PLUGINS}
                               components={MarkdownComponents}
                             >
-                              {preprocessFaqAnswer(item.answer)}
+                              {preprocessFaqAnswer(item.answer, isMobile)}
                             </ReactMarkdown>
                           </div>
 

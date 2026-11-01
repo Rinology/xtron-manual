@@ -34,7 +34,7 @@ function Hero({ setActivePage }) {
   ).map(faq => ({
     id: faq.id,
     title: `[FAQ] ${faq.question}`,
-    summary: [faq.category ? `${faq.category}` : '자주 묻는 질문'],
+    summary: [faq.category ? `${faq.category}` : '빠른 답변'],
     isFaq: true
   }));
 
@@ -158,8 +158,8 @@ function Hero({ setActivePage }) {
       <div className="hero-content-wrapper" style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '620px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         
         {/* 헤드라인 타이틀 (단어 단위 줄바꿈 방지) */}
-        <h2 className="hero-title" style={{ marginBottom: '2.5rem', letterSpacing: '-0.02em', color: 'var(--ci-primary)', fontWeight: 500, wordBreak: 'keep-all', overflowWrap: 'break-word' }}>
-          <span style={{ display: 'inline-block' }}>어떤 도움이</span>{' '}
+        <h2 className="hero-title" style={{ marginBottom: '2.5rem', letterSpacing: '-0.02em', fontWeight: 500, wordBreak: 'keep-all', overflowWrap: 'break-word' }}>
+          <span style={{ color: 'var(--ci-primary)', display: 'inline-block' }}>어떤 도움이</span>{' '}
           <span style={{ color: 'var(--ci-secondary)', display: 'inline-block' }}>필요하신가요?</span>
         </h2>
         

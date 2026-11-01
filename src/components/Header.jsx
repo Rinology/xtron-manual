@@ -9,7 +9,7 @@ function Header({ activePage, setActivePage, isOpen, setIsOpen }) {
   const isWizard = activePage === 'troubleshooting-wizard';
   const isFaq = activePage === 'faq' || Boolean(activePage && faqItems && faqItems.some(f => f.id.toLowerCase() === activePage.toLowerCase()));
   const showBreadcrumb = guide || isWizard || isFaq;
-  const titleText = isWizard ? 'Xenie (자가진단 마법사)' : isFaq ? '자주 묻는 질문' : (guide ? guide.title : '');
+  const titleText = isWizard ? 'Xenie (자가진단 마법사)' : isFaq ? '빠른 답변 (FAQ)' : (guide ? guide.title : '');
 
   // 툴팁 상태 관리 (홈 버튼, 퀵메뉴 버튼)
   const [hoveredButton, setHoveredButton] = useState(null);

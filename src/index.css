@@ -75,14 +75,14 @@
   --ci-primary-light: rgba(47, 98, 134, 0.1);
   --ci-secondary: #72bf44;
   --ci-secondary-light: rgba(114, 191, 68, 0.1);
-  --ci-black: #231f20;
+  --ci-black: #111827;
   --ci-white: #ffffff;
   
   --bg-color: var(--ci-white); /* Solid white background as requested */
   --surface-color: var(--ci-white);
   --surface-border: #e2e8f0;
-  --text-primary: var(--ci-black);
-  --text-secondary: #475569;
+  --text-primary: #111827;
+  --text-secondary: #374151;
 
   /* Typography */
   --font-body: 'Paperozi', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
@@ -156,8 +156,12 @@ img {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-body);
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.2;
+}
+
+strong, b {
+  font-weight: 600;
 }
 
 /* Glassmorphism / Panel Utilities */
@@ -695,22 +699,24 @@ mark {
 /* Markdown Table Styles */
 .markdown-body table {
   width: 100%;
+  min-width: 440px;
   border-collapse: collapse;
-  margin: 1.5rem 0;
-  font-size: 0.95rem;
+  margin: 1.25rem 0;
+  font-size: 0.86rem;
 }
 .markdown-body th {
   background-color: var(--ci-primary-light);
-  color: var(--ci-primary);
-  font-weight: 700;
+  color: var(--text-primary);
+  font-weight: 600;
   text-align: left;
   padding: 0.75rem 1rem;
   border-bottom: 2px solid rgba(47, 98, 134, 0.2);
+  white-space: nowrap;
 }
 .markdown-body td {
   padding: 0.75rem 1rem;
   border-bottom: 1px solid var(--surface-border);
-  color: var(--text-secondary);
+  color: var(--text-primary);
 }
 .markdown-body tr:last-child td {
   border-bottom: none;
@@ -741,7 +747,7 @@ summary {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--ci-primary);
+  color: var(--text-primary);
   outline: none;
 }
 
@@ -766,4 +772,11 @@ details[open] summary {
   border-bottom: 1px solid var(--surface-border);
   margin-bottom: 1rem;
   padding-bottom: 0.8rem;
+}
+
+
+/* Mermaid SVG 모바일 가로 축소 방지 및 선명한 원본 폰트 보장 */
+.faq-mermaid-svg-wrap svg {
+  max-width: none !important;
+  height: auto !important;
 }

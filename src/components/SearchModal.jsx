@@ -128,7 +128,7 @@ function SearchModal({ isOpen, onClose, onSelect }) {
       id: faq.id,
       title: `[FAQ] ${faq.question}`,
       icon: <HelpCircle size={16} />,
-      summary: [faq.category ? `분류: ${faq.category}` : '자주 묻는 질문'],
+      summary: [faq.category ? `분류: ${faq.category}` : '빠른 답변'],
       isFaq: true
     }));
 

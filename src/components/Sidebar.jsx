@@ -99,7 +99,7 @@ function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch })
         color: activePage === item.id ? 'var(--ci-primary)' : 'var(--text-primary)',
         background: activePage === item.id ? 'var(--ci-primary-light)' : 'transparent',
         border: 'none', cursor: 'pointer', textAlign: 'left', 
-        width: '100%', fontFamily: 'inherit', fontSize: '0.9rem',
+        width: '100%', fontFamily: 'inherit', fontSize: '0.9rem', fontWeight: activePage === item.id ? 500 : 400,
         whiteSpace: 'nowrap', transition: 'all 0.2s',
       }}
       onMouseEnter={e => {
@@ -279,7 +279,7 @@ function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch })
                   }}
                 >
                   <HelpCircle size={18} color={isFaqActive ? 'var(--ci-primary)' : 'var(--text-secondary)'} style={{ flexShrink: 0 }} />
-                  <span>자주 묻는 질문 <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', opacity: 0.65, fontWeight: 400 }}>(FAQ)</span></span>
+                  <span>빠른 답변 <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', opacity: 0.65, fontWeight: 400 }}>(FAQ)</span></span>
                 </button>
               )}
               <button
@@ -361,7 +361,7 @@ function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch })
                   >
                     <HelpCircle size={18} />
                   </button>
-                  <SidebarTooltip text="자주 묻는 질문 (FAQ)" visible={!isOpen && hoveredButton === 'faq'} />
+                  <SidebarTooltip text="빠른 답변 (FAQ)" visible={!isOpen && hoveredButton === 'faq'} />
                 </div>
               )}
 
@@ -439,7 +439,7 @@ function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch })
                          if(activePage !== item.id) e.currentTarget.style.background = 'transparent';
                       }}
                     >
-                      <h3 style={{ fontSize: '0.8rem', color: activePage === item.id ? 'var(--ci-primary)' : 'var(--text-secondary)', margin: 0, fontWeight: 700, whiteSpace: 'nowrap', letterSpacing: '0.02em' }}>
+                      <h3 style={{ fontSize: '0.8rem', color: activePage === item.id ? 'var(--ci-primary)' : 'var(--text-secondary)', margin: 0, fontWeight: 600, whiteSpace: 'nowrap', letterSpacing: '0.02em' }}>
                         {category.title}
                       </h3>
                     </button>
@@ -456,7 +456,7 @@ function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch })
                        cursor: 'pointer', padding: '0.5rem'
                     }}
                   >
-                    <h3 style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0, fontWeight: 700, whiteSpace: 'nowrap', letterSpacing: '0.02em' }}>
+                    <h3 style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0, fontWeight: 600, whiteSpace: 'nowrap', letterSpacing: '0.02em' }}>
                       {category.title}
                     </h3>
                     {isOpened ? <ChevronDown size={14} color="var(--text-secondary)" /> : <ChevronRight size={14} color="var(--text-secondary)" />}
@@ -486,7 +486,7 @@ function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch })
                               onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                             >
                               {isSubOpened ? <ChevronDown size={14} color="var(--ci-primary)" /> : <ChevronRight size={14} color="var(--text-secondary)" />}
-                              <span style={{ fontSize: '0.9rem', fontWeight: 600, color: isSubOpened ? 'var(--ci-primary)' : 'var(--text-primary)', whiteSpace: 'nowrap' }}>
+                              <span style={{ fontSize: '0.9rem', fontWeight: 500, color: isSubOpened ? 'var(--ci-primary)' : 'var(--text-primary)', whiteSpace: 'nowrap' }}>
                                 {subCat.title}
                               </span>
                             </div>
@@ -513,7 +513,7 @@ function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch })
                                         onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                       >
                                         {isChildOpened ? <ChevronDown size={14} color="var(--ci-primary)" /> : <ChevronRight size={14} color="var(--text-secondary)" />}
-                                        <span style={{ fontSize: '0.85rem', fontWeight: 600, color: isChildOpened ? 'var(--ci-primary)' : 'var(--text-primary)', whiteSpace: 'nowrap' }}>
+                                        <span style={{ fontSize: '0.85rem', fontWeight: 500, color: isChildOpened ? 'var(--ci-primary)' : 'var(--text-primary)', whiteSpace: 'nowrap' }}>
                                           {childCat.title}
                                         </span>
                                       </div>
