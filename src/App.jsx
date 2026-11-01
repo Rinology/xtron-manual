@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Hero from './components/Hero';
 import Sidebar from './components/Sidebar';
 import Footer from './components/Footer';
@@ -9,28 +9,27 @@ import BackToTop from './components/BackToTop';
 import SearchModal from './components/SearchModal';
 import TroubleshootingWizard from './components/TroubleshootingWizard';
 import FaqBoard from './components/FaqBoard';
-import { AnimatePresence } from 'framer-motion';
 import useSecurity from './hooks/useSecurity';
 import { useGuides } from './context/GuideContext';
+
+const isFaqRoute = (hash, faqs) => {
+  if (!hash) return false;
+  return hash === 'faq' || (Array.isArray(faqs) && faqs.some(f => f.id.toLowerCase() === hash.toLowerCase()));
+};
+
+const isValidRoute = (hash, items, faqs) => {
+  return (
+    hash === 'troubleshooting-wizard' ||
+    hash === 'not-found' ||
+    isFaqRoute(hash, faqs) ||
+    items.some(item => item.id === hash)
+  );
+};
 
 function App() {
   useSecurity(); // 보안 로직 적용
   
   const { allGuideItems, faqItems, isGuidesLoading, isFaqLoading } = useGuides();
-
-  const isFaqRoute = (hash, faqs) => {
-    if (!hash) return false;
-    return hash === 'faq' || (Array.isArray(faqs) && faqs.some(f => f.id.toLowerCase() === hash.toLowerCase()));
-  };
-
-  const isValidRoute = (hash, items, faqs) => {
-    return (
-      hash === 'troubleshooting-wizard' ||
-      hash === 'not-found' ||
-      isFaqRoute(hash, faqs) ||
-      items.some(item => item.id === hash)
-    );
-  };
 
   const [initialHash] = useState(() => window.location.hash.replace('#', ''));
 
@@ -42,6 +41,24 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isInitialRouteResolved, setIsInitialRouteResolved] = useState(false);
+
+  const handleOpenSearch = useCallback(() => {
+    setIsSearchOpen(true);
+  }, []);
+
+  const handleCloseSearch = useCallback(() => {
+    setIsSearchOpen(false);
+  }, []);
+
+  const handleSelectSearch = useCallback((id) => {
+    setActivePage(id);
+    setIsSidebarOpen(false);
+  }, []);
+
+  const handleMainScroll = useCallback((e) => {
+    const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+    window.dispatchEvent(new CustomEvent('main-scroll', { detail: { isAtBottom: bottom, scrollTop: e.target.scrollTop } }));
+  }, []);
 
   // 데이터(시트)가 로드되어 allGuideItems 및 faqItems가 업데이트 되었을 때 URL 해시 다시 검증
   useEffect(() => {
@@ -151,24 +168,18 @@ function App() {
         setActivePage={setActivePage}
         isOpen={isSidebarOpen}
         setIsOpen={setIsSidebarOpen}
-        onOpenSearch={() => setIsSearchOpen(true)}
+        onOpenSearch={handleOpenSearch}
       />
       
       <SearchModal 
         isOpen={isSearchOpen} 
-        onClose={() => setIsSearchOpen(false)} 
-        onSelect={(id) => {
-          setActivePage(id);
-          setIsSidebarOpen(false);
-        }} 
+        onClose={handleCloseSearch} 
+        onSelect={handleSelectSearch} 
       />
       
       <div 
         className="main-content"
-        onScroll={(e) => {
-          const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
-          window.dispatchEvent(new CustomEvent('main-scroll', { detail: { isAtBottom: bottom, scrollTop: e.target.scrollTop } }));
-        }}
+        onScroll={handleMainScroll}
       >
         <Header activePage={activePage} setActivePage={setActivePage} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
         <main className="page-container">
@@ -179,7 +190,7 @@ function App() {
               <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
             </div>
           ) : !activePage ? (
-            <Hero key="hero" setActivePage={setActivePage} onOpenSearch={() => setIsSearchOpen(true)} />
+            <Hero key="hero" setActivePage={setActivePage} onOpenSearch={handleOpenSearch} />
           ) : activePage === 'troubleshooting-wizard' ? (
             <TroubleshootingWizard key="wizard" setActivePage={setActivePage} />
           ) : isFaqRoute(activePage, faqItems) ? (

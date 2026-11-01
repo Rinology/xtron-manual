@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, ChevronRight, FileText, HelpCircle, Sparkles, Lightbulb } from 'lucide-react';
 import { useGuides } from '../context/GuideContext';
 
-export default function SearchModal({ isOpen, onClose, onSelect }) {
+function SearchModal({ isOpen, onClose, onSelect }) {
   const { allGuideItems, faqItems, wizardFlow } = useGuides();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
@@ -91,10 +91,16 @@ export default function SearchModal({ isOpen, onClose, onSelect }) {
 
   const currentSuggestion = suggestions[tickerIndex] || suggestions[0];
 
+  // 열림/닫힘 시 DOM 언마운트 대신 포커스/블러만 안전하게 제어하여 브라우저 뷰포트 리플로우 및 깜빡임 방지
   useEffect(() => {
     if (isOpen) {
       setQuery('');
       setSelectedIndex(0);
+      requestAnimationFrame(() => {
+        inputRef.current?.focus({ preventScroll: true });
+      });
+    } else {
+      inputRef.current?.blur();
     }
   }, [isOpen]);
 
@@ -143,10 +149,13 @@ export default function SearchModal({ isOpen, onClose, onSelect }) {
       } else if (e.key === 'Enter') {
         e.preventDefault();
         if (results[selectedIndex]) {
+          inputRef.current?.blur();
           onSelect(results[selectedIndex].id);
           onClose();
         }
       } else if (e.key === 'Escape') {
+        e.preventDefault();
+        inputRef.current?.blur();
         onClose();
       }
     };
@@ -164,12 +173,22 @@ export default function SearchModal({ isOpen, onClose, onSelect }) {
     }
   }, [selectedIndex, results.length]);
 
-  if (!isOpen) return null;
+  const handleCloseModal = () => {
+    inputRef.current?.blur();
+    onClose();
+  };
+
+  const handleSelectItem = (id) => {
+    inputRef.current?.blur();
+    onSelect(id);
+    onClose();
+  };
 
   return (
     <div
-      onClick={onClose}
+      onClick={handleCloseModal}
       className="search-modal-container"
+      aria-hidden={!isOpen}
       style={{
         position: 'fixed',
         inset: 0,
@@ -178,7 +197,10 @@ export default function SearchModal({ isOpen, onClose, onSelect }) {
         alignItems: 'flex-start',
         justifyContent: 'center',
         paddingTop: '6vh',
-        zIndex: 10000
+        zIndex: 10000,
+        opacity: isOpen ? 1 : 0,
+        visibility: isOpen ? 'visible' : 'hidden',
+        pointerEvents: isOpen ? 'auto' : 'none'
       }}
     >
       <div
@@ -188,7 +210,8 @@ export default function SearchModal({ isOpen, onClose, onSelect }) {
           background: 'var(--surface-color)',
           borderRadius: 'var(--radius-lg)',
           boxShadow: '0 25px 50px -12px rgba(15, 23, 42, 0.35), var(--shadow-lg)',
-          overflow: 'hidden', pointerEvents: 'auto',
+          overflow: 'hidden',
+          pointerEvents: isOpen ? 'auto' : 'none',
           border: '1px solid var(--surface-border)',
           maxHeight: '84vh',
           display: 'flex',
@@ -204,8 +227,8 @@ export default function SearchModal({ isOpen, onClose, onSelect }) {
           <Search size={22} color="var(--ci-primary)" style={{ flexShrink: 0 }} />
           <input
             ref={inputRef}
-            autoFocus
             type="text"
+            tabIndex={isOpen ? 0 : -1}
             placeholder="매뉴얼 본문 및 제목 검색... (예: 전원, 페달)"
             value={query}
             onChange={e => setQuery(e.target.value)}
@@ -217,7 +240,8 @@ export default function SearchModal({ isOpen, onClose, onSelect }) {
             }}
           />
           <button
-            onClick={onClose}
+            onClick={handleCloseModal}
+            tabIndex={isOpen ? 0 : -1}
             style={{
               background: 'var(--surface-border)', border: 'none',
               padding: '0.3rem', borderRadius: 'var(--radius-sm)',
@@ -239,10 +263,7 @@ export default function SearchModal({ isOpen, onClose, onSelect }) {
               {/* 상단 1: 증상별 자가진단 마법사 카드 */}
               {hasWizard && (
                 <div
-                  onClick={() => {
-                    onSelect('troubleshooting-wizard');
-                    onClose();
-                  }}
+                  onClick={() => handleSelectItem('troubleshooting-wizard')}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -295,10 +316,7 @@ export default function SearchModal({ isOpen, onClose, onSelect }) {
                 <div
                   onMouseEnter={() => setIsTickerHovered(true)}
                   onMouseLeave={() => setIsTickerHovered(false)}
-                  onClick={() => {
-                    onSelect(currentSuggestion.id);
-                    onClose();
-                  }}
+                  onClick={() => handleSelectItem(currentSuggestion.id)}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -391,10 +409,7 @@ export default function SearchModal({ isOpen, onClose, onSelect }) {
                   <div
                     key={item.id}
                     onMouseEnter={() => setSelectedIndex(index)}
-                    onClick={() => {
-                      onSelect(item.id);
-                      onClose();
-                    }}
+                    onClick={() => handleSelectItem(item.id)}
                     style={{
                       display: 'flex', alignItems: 'center', gap: '1rem',
                       padding: '0.9rem 1rem', cursor: 'pointer',
@@ -458,3 +473,5 @@ export default function SearchModal({ isOpen, onClose, onSelect }) {
     </div>
   );
 }
+
+export default React.memo(SearchModal);

@@ -4,7 +4,7 @@ import { Search, Sparkles, X, ChevronRight, Lightbulb, FileText, HelpCircle } fr
 import { allGuideItems } from '../data/guides';
 import { useGuides } from '../context/GuideContext';
 
-export default function Hero({ setActivePage }) {
+function Hero({ setActivePage }) {
   const { wizardFlow, allGuideItems: dynamicGuideItems, faqItems } = useGuides();
   const guideItems = dynamicGuideItems && dynamicGuideItems.length > 0 ? dynamicGuideItems : allGuideItems;
   const hasWizard = Boolean(
@@ -448,3 +448,5 @@ export default function Hero({ setActivePage }) {
     </section>
   );
 }
+
+export default React.memo(Hero);

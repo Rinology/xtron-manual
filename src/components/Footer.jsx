@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-export default function Footer({ activePage }) {
+function Footer({ activePage }) {
   const [isAtBottom, setIsAtBottom] = useState(false);
 
   useEffect(() => {
@@ -21,10 +21,9 @@ export default function Footer({ activePage }) {
       flexShrink: 0,
       position: 'relative',
       zIndex: 10,
-      background: isAtBottom ? 'var(--bg-color)' : 'linear-gradient(to bottom, transparent, var(--bg-color) 40%)',
-      backdropFilter: isAtBottom ? 'none' : 'blur(8px)',
+      background: isAtBottom ? 'var(--bg-color)' : 'linear-gradient(to bottom, rgba(255, 255, 255, 0), var(--bg-color) 45%)',
       borderTop: isAtBottom ? '1px solid var(--surface-border)' : '1px solid transparent',
-      transition: 'all 0.3s ease',
+      transition: 'border-color 0.3s ease',
       marginTop: '-60px', // Pull it up over the scrolling content
       pointerEvents: 'none' // Let clicks pass through if it's just fading
     }}>
@@ -35,3 +34,5 @@ export default function Footer({ activePage }) {
     </footer>
   );
 }
+
+export default React.memo(Footer);

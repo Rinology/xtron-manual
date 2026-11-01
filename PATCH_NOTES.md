@@ -53,14 +53,15 @@
   - 스프레드시트에 `MarkdownFile` 또는 `ItemID`가 비어있거나 매칭되는 `.md` 파일이 없을 때, 메인 화면으로 이동하거나 빈 화면이 나오지 않고 **"해당 마법서를 찾을 수 없습니다 😢"** 에러 안내 화면이 일관되게 표시되도록 개선했습니다.
 - **웹 브라우저 탭(파비콘 우측) 동적 페이지 타이틀 적용 (`src/App.jsx`)**
   - 현재 보고 있는 매뉴얼 제목, 자주 묻는 질문, Xenie(자가진단 마법사), 메인 홈 상태에 맞춰 브라우저 탭 타이틀(`document.title`)이 실시간으로 업데이트되도록 구현했습니다.
-- **메뉴 전환 및 검색창(Ctrl + K) 진입/종료 시 화면 반짝임(깜빡임) 제거, 스프레드시트 환경별 캐싱·병렬 로딩 최적화 (src/components/SearchModal.jsx, src/components/Sidebar.jsx 포함)
-  - 좌측 통합 검색 모달(SearchModal.jsx) 진입/종료 시 전체 화면 ackdropFilter: blur(5px)와 opacity 애니메이션이 충돌하며 발생하던 GPU 합성 레이어 깜빡임(Repaint Flash)을 제거하고, utoFocus 및 단일 레이어 즉시 렌더링으로 전환하여 열리고 닫힐 때 깜빡임 없이 깔끔하게 동작하도록 개선했습니다. (`src/components/GuideContent.jsx`, `src/components/FaqBoard.jsx`, `src/components/TroubleshootingWizard.jsx`, `src/components/Hero.jsx`, `src/App.jsx`, `src/index.css`, `src/utils/googleSheetsCMS.jsx`, `src/context/GuideContext.jsx`)**
+- **사이드바 열림/닫힘, 검색창(`Ctrl + K`) 진입/종료, 메뉴 전환 시 화면 반짝임(깜빡임) 근본 원인 제거 및 스프레드시트 단일 배치 로딩 최적화 (`src/App.jsx`, `src/components/GuideContent.jsx`, `src/components/Sidebar.jsx`, `src/components/SearchModal.jsx`, `src/components/Header.jsx`, `src/components/Footer.jsx`, `src/context/GuideContext.jsx`)**
+  - `App.jsx`의 `isSidebarOpen` 및 `isSearchOpen` 상태 변경 시 메인 본문(`GuideContent`, `Hero`, `FaqBoard`, `TroubleshootingWizard`)까지 연쇄 리렌더링되던 문제를 `React.memo` 및 `useCallback`으로 격리하여, 사이드바나 검색창을 여닫을 때 본문 영역이 전혀 리렌더링되지 않도록 원천 차단했습니다.
+  - `GuideContent.jsx` 내부에 인라인 중첩 함수 컴포넌트로 선언되어 부모 리렌더링마다 DOM에서 언마운트·재마운트되던 `TopActions` 및 `NavigationButtons`를 일반 JSX 엘리먼트로 전환하고, `MermaidChart` SVG 인메모리 캐시(`mermaidSvgCache`) 및 `ReactMarkdown` 메모이제이션(`useMemo`)을 적용했습니다.
+  - `Sidebar.jsx`에서 열림/닫힘 시 `<head>`에 스타일 태그를 동적 주입하며 레이아웃 플리커를 유발하던 `<AnimatePresence mode="popLayout">`을 제거하고, 상단 로고 이미지 2종과 카테고리 트리를 DOM에 상시 유지(`display` 토글)하여 이미지 재디코딩 깜빡임을 제거했습니다.
+  - `SearchModal.jsx`를 조건부 언마운트(`return null`) 대신 DOM에 상시 유지(`visibility`/`opacity` 토글)하고 종료 시 `inputRef.current.blur()`를 안전하게 선행 호출하도록 개선하여, 포커스된 `<input>`이 DOM에서 강제 제거될 때 브라우저가 발생시키던 뷰포트 리플로우 및 포커스 복구 깜빡임을 해결했습니다.
+  - `Header.jsx` 및 `Footer.jsx`의 무거운 GPU `backdropFilter: blur(...)` 합성 레이어를 고불투명 단색/그라데이션 배경으로 대체하여, 고정 오버레이(`SearchModal`)나 사이드바 너비 변경 시 발생하던 크롬/엣지 GPU 컴포지터 번쩍임을 제거했습니다.
   - 마크다운(`.md`) 파일을 빌드 타임에 동기식(`eager: true`)으로 즉시 로드하여, 메뉴 클릭 시 비동기 로딩 지연으로 인해 빈 화면이 잠깐 보였다가 본문이 튀어나오던 레이아웃 출렁임을 완전히 제거했습니다.
-  - `App.jsx`의 `<GuideContent key={activePage}>` 강제 언마운트/리마운트 속성과 각 페이지 컨테이너(`GuideContent`, `FaqBoard`, `TroubleshootingWizard`, `Hero`)의 전체 화면 투명도(`opacity`) 애니메이션을 제거하여, 메뉴 이동 시 흰 배경이 번쩍이지 않고 내부 텍스트만 제자리에서 즉시 교체되도록 개선했습니다.
-  - `GuideContent.jsx` 및 `FaqBoard.jsx`에서 매 렌더링마다 함수 내부에서 새로 생성되던 `MarkdownComponents` 객체를 모듈 최상단 스코프로 분리하여, 상태 변경 시 본문 내 이미지와 스마트 비디오 플레이어(`VideoPlayer`)가 언마운트 후 재마운트되며 깜빡이던 현상을 차단했습니다.
   - `.main-content` 스크롤 영역에 `scrollbar-gutter: stable`을 적용하여 문서 길이에 따라 우측 스크롤바가 생겼다 사라지며 화면이 좌우로 흔들리던 현상을 방지했습니다.
-  - 구글 스프레드시트 데이터를 **실제 운영 서버(`xtron-guide.kr` / `main`)에서는 5분(`sessionStorage`) 캐싱**하고, **로컬 및 테스트(브랜치) 서버에서는 0초(실시간 반영)**로 동작하도록 분기 처리했습니다.
-  - 1번(매뉴얼)·2번(마법사)·3번(FAQ) 시트 데이터를 순차 대기 대신 `Promise.all`로 동시에 병렬 호출하여 초기 로딩 속도를 약 3배 단축했습니다.
+  - 구글 스프레드시트 데이터를 **실제 운영 서버(`xtron-guide.kr` / `main`)에서는 5분(`sessionStorage`) 캐싱**하고, **로컬 및 테스트(브랜치) 서버에서는 0초(실시간 반영)**로 동작하도록 분기 처리함과 동시에, `GuideContext.jsx`에서 1·2·3번 시트 응답을 `Promise.all` 완료 후 단일 React 배치(Batch)로 일괄 업데이트하여 테스트 서버에서도 다단계 리렌더링 깜빡임이 발생하지 않도록 개선했습니다.
 - **헤더 '처음으로' 버튼 단일 아이콘화 및 사이드바 일관 플로팅 툴팁 적용 (`src/components/Header.jsx`)**
   - 기존의 캡슐형 테두리와 텍스트("처음으로")를 제거하고 깔끔한 미니멀 집 아이콘(`Home`) 단독 버튼으로 변경했습니다.
   - 마우스 오버 시 브라우저 기본 네모 툴팁 대신 사이드바와 통일된 다크 플로팅 툴팁(어두운 라운드 배경 + 상단 꼭짓점 핀)이 나타나도록 구현했습니다.
@@ -336,7 +337,7 @@
     - 깃허브 스타일 알림 박스 지원: `> [!NOTE]`, `> [!CAUTION]` 등의 인용문을 감지하여 Lucide React 아이콘과 함께 색상이 적용된 직관적인 디자인 박스로 커스텀 렌더링합니다.
     - 적용 확인용으로 기존 `basic/pedal.md` 문서 하단에 아코디언 및 Mermaid 다이어그램 예제를 임의로 삽입하여 테스트를 마쳤습니다.
 - **사이드바 4단계 구조 확장 (`Sidebar.jsx`, `googleSheetsCMS.jsx`)**
-  - 기존 3단계(`대분류` > `중분류` > `본문`)로 제한되어 있던 카테고리 구조를 **4단계(`대분류` > `중분류` > `소분류` > `본문`)**로 유연하게 확장했습니다.
+  - 기존 3단계(`대분류` > `중분류` > `소분류` > `본문`)로 유연하게 확장했습니다.
   - 구글 스프레드시트에 `ChildCategoryID`와 `ChildCategoryTitle` 열을 추가하여 소분류 데이터를 파싱하도록 파서를 개선했습니다.
   - 소분류가 필요 없는 항목은 빈칸 처리 시 기존처럼 3단계로 동작하도록 하위 호환성을 완벽하게 보장합니다.
   - 검색 및 마법사 기능 호환성을 위해 로컬 가이드 데이터(`guides.jsx`)의 `allGuideItems` 평탄화 로직을 업데이트했습니다.

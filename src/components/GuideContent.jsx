@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useGuides } from '../context/GuideContext';
-import { ChevronLeft, ChevronRight, Image as ImageIcon, Video as VideoIcon, Link as LinkIcon, Check, Youtube, MessageCircle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Link as LinkIcon, Check, Youtube, MessageCircle } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
@@ -16,27 +16,41 @@ mermaid.initialize({
   securityLevel: 'loose',
 });
 
-const MermaidChart = ({ chart }) => {
-  const [svg, setSvg] = useState('');
+// Cache rendered Mermaid SVGs so re-renders or returning to a page never flash blank
+const mermaidSvgCache = new Map();
+
+const MermaidChart = React.memo(({ chart }) => {
+  const [svg, setSvg] = useState(() => mermaidSvgCache.get(chart) || '');
   useEffect(() => {
+    if (mermaidSvgCache.has(chart)) {
+      setSvg(mermaidSvgCache.get(chart));
+      return;
+    }
+    let cancelled = false;
     const renderChart = async () => {
       try {
         const id = 'mermaid-' + Math.random().toString(36).substr(2, 9);
-        const { svg } = await mermaid.render(id, chart);
-        setSvg(svg);
+        const { svg: renderedSvg } = await mermaid.render(id, chart);
+        mermaidSvgCache.set(chart, renderedSvg);
+        if (!cancelled) setSvg(renderedSvg);
       } catch (e) {
         console.error('Mermaid render error:', e);
-        setSvg(`<div style="color: red; padding: 1rem; border: 1px solid red; border-radius: 8px;">Mermaid Syntax Error</div>`);
+        if (!cancelled) {
+          setSvg(`<div style="color: red; padding: 1rem; border: 1px solid red; border-radius: 8px;">Mermaid Syntax Error</div>`);
+        }
       }
     };
     renderChart();
+    return () => {
+      cancelled = true;
+    };
   }, [chart]);
   return (
     <div style={{ width: '100%', overflowX: 'auto', margin: '2rem 0', paddingBottom: '1rem' }}>
       <div dangerouslySetInnerHTML={{ __html: svg }} style={{ display: 'flex', justifyContent: 'center', minWidth: '600px' }} />
     </div>
   );
-};
+});
 
 // Helper to resolve media URLs (supports full URL or relative CDN path)
 const resolveMediaUrl = (src) => {
@@ -69,6 +83,9 @@ const isVideoUrl = (url) => {
 
 // Load all markdown files synchronously at build time to prevent flash of empty content on menu switch
 const markdownModules = import.meta.glob('../data/markdown/**/*.md', { query: '?raw', import: 'default', eager: true });
+
+const REMARK_PLUGINS = [remarkGfm];
+const REHYPE_PLUGINS = [rehypeRaw];
 
 // Markdown renderer components (defined at module scope so references stay stable across renders and media never remounts)
 const MarkdownComponents = {
@@ -248,7 +265,7 @@ const MarkdownComponents = {
   }
 };
 
-export default function GuideContent({ activePage, setActivePage }) {
+function GuideContent({ activePage, setActivePage }) {
   const { allGuideItems } = useGuides();
   const guideIndex = allGuideItems.findIndex(item => item.id === activePage);
   const guide = allGuideItems[guideIndex];
@@ -266,6 +283,19 @@ export default function GuideContent({ activePage, setActivePage }) {
   const isMarkdownMissing = cleanFile
     ? !matchedModuleKey
     : Boolean(guide && !guide.customComponent && !guide.jsonData);
+
+  const renderedMarkdown = useMemo(() => {
+    if (!markdownContent) return null;
+    return (
+      <ReactMarkdown 
+        remarkPlugins={REMARK_PLUGINS} 
+        rehypePlugins={REHYPE_PLUGINS}
+        components={MarkdownComponents}
+      >
+        {markdownContent}
+      </ReactMarkdown>
+    );
+  }, [markdownContent]);
 
   if (!guide || isMarkdownMissing) {
     return (
@@ -307,7 +337,7 @@ export default function GuideContent({ activePage, setActivePage }) {
     boxShadow: 'var(--shadow-sm)'
   };
 
-  const TopActions = () => (
+  const topActionsElement = (
     <div className="top-actions-container" style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.8rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
       {guide.youtubeLink && (
         <a
@@ -345,7 +375,7 @@ export default function GuideContent({ activePage, setActivePage }) {
     </div>
   );
 
-  const NavigationButtons = () => (
+  const navigationButtonsElement = (
     <div className="nav-buttons-container" style={{ display: 'flex', gap: '0.5rem', alignItems: 'stretch' }}>
       {prevGuide ? (
         <button 
@@ -381,16 +411,16 @@ export default function GuideContent({ activePage, setActivePage }) {
   if (CustomComponent && !guide.markdownFile) {
     return (
       <div style={{ paddingBottom: '4rem', paddingTop: '1rem' }}>
-        <TopActions />
+        {topActionsElement}
         <CustomComponent />
-        <NavigationButtons />
+        {navigationButtonsElement}
       </div>
     );
   }
 
   return (
     <div style={{ paddingBottom: '4rem', paddingTop: '1rem' }}>
-      <TopActions />
+      {topActionsElement}
       <div className="glass-panel guide-panel">
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
           <div style={{ background: 'var(--ci-primary-light)', color: 'var(--ci-primary)', padding: '0.75rem', borderRadius: '12px' }}>
@@ -401,20 +431,14 @@ export default function GuideContent({ activePage, setActivePage }) {
 
         {guide.markdownFile ? (
           <div className="markdown-body">
-            <ReactMarkdown 
-              remarkPlugins={[remarkGfm]} 
-              rehypePlugins={[rehypeRaw]}
-              components={MarkdownComponents}
-            >
-              {markdownContent}
-            </ReactMarkdown>
+            {renderedMarkdown}
           </div>
         ) : guide.jsonData ? (
           <div className="json-data-body">
             {/* Intro */}
             {guide.jsonData.intro && (
               <div style={{ background: 'var(--ci-primary-light)', border: '1px solid rgba(47, 98, 134, 0.3)', borderRadius: 'var(--radius-md)', padding: '1.5rem', marginBottom: '2rem' }}>
-                <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]} components={MarkdownComponents}>
+                <ReactMarkdown remarkPlugins={REMARK_PLUGINS} rehypePlugins={REHYPE_PLUGINS} components={MarkdownComponents}>
                   {guide.jsonData.intro}
                 </ReactMarkdown>
               </div>
@@ -440,7 +464,7 @@ export default function GuideContent({ activePage, setActivePage }) {
                       <h4 style={{ fontSize: '1.2rem', color: 'var(--text-primary)', marginBottom: '0.8rem', marginTop: 0 }}>{step.title}</h4>
                       {step.text && (
                         <div style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '1rem', lineHeight: 1.6 }}>
-                          <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]} components={MarkdownComponents}>
+                          <ReactMarkdown remarkPlugins={REMARK_PLUGINS} rehypePlugins={REHYPE_PLUGINS} components={MarkdownComponents}>
                             {step.text}
                           </ReactMarkdown>
                         </div>
@@ -464,8 +488,10 @@ export default function GuideContent({ activePage, setActivePage }) {
           </div>
         ) : null}
 
-        <NavigationButtons />
+        {navigationButtonsElement}
       </div>
     </div>
   );
 }
+
+export default React.memo(GuideContent);

@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useGuides } from '../context/GuideContext';
-import { ChevronLeft, Menu, Home, LayoutGrid, MessageCircle, ShoppingBag, MapPin, Tag, Youtube } from 'lucide-react';
+import { Home, LayoutGrid, MessageCircle, ShoppingBag, MapPin, Tag, Youtube } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function Header({ activePage, setActivePage, isOpen, setIsOpen }) {
+function Header({ activePage, setActivePage, isOpen, setIsOpen }) {
   const { allGuideItems, faqItems } = useGuides();
   const guide = activePage ? allGuideItems.find(item => item.id === activePage) : null;
   const isWizard = activePage === 'troubleshooting-wizard';
@@ -34,9 +34,7 @@ export default function Header({ activePage, setActivePage, isOpen, setIsOpen })
       alignItems: 'center',
       position: 'sticky',
       top: 0,
-      background: 'rgba(255, 255, 255, 0.75)',
-      backdropFilter: 'blur(16px)',
-      WebkitBackdropFilter: 'blur(16px)',
+      background: 'rgba(255, 255, 255, 0.96)',
       zIndex: 50,
       minHeight: '64px',
       borderBottom: 'none',
@@ -270,3 +268,5 @@ function HeaderLinkButton({ icon, text, url }) {
     </a>
   );
 }
+
+export default React.memo(Header);

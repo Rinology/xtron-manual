@@ -1,9 +1,28 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGuides } from '../context/GuideContext';
-import { ChevronDown, ChevronRight, Search, Menu, MessageCircle, ShoppingBag, MapPin, Tag, Youtube, Sparkles, LayoutGrid, PanelLeftClose, HelpCircle } from 'lucide-react';
+import { ChevronDown, ChevronRight, Search, MessageCircle, ShoppingBag, MapPin, Tag, Youtube, Sparkles, LayoutGrid, PanelLeftClose, HelpCircle } from 'lucide-react';
 
-export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch }) {
+function SidebarTooltip({ text, visible }) {
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          initial={{ opacity: 0, x: -5, y: '-50%' }}
+          animate={{ opacity: 1, x: 0, y: '-50%' }}
+          exit={{ opacity: 0, x: -5, y: '-50%' }}
+          transition={{ duration: 0.15 }}
+          className="gemini-tooltip"
+        >
+          <div className="gemini-tooltip-arrow" />
+          <span style={{ position: 'relative', zIndex: 2 }}>{text}</span>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch }) {
   const { guidesData, wizardFlow, faqItems } = useGuides();
   const hasWizard = Boolean(
     wizardFlow &&
@@ -20,7 +39,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
   });
   const [openSubCategories, setOpenSubCategories] = useState({});
   const [openChildCategories, setOpenChildCategories] = useState({});
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth <= 768 : false);
   
   // 퀵링크 팝업 상태
   const [isQuickLinksOpen, setIsQuickLinksOpen] = useState(false);
@@ -35,6 +54,11 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  // 사이드바 열림/닫힘 상태 변경 시 잔여 호버 툴팁 즉시 초기화
+  useEffect(() => {
+    setHoveredButton(null);
+  }, [isOpen]);
 
   // 외부 클릭 시 퀵링크 팝업 닫기
   useEffect(() => {
@@ -89,49 +113,24 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
     </button>
   );
 
-  const Tooltip = ({ text, visible }) => (
-    <AnimatePresence>
-      {visible && (
-        <motion.div
-          initial={{ opacity: 0, x: -5, y: '-50%' }}
-          animate={{ opacity: 1, x: 0, y: '-50%' }}
-          exit={{ opacity: 0, x: -5, y: '-50%' }}
-          transition={{ duration: 0.15 }}
-          className="gemini-tooltip"
-        >
-          <div className="gemini-tooltip-arrow" />
-          <span style={{ position: 'relative', zIndex: 2 }}>{text}</span>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
+  const cdnUrl = import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr';
 
   return (
     <>
-      <AnimatePresence>
-        {isMobile && isOpen && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            onClick={() => setIsOpen(false)}
-            style={{
-              position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 90
-            }}
-          />
-        )}
-      </AnimatePresence>
+      {isMobile && isOpen && (
+        <div 
+          onClick={() => setIsOpen(false)}
+          style={{
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 90
+          }}
+        />
+      )}
 
-      <motion.aside 
-        initial={false}
-        animate={
-          isMobile 
-            ? { width: 300, x: isOpen ? 0 : -300 }
-            : { width: isOpen ? 300 : 68, x: 0 }
-        }
-        transition={{ duration: 0.35, ease: [0.2, 0, 0, 1] }}
+      <aside 
         style={{
+          width: isMobile ? '300px' : (isOpen ? '300px' : '68px'),
+          transform: isMobile ? (isOpen ? 'translateX(0)' : 'translateX(-300px)') : 'none',
+          transition: 'width 0.28s cubic-bezier(0.2, 0, 0, 1), transform 0.28s cubic-bezier(0.2, 0, 0, 1)',
           height: '100dvh',
           position: isMobile ? 'fixed' : 'sticky',
           top: 0,
@@ -153,7 +152,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
       >
         <div style={{ padding: '1rem 0 0.5rem 0', display: 'flex', flexDirection: 'column', gap: '1.25rem', flex: 1, minHeight: 0, overflow: 'visible' }}>
           
-          {/* Hamburger / Brand Area */}
+          {/* Hamburger / Brand Area - 두 로고 이미지를 DOM에 상시 유지하여 열림/닫힘 시 이미지 재디코딩 깜빡임 방지 */}
           <div style={{ 
             display: 'flex', 
             alignItems: 'center', 
@@ -164,430 +163,386 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
             boxSizing: 'border-box',
             flexShrink: 0
           }}>
-            {isOpen ? (
-              <>
-                {/* Full Brand Logo */}
+            <div style={{ display: isOpen ? 'flex' : 'none', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+              {/* Full Brand Logo */}
+              <img 
+                src={`${cdnUrl}/Common-logo/Xtron_x_Qualisports_Logo_Black.webp`} 
+                alt="Qualisports Logo" 
+                style={{ height: '20px', objectFit: 'contain', cursor: 'pointer' }} 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActivePage(null);
+                  if (isMobile) setIsOpen(false);
+                }}
+              />
+              {/* Sidebar Collapse/Close Button */}
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsOpen(false);
+                }}
+                style={{ 
+                   background: 'transparent', border: 'none', cursor: 'pointer', 
+                   display: 'flex', alignItems: 'center', justifyContent: 'center',
+                   color: 'var(--text-primary)', padding: '0.4rem', borderRadius: '50%',
+                   transition: 'background 0.2s', flexShrink: 0
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-border)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+              >
+                <PanelLeftClose size={20} />
+              </button>
+            </div>
+
+            {/* Sidebar Expand Button (X Logo) when collapsed */}
+            <div style={{ position: 'relative', display: isOpen ? 'none' : 'block' }}>
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setHoveredButton(null);
+                  setIsOpen(true);
+                }}
+                style={{ 
+                   background: 'transparent', border: 'none', cursor: 'pointer', 
+                   display: 'flex', alignItems: 'center', justifyContent: 'center',
+                   padding: '0.4rem', borderRadius: '50%',
+                   transition: 'background 0.2s', flexShrink: 0
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = 'var(--surface-border)';
+                  setHoveredButton('expand');
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = 'transparent';
+                  setHoveredButton(null);
+                }}
+              >
                 <img 
-                  src={`${import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr'}/Common-logo/Xtron_x_Qualisports_Logo_Black.webp`} 
-                  alt="Qualisports Logo" 
-                  style={{ height: '20px', objectFit: 'contain', cursor: 'pointer' }} 
+                  src={`${cdnUrl}/Common-logo/X_logo_black_v2.webp`} 
+                  alt="Menu" 
+                  style={{ width: '24px', height: '24px', objectFit: 'contain' }}
+                />
+              </button>
+              <SidebarTooltip text="사이드바 열기" visible={!isOpen && !activePage && hoveredButton === 'expand'} />
+            </div>
+          </div>
+
+          {/* Top Actions: Wizard & Search */}
+          <div style={{ padding: '0 1rem', display: 'flex', flexDirection: 'column', gap: '0.2rem', flexShrink: 0 }}>
+            <div style={{ display: isOpen ? 'flex' : 'none', flexDirection: 'column', gap: '0.2rem' }}>
+              {hasWizard && (
+                <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    setActivePage(null);
+                    setActivePage('troubleshooting-wizard');
                     if (isMobile) setIsOpen(false);
                   }}
-                />
-                {/* Sidebar Collapse/Close Button */}
-                <button 
+                  style={{
+                    width: '100%', display: 'flex', alignItems: 'center', gap: '0.75rem',
+                    padding: '0.65rem 1rem', borderRadius: 'var(--radius-full)',
+                    background: activePage === 'troubleshooting-wizard' ? 'var(--ci-primary-light)' : 'transparent',
+                    color: activePage === 'troubleshooting-wizard' ? 'var(--ci-primary)' : 'var(--text-primary)',
+                    fontSize: '0.9rem', border: 'none', cursor: 'pointer',
+                    transition: 'all 0.2s', marginBottom: '0.25rem', whiteSpace: 'nowrap'
+                  }}
+                  onMouseEnter={e => {
+                    if (activePage !== 'troubleshooting-wizard') e.currentTarget.style.background = 'var(--surface-border)';
+                  }}
+                  onMouseLeave={e => {
+                    if (activePage !== 'troubleshooting-wizard') e.currentTarget.style.background = 'transparent';
+                  }}
+                >
+                  <Sparkles size={18} color={activePage === 'troubleshooting-wizard' ? 'var(--ci-primary)' : 'var(--text-secondary)'} style={{ flexShrink: 0 }} />
+                  <span><strong style={{ fontWeight: 700 }}><span style={{ color: 'var(--ci-secondary)' }}>X</span><span style={{ color: 'var(--ci-primary)' }}>enie</span></strong> (자가진단 마법사)</span>
+                </button>
+              )}
+              {hasFaq && (
+                <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    setIsOpen(false);
+                    setActivePage('faq');
+                    if (isMobile) setIsOpen(false);
                   }}
-                  style={{ 
-                     background: 'transparent', border: 'none', cursor: 'pointer', 
-                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                     color: 'var(--text-primary)', padding: '0.4rem', borderRadius: '50%',
-                     transition: 'background 0.2s', flexShrink: 0
+                  style={{
+                    width: '100%', display: 'flex', alignItems: 'center', gap: '0.75rem',
+                    padding: '0.65rem 1rem', borderRadius: 'var(--radius-full)',
+                    background: isFaqActive ? 'var(--ci-primary-light)' : 'transparent',
+                    color: isFaqActive ? 'var(--ci-primary)' : 'var(--text-primary)',
+                    fontSize: '0.9rem', border: 'none', cursor: 'pointer',
+                    transition: 'all 0.2s', marginBottom: '0.25rem', whiteSpace: 'nowrap'
                   }}
-                  onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-border)'}
-                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                  onMouseEnter={e => {
+                    if (!isFaqActive) e.currentTarget.style.background = 'var(--surface-border)';
+                  }}
+                  onMouseLeave={e => {
+                    if (!isFaqActive) e.currentTarget.style.background = 'transparent';
+                  }}
                 >
-                  <PanelLeftClose size={20} />
+                  <HelpCircle size={18} color={isFaqActive ? 'var(--ci-primary)' : 'var(--text-secondary)'} style={{ flexShrink: 0 }} />
+                  <span>자주 묻는 질문 <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', opacity: 0.65, fontWeight: 400 }}>(FAQ)</span></span>
                 </button>
-              </>
-            ) : (
-              /* Sidebar Expand Button (X Logo) when collapsed */
+              )}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenSearch();
+                }}
+                style={{
+                  width: '100%', display: 'flex', alignItems: 'center', gap: '0.75rem',
+                  padding: '0.65rem 1rem', borderRadius: 'var(--radius-full)',
+                  background: 'transparent', color: 'var(--text-primary)',
+                  fontSize: '0.9rem', border: 'none', cursor: 'pointer',
+                  transition: 'background 0.2s', whiteSpace: 'nowrap'
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-border)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+              >
+                <Search size={18} color="var(--text-secondary)" style={{ flexShrink: 0 }} />
+                <span>검색 <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', opacity: 0.65, fontWeight: 400 }}>(Ctrl + K)</span></span>
+              </button>
+            </div>
+
+            <div style={{ display: isOpen ? 'none' : 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+              {hasWizard && (
+                <div style={{ position: 'relative' }}>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setHoveredButton(null);
+                      setActivePage('troubleshooting-wizard');
+                      if (isMobile) setIsOpen(false);
+                    }}
+                    style={{
+                      width: '40px', height: '40px', borderRadius: '50%', border: 'none',
+                      background: activePage === 'troubleshooting-wizard' ? 'var(--ci-primary-light)' : 'transparent',
+                      color: activePage === 'troubleshooting-wizard' ? 'var(--ci-primary)' : 'var(--text-secondary)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      cursor: 'pointer', transition: 'all 0.2s'
+                    }}
+                    onMouseEnter={e => {
+                      if (activePage !== 'troubleshooting-wizard') e.currentTarget.style.background = 'var(--surface-border)';
+                      setHoveredButton('wizard');
+                    }}
+                    onMouseLeave={e => {
+                      if (activePage !== 'troubleshooting-wizard') e.currentTarget.style.background = 'transparent';
+                      setHoveredButton(null);
+                    }}
+                  >
+                    <Sparkles size={18} />
+                  </button>
+                  <SidebarTooltip text="Xenie (자가진단 마법사)" visible={!isOpen && hoveredButton === 'wizard'} />
+                </div>
+              )}
+
+              {hasFaq && (
+                <div style={{ position: 'relative' }}>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setHoveredButton(null);
+                      setActivePage('faq');
+                      if (isMobile) setIsOpen(false);
+                    }}
+                    style={{
+                      width: '40px', height: '40px', borderRadius: '50%', border: 'none',
+                      background: isFaqActive ? 'var(--ci-primary-light)' : 'transparent',
+                      color: isFaqActive ? 'var(--ci-primary)' : 'var(--text-secondary)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      cursor: 'pointer', transition: 'all 0.2s'
+                    }}
+                    onMouseEnter={e => {
+                      if (!isFaqActive) e.currentTarget.style.background = 'var(--surface-border)';
+                      setHoveredButton('faq');
+                    }}
+                    onMouseLeave={e => {
+                      if (!isFaqActive) e.currentTarget.style.background = 'transparent';
+                      setHoveredButton(null);
+                    }}
+                  >
+                    <HelpCircle size={18} />
+                  </button>
+                  <SidebarTooltip text="자주 묻는 질문 (FAQ)" visible={!isOpen && hoveredButton === 'faq'} />
+                </div>
+              )}
+
               <div style={{ position: 'relative' }}>
-                <button 
+                <button
                   onClick={(e) => {
                     e.stopPropagation();
                     setHoveredButton(null);
-                    setIsOpen(true);
+                    onOpenSearch();
                   }}
-                  style={{ 
-                     background: 'transparent', border: 'none', cursor: 'pointer', 
-                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                     padding: '0.4rem', borderRadius: '50%',
-                     transition: 'background 0.2s', flexShrink: 0
+                  style={{
+                    width: '40px', height: '40px', borderRadius: '50%', border: 'none',
+                    background: 'transparent', color: 'var(--text-secondary)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    cursor: 'pointer', transition: 'background 0.2s'
                   }}
                   onMouseEnter={e => {
                     e.currentTarget.style.background = 'var(--surface-border)';
-                    setHoveredButton('expand');
+                    setHoveredButton('search');
                   }}
                   onMouseLeave={e => {
                     e.currentTarget.style.background = 'transparent';
                     setHoveredButton(null);
                   }}
                 >
-                  <img 
-                    src={`${import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr'}/Common-logo/X_logo_black_v2.webp`} 
-                    alt="Menu" 
-                    style={{ width: '24px', height: '24px', objectFit: 'contain' }}
-                  />
+                  <Search size={18} />
                 </button>
-                <Tooltip text="사이드바 열기" visible={!activePage && hoveredButton === 'expand'} />
+                <SidebarTooltip text="검색 Ctrl + K" visible={!isOpen && hoveredButton === 'search'} />
               </div>
-            )}
+            </div>
           </div>
 
-          {/* Top Actions: Wizard & Search */}
-          <div style={{ padding: '0 1rem', display: 'flex', flexDirection: 'column', gap: '0.2rem', flexShrink: 0 }}>
-            {isOpen ? (
-              <>
-                {hasWizard && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setActivePage('troubleshooting-wizard');
-                      if (isMobile) setIsOpen(false);
-                    }}
-                    style={{
-                      width: '100%', display: 'flex', alignItems: 'center', gap: '0.75rem',
-                      padding: '0.65rem 1rem', borderRadius: 'var(--radius-full)',
-                      background: activePage === 'troubleshooting-wizard' ? 'var(--ci-primary-light)' : 'transparent',
-                      color: activePage === 'troubleshooting-wizard' ? 'var(--ci-primary)' : 'var(--text-primary)',
-                      fontSize: '0.9rem', border: 'none', cursor: 'pointer',
-                      transition: 'all 0.2s', marginBottom: '0.25rem'
-                    }}
-                    onMouseEnter={e => {
-                      if (activePage !== 'troubleshooting-wizard') e.currentTarget.style.background = 'var(--surface-border)';
-                    }}
-                    onMouseLeave={e => {
-                      if (activePage !== 'troubleshooting-wizard') e.currentTarget.style.background = 'transparent';
-                    }}
-                  >
-                    <Sparkles size={18} color={activePage === 'troubleshooting-wizard' ? 'var(--ci-primary)' : 'var(--text-secondary)'} />
-                    <span><strong style={{ fontWeight: 700 }}><span style={{ color: 'var(--ci-secondary)' }}>X</span><span style={{ color: 'var(--ci-primary)' }}>enie</span></strong> (자가진단 마법사)</span>
-                  </button>
-                )}
-                {hasFaq && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setActivePage('faq');
-                      if (isMobile) setIsOpen(false);
-                    }}
-                    style={{
-                      width: '100%', display: 'flex', alignItems: 'center', gap: '0.75rem',
-                      padding: '0.65rem 1rem', borderRadius: 'var(--radius-full)',
-                      background: isFaqActive ? 'var(--ci-primary-light)' : 'transparent',
-                      color: isFaqActive ? 'var(--ci-primary)' : 'var(--text-primary)',
-                      fontSize: '0.9rem', border: 'none', cursor: 'pointer',
-                      transition: 'all 0.2s', marginBottom: '0.25rem'
-                    }}
-                    onMouseEnter={e => {
-                      if (!isFaqActive) e.currentTarget.style.background = 'var(--surface-border)';
-                    }}
-                    onMouseLeave={e => {
-                      if (!isFaqActive) e.currentTarget.style.background = 'transparent';
-                    }}
-                  >
-                    <HelpCircle size={18} color={isFaqActive ? 'var(--ci-primary)' : 'var(--text-secondary)'} />
-                    <span>자주 묻는 질문 <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', opacity: 0.65, fontWeight: 400 }}>(FAQ)</span></span>
-                  </button>
-                )}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onOpenSearch();
-                  }}
-                  style={{
-                    width: '100%', display: 'flex', alignItems: 'center', gap: '0.75rem',
-                    padding: '0.65rem 1rem', borderRadius: 'var(--radius-full)',
-                    background: 'transparent', color: 'var(--text-primary)',
-                    fontSize: '0.9rem', border: 'none', cursor: 'pointer',
-                    transition: 'background 0.2s'
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-border)'}
-                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                >
-                  <Search size={18} color="var(--text-secondary)" />
-                  <span>검색 <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', opacity: 0.65, fontWeight: 400 }}>(Ctrl + K)</span></span>
-                </button>
-              </>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-                {hasWizard && (
-                  <div style={{ position: 'relative' }}>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setHoveredButton(null);
-                        setActivePage('troubleshooting-wizard');
+          {/* Navigation Categories - DOM 상시 유지하여 사이드바 열림 시 레이아웃 재계산/깜빡임 원천 차단 */}
+          <nav className="custom-scrollbar" style={{ display: isOpen ? 'flex' : 'none', flexDirection: 'column', gap: '1.25rem', flex: 1, padding: '0 1rem', overflowY: 'auto', overflowX: 'hidden' }}>
+            {guidesData.categories.map(category => {
+              let displayItems = [];
+              let displaySubCats = [];
+
+              if (category.items) {
+                displayItems = [...category.items];
+              }
+
+              if (category.subCategories) {
+                displaySubCats = category.subCategories.map(sub => ({
+                  ...sub,
+                  items: sub.items ? [...sub.items] : [],
+                  childCategories: sub.childCategories ? [...sub.childCategories] : []
+                }));
+              }
+
+              const isOpened = openCategories[category.id];
+
+              // 서브카테고리가 없고 직속 아이템이 딱 1개인 경우: 아코디언 폴더 대신 바로 클릭 가능한 본문 링크로 렌더링
+              if (displaySubCats.length === 0 && displayItems.length === 1) {
+                const item = displayItems[0];
+                return (
+                  <div key={category.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                    <button 
+                      onClick={() => {
+                        setActivePage(item.id);
+                        window.scrollTo({ top: 0, behavior: 'instant' });
                         if (isMobile) setIsOpen(false);
                       }}
-                      style={{
-                        width: '40px', height: '40px', borderRadius: '50%', border: 'none',
-                        background: activePage === 'troubleshooting-wizard' ? 'var(--ci-primary-light)' : 'transparent',
-                        color: activePage === 'troubleshooting-wizard' ? 'var(--ci-primary)' : 'var(--text-secondary)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        cursor: 'pointer', transition: 'all 0.2s'
+                      style={{ 
+                         display: 'flex', alignItems: 'center', justifyContent: 'space-between', 
+                         cursor: 'pointer', padding: '0.5rem',
+                         background: activePage === item.id ? 'var(--ci-primary-light)' : 'transparent',
+                         border: 'none', borderRadius: 'var(--radius-md)',
+                         width: '100%', textAlign: 'left', transition: 'all 0.2s'
                       }}
                       onMouseEnter={e => {
-                        if (activePage !== 'troubleshooting-wizard') e.currentTarget.style.background = 'var(--surface-border)';
-                        setHoveredButton('wizard');
+                         if(activePage !== item.id) e.currentTarget.style.background = 'var(--surface-border)';
                       }}
                       onMouseLeave={e => {
-                        if (activePage !== 'troubleshooting-wizard') e.currentTarget.style.background = 'transparent';
-                        setHoveredButton(null);
+                         if(activePage !== item.id) e.currentTarget.style.background = 'transparent';
                       }}
                     >
-                      <Sparkles size={18} />
+                      <h3 style={{ fontSize: '0.8rem', color: activePage === item.id ? 'var(--ci-primary)' : 'var(--text-secondary)', margin: 0, fontWeight: 700, whiteSpace: 'nowrap', letterSpacing: '0.02em' }}>
+                        {category.title}
+                      </h3>
                     </button>
-                    <Tooltip text="Xenie (자가진단 마법사)" visible={hoveredButton === 'wizard'} />
                   </div>
-                )}
+                );
+              }
 
-                {hasFaq && (
-                  <div style={{ position: 'relative' }}>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setHoveredButton(null);
-                        setActivePage('faq');
-                        if (isMobile) setIsOpen(false);
-                      }}
-                      style={{
-                        width: '40px', height: '40px', borderRadius: '50%', border: 'none',
-                        background: isFaqActive ? 'var(--ci-primary-light)' : 'transparent',
-                        color: isFaqActive ? 'var(--ci-primary)' : 'var(--text-secondary)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        cursor: 'pointer', transition: 'all 0.2s'
-                      }}
-                      onMouseEnter={e => {
-                        if (!isFaqActive) e.currentTarget.style.background = 'var(--surface-border)';
-                        setHoveredButton('faq');
-                      }}
-                      onMouseLeave={e => {
-                        if (!isFaqActive) e.currentTarget.style.background = 'transparent';
-                        setHoveredButton(null);
-                      }}
-                    >
-                      <HelpCircle size={18} />
-                    </button>
-                    <Tooltip text="자주 묻는 질문 (FAQ)" visible={hoveredButton === 'faq'} />
-                  </div>
-                )}
-
-                <div style={{ position: 'relative' }}>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setHoveredButton(null);
-                      onOpenSearch();
-                    }}
-                    style={{
-                      width: '40px', height: '40px', borderRadius: '50%', border: 'none',
-                      background: 'transparent', color: 'var(--text-secondary)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      cursor: 'pointer', transition: 'background 0.2s'
-                    }}
-                    onMouseEnter={e => {
-                      e.currentTarget.style.background = 'var(--surface-border)';
-                      setHoveredButton('search');
-                    }}
-                    onMouseLeave={e => {
-                      e.currentTarget.style.background = 'transparent';
-                      setHoveredButton(null);
+              return (
+                <div key={category.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                  <div 
+                    onClick={() => toggleCategory(category.id)} 
+                    style={{ 
+                       display: 'flex', alignItems: 'center', justifyContent: 'space-between', 
+                       cursor: 'pointer', padding: '0.5rem'
                     }}
                   >
-                    <Search size={18} />
-                  </button>
-                  <Tooltip text="검색 Ctrl + K" visible={hoveredButton === 'search'} />
-                </div>
-              </div>
-            )}
-          </div>
+                    <h3 style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0, fontWeight: 700, whiteSpace: 'nowrap', letterSpacing: '0.02em' }}>
+                      {category.title}
+                    </h3>
+                    {isOpened ? <ChevronDown size={14} color="var(--text-secondary)" /> : <ChevronRight size={14} color="var(--text-secondary)" />}
+                  </div>
+                  
+                  {isOpened && (
+                    <div
+                      style={{ 
+                        overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '0.2rem',
+                        marginLeft: '0.85rem', paddingLeft: '0.85rem', borderLeft: '1px solid #dde3ea'
+                      }}
+                    >
+                      {displayItems.map(item => renderGuideItem(item))}
 
-          {/* Navigation Categories */}
-          <nav className="custom-scrollbar" style={{ display: 'flex', flexDirection: 'column', gap: isOpen ? '1rem' : '0.5rem', flex: 1, padding: '0 1rem', overflowY: 'auto', overflowX: 'hidden' }}>
-            <AnimatePresence mode="popLayout">
-              {isOpen && (
-                <motion.div
-                  key="nav-content"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0, transition: { duration: 0.15 } }}
-                  transition={{ duration: 0.3, delay: 0.1 }}
-                  style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}
-                >
-                  {guidesData.categories.map(category => {
-                    let displayItems = [];
-                    let displaySubCats = [];
-
-                    if (category.items) {
-                      displayItems = [...category.items];
-                    }
-
-                    if (category.subCategories) {
-                      displaySubCats = category.subCategories.map(sub => ({
-                        ...sub,
-                        items: sub.items ? [...sub.items] : [],
-                        childCategories: sub.childCategories ? [...sub.childCategories] : []
-                      }));
-                    }
-
-                    const isOpened = openCategories[category.id];
-
-                    if (category.id === 'downloads') {
-                      console.log('DEBUG DOWNLOADS CAT:', {
-                        displaySubCatsLen: displaySubCats.length,
-                        displayItemsLen: displayItems.length,
-                        displaySubCats,
-                        displayItems
-                      });
-                    }
-
-                    // 서브카테고리가 없고 직속 아이템이 딱 1개인 경우: 아코디언 폴더 대신 바로 클릭 가능한 본문 링크로 렌더링
-                    if (displaySubCats.length === 0 && displayItems.length === 1) {
-                      const item = displayItems[0];
-                      return (
-                        <div key={category.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                          <button 
-                            onClick={() => {
-                              setActivePage(item.id);
-                              window.scrollTo({ top: 0, behavior: 'instant' });
-                              if (isMobile) setIsOpen(false);
-                            }}
-                            style={{ 
-                               display: 'flex', alignItems: 'center', justifyContent: 'space-between', 
-                               cursor: 'pointer', padding: '0.5rem',
-                               background: activePage === item.id ? 'var(--ci-primary-light)' : 'transparent',
-                               border: 'none', borderRadius: 'var(--radius-md)',
-                               width: '100%', textAlign: 'left', transition: 'all 0.2s'
-                            }}
-                            onMouseEnter={e => {
-                               if(activePage !== item.id) e.currentTarget.style.background = 'var(--surface-border)';
-                            }}
-                            onMouseLeave={e => {
-                               if(activePage !== item.id) e.currentTarget.style.background = 'transparent';
-                            }}
-                          >
-                            <h3 style={{ fontSize: '0.8rem', color: activePage === item.id ? 'var(--ci-primary)' : 'var(--text-secondary)', margin: 0, fontWeight: 700, whiteSpace: 'nowrap', letterSpacing: '0.02em' }}>
-                              {category.title}
-                            </h3>
-                          </button>
-                        </div>
-                      );
-                    }
-
-                    return (
-                      <div key={category.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                        <div 
-                          onClick={() => toggleCategory(category.id)} 
-                          style={{ 
-                             display: 'flex', alignItems: 'center', justifyContent: 'space-between', 
-                             cursor: 'pointer', padding: '0.5rem'
-                          }}
-                        >
-                          <h3 style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0, fontWeight: 700, whiteSpace: 'nowrap', letterSpacing: '0.02em' }}>
-                            {category.title}
-                          </h3>
-                          {isOpened ? <ChevronDown size={14} color="var(--text-secondary)" /> : <ChevronRight size={14} color="var(--text-secondary)" />}
-                        </div>
-                        
-                        <AnimatePresence initial={false}>
-                          {isOpened && (
-                            <motion.div
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: 'auto' }}
-                              exit={{ opacity: 0, height: 0 }}
-                              transition={{ duration: 0.2 }}
-                              style={{ 
-                                overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '0.2rem',
-                                marginLeft: '0.85rem', paddingLeft: '0.85rem', borderLeft: '1px solid #dde3ea'
+                      {displaySubCats.map(subCat => {
+                        const isSubOpened = openSubCategories[subCat.id];
+                        return (
+                          <div key={subCat.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', marginTop: '0.25rem' }}>
+                            <div 
+                              onClick={() => toggleSubCategory(subCat.id)}
+                              style={{
+                                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                                padding: '0.6rem 0.5rem', cursor: 'pointer',
+                                borderRadius: 'var(--radius-md)', transition: 'background 0.2s'
                               }}
+                              onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-border)'}
+                              onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                             >
-                              {displayItems.map(item => renderGuideItem(item))}
-
-                              {displaySubCats.map(subCat => {
-                                const isSubOpened = openSubCategories[subCat.id];
-                                return (
-                                  <div key={subCat.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', marginTop: '0.25rem' }}>
-                                    <div 
-                                      onClick={() => toggleSubCategory(subCat.id)}
-                                      style={{
-                                        display: 'flex', alignItems: 'center', gap: '0.5rem',
-                                        padding: '0.6rem 0.5rem', cursor: 'pointer',
-                                        borderRadius: 'var(--radius-md)', transition: 'background 0.2s'
-                                      }}
-                                      onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-border)'}
-                                      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                                    >
-                                      {isSubOpened ? <ChevronDown size={14} color="var(--ci-primary)" /> : <ChevronRight size={14} color="var(--text-secondary)" />}
-                                      <span style={{ fontSize: '0.9rem', fontWeight: 600, color: isSubOpened ? 'var(--ci-primary)' : 'var(--text-primary)' }}>
-                                        {subCat.title}
-                                      </span>
-                                    </div>
-                                    
-                                    <AnimatePresence initial={false}>
-                                      {isSubOpened && (
-                                        <motion.div
-                                          initial={{ opacity: 0, height: 0 }}
-                                          animate={{ opacity: 1, height: 'auto' }}
-                                          exit={{ opacity: 0, height: 0 }}
-                                          transition={{ duration: 0.2 }}
+                              {isSubOpened ? <ChevronDown size={14} color="var(--ci-primary)" /> : <ChevronRight size={14} color="var(--text-secondary)" />}
+                              <span style={{ fontSize: '0.9rem', fontWeight: 600, color: isSubOpened ? 'var(--ci-primary)' : 'var(--text-primary)', whiteSpace: 'nowrap' }}>
+                                {subCat.title}
+                              </span>
+                            </div>
+                            
+                            {isSubOpened && (
+                              <div
+                                style={{ 
+                                  overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '0.1rem',
+                                  marginLeft: '0.85rem', paddingLeft: '0.85rem', borderLeft: '1px solid #dde3ea'
+                                }}
+                              >
+                                {subCat.childCategories && subCat.childCategories.map(childCat => {
+                                  const isChildOpened = openChildCategories[childCat.id];
+                                  return (
+                                    <div key={childCat.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem' }}>
+                                      <div 
+                                        onClick={() => toggleChildCategory(childCat.id)}
+                                        style={{
+                                          display: 'flex', alignItems: 'center', gap: '0.5rem',
+                                          padding: '0.6rem 0.5rem', cursor: 'pointer',
+                                          borderRadius: 'var(--radius-md)', transition: 'background 0.2s'
+                                        }}
+                                        onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-border)'}
+                                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                                      >
+                                        {isChildOpened ? <ChevronDown size={14} color="var(--ci-primary)" /> : <ChevronRight size={14} color="var(--text-secondary)" />}
+                                        <span style={{ fontSize: '0.85rem', fontWeight: 600, color: isChildOpened ? 'var(--ci-primary)' : 'var(--text-primary)', whiteSpace: 'nowrap' }}>
+                                          {childCat.title}
+                                        </span>
+                                      </div>
+                                      
+                                      {isChildOpened && (
+                                        <div
                                           style={{ 
                                             overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '0.1rem',
                                             marginLeft: '0.85rem', paddingLeft: '0.85rem', borderLeft: '1px solid #dde3ea'
                                           }}
                                         >
-                                          {subCat.childCategories && subCat.childCategories.map(childCat => {
-                                            const isChildOpened = openChildCategories[childCat.id];
-                                            return (
-                                              <div key={childCat.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem' }}>
-                                                <div 
-                                                  onClick={() => toggleChildCategory(childCat.id)}
-                                                  style={{
-                                                    display: 'flex', alignItems: 'center', gap: '0.5rem',
-                                                    padding: '0.6rem 0.5rem', cursor: 'pointer',
-                                                    borderRadius: 'var(--radius-md)', transition: 'background 0.2s'
-                                                  }}
-                                                  onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-border)'}
-                                                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                                                >
-                                                  {isChildOpened ? <ChevronDown size={14} color="var(--ci-primary)" /> : <ChevronRight size={14} color="var(--text-secondary)" />}
-                                                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: isChildOpened ? 'var(--ci-primary)' : 'var(--text-primary)' }}>
-                                                    {childCat.title}
-                                                  </span>
-                                                </div>
-                                                
-                                                <AnimatePresence initial={false}>
-                                                  {isChildOpened && (
-                                                    <motion.div
-                                                      initial={{ opacity: 0, height: 0 }}
-                                                      animate={{ opacity: 1, height: 'auto' }}
-                                                      exit={{ opacity: 0, height: 0 }}
-                                                      transition={{ duration: 0.2 }}
-                                                      style={{ 
-                                                        overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '0.1rem',
-                                                        marginLeft: '0.85rem', paddingLeft: '0.85rem', borderLeft: '1px solid #dde3ea'
-                                                      }}
-                                                    >
-                                                      {childCat.items.map(item => renderGuideItem(item))}
-                                                    </motion.div>
-                                                  )}
-                                                </AnimatePresence>
-                                              </div>
-                                            );
-                                          })}
-
-                                          {subCat.items && subCat.items.map(item => renderGuideItem(item))}
-                                        </motion.div>
+                                          {childCat.items.map(item => renderGuideItem(item))}
+                                        </div>
                                       )}
-                                    </AnimatePresence>
-                                  </div>
-                                );
-                              })}
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    );
-                  })}
-                </motion.div>
-              )}
-            </AnimatePresence>
+                                    </div>
+                                  );
+                                })}
+
+                                {subCat.items && subCat.items.map(item => renderGuideItem(item))}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </nav>
         </div>
 
@@ -616,7 +571,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
           >
             <LayoutGrid size={22} />
           </button>
-          {!isOpen && <Tooltip text="QUICK LINKS" visible={hoveredButton === 'quicklinks'} />}
+          {!isOpen && <SidebarTooltip text="QUICK LINKS" visible={hoveredButton === 'quicklinks'} />}
 
           <AnimatePresence>
             {isQuickLinksOpen && (
@@ -650,7 +605,7 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, 
           </AnimatePresence>
         </div>
 
-      </motion.aside>
+      </aside>
     </>
   );
 }
@@ -676,3 +631,5 @@ function PopupLinkButton({ icon, text, url }) {
       </a>
    );
 }
+
+export default React.memo(Sidebar);

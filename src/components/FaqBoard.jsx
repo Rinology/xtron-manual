@@ -172,7 +172,7 @@ const MarkdownComponents = {
   video: ({ node, src }) => <VideoPlayer src={resolveMediaUrl(src)} />
 };
 
-export default function FaqBoard({ activePage, setActivePage }) {
+function FaqBoard({ activePage, setActivePage }) {
   const { faqItems, isFaqLoading, allGuideItems } = useGuides();
   const [selectedCategory, setSelectedCategory] = useState('전체');
   const [searchQuery, setSearchQuery] = useState('');
@@ -971,3 +971,5 @@ export default function FaqBoard({ activePage, setActivePage }) {
     </div>
   );
 }
+
+export default React.memo(FaqBoard);

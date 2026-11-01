@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, RotateCcw, Home, Sparkles, MessageCircle, Lightbulb, Search } from 'lucide-react';
+import { ChevronRight, RotateCcw, Sparkles, Lightbulb, Search } from 'lucide-react';
 import { useGuides } from '../context/GuideContext';
 
-export default function TroubleshootingWizard({ setActivePage }) {
+function TroubleshootingWizard({ setActivePage }) {
   const { wizardFlow, isWizardLoading } = useGuides();
   const [currentNode, setCurrentNode] = useState('start');
   const [history, setHistory] = useState([]);
@@ -321,3 +321,5 @@ export default function TroubleshootingWizard({ setActivePage }) {
     </div>
   );
 }
+
+export default React.memo(TroubleshootingWizard);
