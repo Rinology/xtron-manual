@@ -23,31 +23,6 @@ function SidebarTooltip({ text, visible }) {
   );
 }
 
-// 현재 선택된 문서의 대분류/중분류/소분류 경로를 탐색하는 헬퍼 함수
-const findCategoryHierarchy = (categories, itemId) => {
-  if (!categories || !itemId) return null;
-  for (const cat of categories) {
-    if (cat.items && cat.items.some(item => item.id === itemId)) {
-      return { catId: cat.id, subId: null, childId: null };
-    }
-    if (cat.subCategories) {
-      for (const sub of cat.subCategories) {
-        if (sub.items && sub.items.some(item => item.id === itemId)) {
-          return { catId: cat.id, subId: sub.id, childId: null };
-        }
-        if (sub.childCategories) {
-          for (const child of sub.childCategories) {
-            if (child.items && child.items.some(item => item.id === itemId)) {
-              return { catId: cat.id, subId: sub.id, childId: child.id };
-            }
-          }
-        }
-      }
-    }
-  }
-  return null;
-};
-
 function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch }) {
   const { guidesData, wizardFlow, faqItems } = useGuides();
   const hasWizard = Boolean(
@@ -58,30 +33,13 @@ function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch })
   );
   const hasFaq = Boolean(faqItems && faqItems.length > 0);
   const isFaqActive = activePage === 'faq' || Boolean(activePage && faqItems && faqItems.some(f => f.id.toLowerCase() === activePage.toLowerCase()));
-  const [openCategories, setOpenCategories] = useState({});
+  const [openCategories, setOpenCategories] = useState({
+    "basic": true,
+    "battery-guide": true,
+    "troubleshooting": true
+  });
   const [openSubCategories, setOpenSubCategories] = useState({});
   const [openChildCategories, setOpenChildCategories] = useState({});
-
-  // activePage 변경 시: 홈/FAQ/마법사 진입 시 모든 아코디언 일괄 닫기, 본문 진입 시 해당 문서가 속한 분류만 열기
-  useEffect(() => {
-    if (!activePage || activePage === 'troubleshooting-wizard' || isFaqActive) {
-      setOpenCategories({});
-      setOpenSubCategories({});
-      setOpenChildCategories({});
-      return;
-    }
-
-    const hierarchy = findCategoryHierarchy(guidesData?.categories, activePage);
-    if (hierarchy) {
-      setOpenCategories({ [hierarchy.catId]: true });
-      setOpenSubCategories(hierarchy.subId ? { [hierarchy.subId]: true } : {});
-      setOpenChildCategories(hierarchy.childId ? { [hierarchy.childId]: true } : {});
-    } else {
-      setOpenCategories({});
-      setOpenSubCategories({});
-      setOpenChildCategories({});
-    }
-  }, [activePage, guidesData?.categories, isFaqActive]);
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth <= 768 : false);
   
   // 퀵링크 팝업 상태
@@ -114,14 +72,9 @@ function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch })
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // 대분류 클릭 시 단일 아코디언 (다른 대분류는 닫히고 클릭한 대분류만 열림)
+  // 대분류 클릭 시 자유로운 토글 (다른 대분류가 닫혀 시선을 잃어버리는 현상 방지)
   const toggleCategory = (id) => {
-    setOpenCategories(prev => {
-      if (prev[id]) {
-        return {}; // 이미 열려있는 경우 닫기
-      }
-      return { [id]: true }; // 다른 대분류는 모두 닫고 선택한 대분류만 열기
-    });
+    setOpenCategories(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
   const toggleSubCategory = (id) => {
@@ -132,35 +85,41 @@ function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch })
     setOpenChildCategories(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const renderGuideItem = (item) => (
-    <button 
-      key={item.id}
-      title={item.title}
-      onClick={() => {
-        setActivePage(item.id);
-        window.scrollTo({ top: 0, behavior: 'instant' });
-        if (isMobile) setIsOpen(false);
-      }}
-      style={{
-        display: 'flex', alignItems: 'center',
-        gap: '0.75rem', padding: '0.6rem 0.75rem', 
-        borderRadius: 'var(--radius-md)',
-        color: activePage === item.id ? 'var(--ci-primary)' : 'var(--text-primary)',
-        background: activePage === item.id ? 'var(--ci-primary-light)' : 'transparent',
-        border: 'none', cursor: 'pointer', textAlign: 'left', 
-        width: '100%', fontFamily: 'inherit', fontSize: '0.9rem', fontWeight: activePage === item.id ? 500 : 400,
-        whiteSpace: 'nowrap', transition: 'all 0.2s',
-      }}
-      onMouseEnter={e => {
-         if(activePage !== item.id) e.currentTarget.style.background = 'var(--surface-border)';
-      }}
-      onMouseLeave={e => {
-         if(activePage !== item.id) e.currentTarget.style.background = 'transparent';
-      }}
-    >
-      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.title}</span>
-    </button>
-  );
+  const renderGuideItem = (item) => {
+    const isItemActive = activePage === item.id;
+    return (
+      <button 
+        key={item.id}
+        title={item.title}
+        className={`sidebar-guide-item ${isItemActive ? 'sidebar-item-active' : ''}`}
+        onClick={() => {
+          setActivePage(item.id);
+          window.scrollTo({ top: 0, behavior: 'instant' });
+          if (isMobile) setIsOpen(false);
+        }}
+        style={{
+          display: 'flex', alignItems: 'center',
+          gap: '0.75rem', padding: '0.52rem 0.7rem', 
+          borderRadius: 'var(--radius-md)',
+          color: isItemActive ? 'var(--ci-primary)' : 'var(--text-primary)',
+          background: isItemActive ? 'var(--ci-primary-light)' : 'transparent',
+          border: 'none', cursor: 'pointer', textAlign: 'left', 
+          width: '100%', fontFamily: 'inherit', 
+          fontSize: '0.85rem', 
+          fontWeight: isItemActive ? 600 : 400,
+          whiteSpace: 'nowrap', transition: 'all 0.2s',
+        }}
+        onMouseEnter={e => {
+           if(!isItemActive) e.currentTarget.style.background = 'var(--surface-border)';
+        }}
+        onMouseLeave={e => {
+           if(!isItemActive) e.currentTarget.style.background = 'transparent';
+        }}
+      >
+        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.title}</span>
+      </button>
+    );
+  };
 
   const cdnUrl = import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr';
 
@@ -490,7 +449,7 @@ function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch })
 
                             const isOpened = Boolean(openCategories[category.id]);
 
-              // 서브카테고리가 없고 직속 아이템이 딱 1개인 경우: 아코디언 폴더 대신 바로 클릭 가능한 본문 링크로 렌더링
+              // 서브카테고리가 없고 직속 아이템이 딱 1개인 경우 (단일 가이드 메뉴 - 중/소분류 글씨체 규격 동기화)
               if (displaySubCats.length === 0 && displayItems.length === 1) {
                 const item = displayItems[0];
                 const isItemActive = activePage === item.id;
@@ -502,12 +461,14 @@ function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch })
                         window.scrollTo({ top: 0, behavior: 'instant' });
                         if (isMobile) setIsOpen(false);
                       }}
+                      className={`sidebar-guide-item ${isItemActive ? 'sidebar-item-active' : ''}`}
                       style={{ 
                          display: 'flex', alignItems: 'center', justifyContent: 'space-between', 
-                         cursor: 'pointer', padding: '0.5rem',
+                         cursor: 'pointer', padding: '0.52rem 0.7rem',
                          background: isItemActive ? 'var(--ci-primary-light)' : 'transparent',
                          border: 'none', borderRadius: 'var(--radius-md)',
-                         width: '100%', textAlign: 'left', transition: 'all 0.2s'
+                         width: '100%', textAlign: 'left', transition: 'all 0.2s',
+                         fontFamily: 'inherit'
                       }}
                       onMouseEnter={e => {
                          if(!isItemActive) e.currentTarget.style.background = 'var(--surface-border)';
@@ -516,9 +477,14 @@ function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch })
                          if(!isItemActive) e.currentTarget.style.background = 'transparent';
                       }}
                     >
-                      <h3 style={{ fontSize: '0.8rem', color: isItemActive ? 'var(--ci-primary)' : 'var(--text-secondary)', margin: 0, fontWeight: isItemActive ? 700 : 600, whiteSpace: 'nowrap', letterSpacing: '0.02em' }}>
+                      <span style={{ 
+                        fontSize: '0.86rem', 
+                        color: isItemActive ? 'var(--ci-primary)' : 'var(--text-primary)', 
+                        fontWeight: isItemActive ? 600 : 500, 
+                        whiteSpace: 'nowrap' 
+                      }}>
                         {category.title}
-                      </h3>
+                      </span>
                     </button>
                   </div>
                 );
@@ -530,21 +496,34 @@ function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch })
                     onClick={() => toggleCategory(category.id)} 
                     style={{ 
                        display: 'flex', alignItems: 'center', justifyContent: 'space-between', 
-                       cursor: 'pointer', padding: '0.5rem'
+                       cursor: 'pointer', padding: '0.52rem 0.65rem',
+                       borderRadius: 'var(--radius-md)',
+                       background: isOpened ? 'rgba(0, 0, 0, 0.025)' : 'transparent',
+                       transition: 'all 0.2s'
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.background = 'var(--surface-border)';
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.background = isOpened ? 'rgba(0, 0, 0, 0.025)' : 'transparent';
                     }}
                   >
                     <h3 style={{ 
-                      fontSize: '0.8rem', 
-                      color: isOpened ? 'var(--ci-primary)' : 'var(--text-secondary)', 
+                      fontSize: '0.88rem', 
+                      color: isOpened ? 'var(--ci-primary)' : 'var(--text-primary)', 
                       margin: 0, 
                       fontWeight: isOpened ? 700 : 600, 
                       whiteSpace: 'nowrap', 
-                      letterSpacing: '0.02em',
+                      letterSpacing: '0.01em',
                       transition: 'color 0.2s'
                     }}>
                       {category.title}
                     </h3>
-                    {isOpened ? <ChevronDown size={14} color="var(--ci-primary)" /> : <ChevronRight size={14} color="var(--text-secondary)" />}
+                    {isOpened ? (
+                      <ChevronDown size={14} color="var(--ci-primary)" />
+                    ) : (
+                      <ChevronRight size={14} color="var(--text-secondary)" />
+                    )}
                   </div>
                   
                   {isOpened && (
@@ -571,7 +550,7 @@ function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch })
                               onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                             >
                               {isSubOpened ? <ChevronDown size={14} color="var(--ci-primary)" /> : <ChevronRight size={14} color="var(--text-secondary)" />}
-                              <span style={{ fontSize: '0.9rem', fontWeight: 500, color: isSubOpened ? 'var(--ci-primary)' : 'var(--text-primary)', whiteSpace: 'nowrap' }}>
+                              <span style={{ fontSize: '0.86rem', fontWeight: isSubOpened ? 600 : 500, color: isSubOpened ? 'var(--ci-primary)' : 'var(--text-primary)', whiteSpace: 'nowrap' }}>
                                 {subCat.title}
                               </span>
                             </div>
@@ -598,7 +577,7 @@ function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch })
                                         onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                       >
                                         {isChildOpened ? <ChevronDown size={14} color="var(--ci-primary)" /> : <ChevronRight size={14} color="var(--text-secondary)" />}
-                                        <span style={{ fontSize: '0.85rem', fontWeight: 500, color: isChildOpened ? 'var(--ci-primary)' : 'var(--text-primary)', whiteSpace: 'nowrap' }}>
+                                        <span style={{ fontSize: '0.84rem', fontWeight: isChildOpened ? 600 : 500, color: isChildOpened ? 'var(--ci-primary)' : 'var(--text-primary)', whiteSpace: 'nowrap' }}>
                                           {childCat.title}
                                         </span>
                                       </div>

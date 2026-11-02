@@ -549,8 +549,8 @@ mark {
 
 /* Beautiful Scrollbar Design */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 3px;
+  height: 3px;
 }
 
 ::-webkit-scrollbar-track {
@@ -558,17 +558,17 @@ mark {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(47, 98, 134, 0.2); /* CI Primary with low opacity */
+  background-color: rgba(47, 98, 134, 0.1); /* CI Primary with ultra-low opacity */
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(47, 98, 134, 0.4);
+  background-color: rgba(47, 98, 134, 0.25);
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(47, 98, 134, 0.2) transparent;
+  scrollbar-color: rgba(47, 98, 134, 0.1) transparent;
 }
 
 /* Print / PDF Export Utilities */
@@ -760,12 +760,12 @@ mark {
 /* Custom Thin Scrollbar */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
+  scrollbar-color: rgba(148, 163, 184, 0.18) transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 3px;
+  height: 3px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
@@ -773,13 +773,13 @@ mark {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(148, 163, 184, 0.3);
+  background-color: rgba(148, 163, 184, 0.15);
   border-radius: 9999px;
   transition: background-color 0.2s;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(148, 163, 184, 0.6);
+  background-color: rgba(148, 163, 184, 0.35);
 }
 
 /* Markdown Table Styles */
