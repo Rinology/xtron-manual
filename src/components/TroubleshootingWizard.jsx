@@ -287,7 +287,7 @@ function TroubleshootingWizard({ setActivePage }) {
                   )) : (
                     <div style={{ padding: '3.5rem 2rem', textAlign: 'center', color: 'var(--text-secondary)', background: 'var(--bg-color)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--surface-border)' }}>
                       <p style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>일치하는 증상이 없습니다 😢</p>
-                      <p style={{ fontSize: '0.88rem' }}>다른 키워드로 검색하시거나 우측 하단의 퀵 메뉴를 통해 문의해 주세요.</p>
+                      <p style={{ fontSize: '0.88rem' }}>다른 키워드로 검색하시거나 상단 또는 사이드바 하단의 퀵메뉴를 통해 문의해 주세요.</p>
                     </div>
                   )}
                 </div>

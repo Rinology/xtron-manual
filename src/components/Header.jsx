@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useGuides } from '../context/GuideContext';
 import { Home, LayoutGrid, MessageCircle, ShoppingBag, MapPin, Tag, Youtube } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import FirstVisitHintPopup from './FirstVisitHintPopup';
 
 function Header({ activePage, setActivePage, isOpen, setIsOpen }) {
   const { allGuideItems, faqItems } = useGuides();
@@ -17,6 +18,14 @@ function Header({ activePage, setActivePage, isOpen, setIsOpen }) {
   // 우측 상단 퀵링크 팝업 상태
   const [isQuickLinksOpen, setIsQuickLinksOpen] = useState(false);
   const quickLinksRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth <= 768 : false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -43,25 +52,34 @@ function Header({ activePage, setActivePage, isOpen, setIsOpen }) {
       <div className="header-inner">
         <div className="header-nav-container">
           {!isOpen && (
-            <button
-              className="mobile-menu-btn"
-              onClick={() => setIsOpen(true)}
-              title="메뉴 열기"
-              style={{ 
-                marginRight: '0.25rem',
-                background: 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                padding: '0.4rem',
-                borderRadius: '50%'
-              }}
-            >
-              <img 
-                src={`${import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr'}/Common-logo/X_logo_black_v2.webp`} 
-                alt="Menu" 
-                style={{ width: '24px', height: '24px', objectFit: 'contain' }}
-              />
-            </button>
+            <div style={{ position: 'relative', display: isMobile ? 'inline-flex' : 'none', alignItems: 'center' }}>
+              <button
+                className="mobile-menu-btn"
+                onClick={() => setIsOpen(true)}
+                title="메뉴 열기"
+                style={{ 
+                  marginRight: '0.25rem',
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: '0.4rem',
+                  borderRadius: '50%'
+                }}
+              >
+                <img 
+                  src={`${import.meta.env.VITE_CDN_URL || 'https://cdn.xtron-guide.kr'}/Common-logo/X_logo_black_v2.webp`} 
+                  alt="Menu" 
+                  style={{ width: '24px', height: '24px', objectFit: 'contain' }}
+                />
+              </button>
+              {isMobile && !activePage && (
+                <FirstVisitHintPopup
+                  isOpen={isOpen}
+                  onOpen={() => setIsOpen(true)}
+                  position="mobile"
+                />
+              )}
+            </div>
           )}
           {showBreadcrumb && (
             <>

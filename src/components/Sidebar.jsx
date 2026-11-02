@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGuides } from '../context/GuideContext';
-import { ChevronDown, ChevronRight, Search, MessageCircle, ShoppingBag, MapPin, Tag, Youtube, Sparkles, LayoutGrid, PanelLeftClose, HelpCircle } from 'lucide-react';
+import FirstVisitHintPopup from './FirstVisitHintPopup';
+import { ChevronDown, ChevronRight, ChevronLeft, Search, MessageCircle, ShoppingBag, MapPin, Tag, Youtube, Sparkles, LayoutGrid, PanelLeftClose, HelpCircle } from 'lucide-react';
 
 function SidebarTooltip({ text, visible }) {
   return (
@@ -22,6 +23,31 @@ function SidebarTooltip({ text, visible }) {
   );
 }
 
+// 현재 선택된 문서의 대분류/중분류/소분류 경로를 탐색하는 헬퍼 함수
+const findCategoryHierarchy = (categories, itemId) => {
+  if (!categories || !itemId) return null;
+  for (const cat of categories) {
+    if (cat.items && cat.items.some(item => item.id === itemId)) {
+      return { catId: cat.id, subId: null, childId: null };
+    }
+    if (cat.subCategories) {
+      for (const sub of cat.subCategories) {
+        if (sub.items && sub.items.some(item => item.id === itemId)) {
+          return { catId: cat.id, subId: sub.id, childId: null };
+        }
+        if (sub.childCategories) {
+          for (const child of sub.childCategories) {
+            if (child.items && child.items.some(item => item.id === itemId)) {
+              return { catId: cat.id, subId: sub.id, childId: child.id };
+            }
+          }
+        }
+      }
+    }
+  }
+  return null;
+};
+
 function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch }) {
   const { guidesData, wizardFlow, faqItems } = useGuides();
   const hasWizard = Boolean(
@@ -32,13 +58,30 @@ function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch })
   );
   const hasFaq = Boolean(faqItems && faqItems.length > 0);
   const isFaqActive = activePage === 'faq' || Boolean(activePage && faqItems && faqItems.some(f => f.id.toLowerCase() === activePage.toLowerCase()));
-  const [openCategories, setOpenCategories] = useState({
-    "basic": true,
-    "battery-guide": true,
-    "troubleshooting": true
-  });
+  const [openCategories, setOpenCategories] = useState({});
   const [openSubCategories, setOpenSubCategories] = useState({});
   const [openChildCategories, setOpenChildCategories] = useState({});
+
+  // activePage 변경 시: 홈/FAQ/마법사 진입 시 모든 아코디언 일괄 닫기, 본문 진입 시 해당 문서가 속한 분류만 열기
+  useEffect(() => {
+    if (!activePage || activePage === 'troubleshooting-wizard' || isFaqActive) {
+      setOpenCategories({});
+      setOpenSubCategories({});
+      setOpenChildCategories({});
+      return;
+    }
+
+    const hierarchy = findCategoryHierarchy(guidesData?.categories, activePage);
+    if (hierarchy) {
+      setOpenCategories({ [hierarchy.catId]: true });
+      setOpenSubCategories(hierarchy.subId ? { [hierarchy.subId]: true } : {});
+      setOpenChildCategories(hierarchy.childId ? { [hierarchy.childId]: true } : {});
+    } else {
+      setOpenCategories({});
+      setOpenSubCategories({});
+      setOpenChildCategories({});
+    }
+  }, [activePage, guidesData?.categories, isFaqActive]);
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth <= 768 : false);
   
   // 퀵링크 팝업 상태
@@ -71,8 +114,14 @@ function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch })
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // 대분류 클릭 시 단일 아코디언 (다른 대분류는 닫히고 클릭한 대분류만 열림)
   const toggleCategory = (id) => {
-    setOpenCategories(prev => ({ ...prev, [id]: !prev[id] }));
+    setOpenCategories(prev => {
+      if (prev[id]) {
+        return {}; // 이미 열려있는 경우 닫기
+      }
+      return { [id]: true }; // 다른 대분류는 모두 닫고 선택한 대분류만 열기
+    });
   };
 
   const toggleSubCategory = (id) => {
@@ -128,15 +177,15 @@ function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch })
 
       <aside 
         style={{
-          width: isMobile ? '300px' : (isOpen ? '300px' : '68px'),
-          transform: isMobile ? (isOpen ? 'translateX(0)' : 'translateX(-300px)') : 'none',
+          width: isMobile ? '280px' : (isOpen ? '260px' : '68px'),
+          transform: isMobile ? (isOpen ? 'translateX(0)' : 'translateX(-280px)') : 'none',
           transition: 'width 0.28s cubic-bezier(0.2, 0, 0, 1), transform 0.28s cubic-bezier(0.2, 0, 0, 1)',
           height: '100dvh',
-          position: isMobile ? 'fixed' : 'sticky',
+          position: isMobile ? 'fixed' : 'relative',
           top: 0,
           left: 0,
-          background: 'var(--bg-color)', // Gemini 스타일: 배경색으로만 구분
-          borderRight: 'none', // 선 제거
+          background: 'var(--bg-color)',
+          borderRight: '1px solid var(--surface-border)',
           display: 'flex',
           flexDirection: 'column',
           overflow: 'visible', // 팝업 메뉴를 위해 visible 유지
@@ -150,6 +199,26 @@ function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch })
           }
         }}
       >
+        {/* 사이드바 열려있을 때만 노출되는 슬림 미니멀 "I |" 닫기 핸들 (닫혀있을 땐 미노출) */}
+        {isOpen && (
+          <div style={{ position: 'absolute', top: '50%', right: '-5px', transform: 'translateY(-50%)', zIndex: 120 }}>
+            <button
+              type="button"
+              className="sidebar-border-handle"
+              onClick={(e) => {
+                e.stopPropagation();
+                setHoveredButton(null);
+                setIsOpen(false);
+              }}
+              aria-label="사이드바 닫기"
+              onMouseEnter={() => setHoveredButton('close-handle')}
+              onMouseLeave={() => setHoveredButton(null)}
+            >
+              <div className="sidebar-border-handle-bar" />
+            </button>
+            <SidebarTooltip text="사이드바 닫기" visible={hoveredButton === 'close-handle'} />
+          </div>
+        )}
         <div style={{ padding: '1rem 0 0.5rem 0', display: 'flex', flexDirection: 'column', gap: '1.25rem', flex: 1, minHeight: 0, overflow: 'visible' }}>
           
           {/* Hamburger / Brand Area - 두 로고 이미지를 DOM에 상시 유지하여 열림/닫힘 시 이미지 재디코딩 깜빡임 방지 */}
@@ -224,6 +293,13 @@ function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch })
                 />
               </button>
               <SidebarTooltip text="사이드바 열기" visible={!isOpen && !activePage && hoveredButton === 'expand'} />
+              {!isOpen && !isMobile && !activePage && (
+                <FirstVisitHintPopup 
+                  isOpen={isOpen} 
+                  onOpen={() => setIsOpen(true)} 
+                  position="desktop" 
+                />
+              )}
             </div>
           </div>
 
@@ -395,7 +471,7 @@ function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch })
           </div>
 
           {/* Navigation Categories - DOM 상시 유지하여 사이드바 열림 시 레이아웃 재계산/깜빡임 원천 차단 */}
-          <nav className="custom-scrollbar" style={{ display: isOpen ? 'flex' : 'none', flexDirection: 'column', gap: '1.25rem', flex: 1, padding: '0 1rem', overflowY: 'auto', overflowX: 'hidden' }}>
+          <nav className="custom-scrollbar" style={{ display: isOpen ? 'flex' : 'none', flexDirection: 'column', gap: '1.25rem', flex: 1, padding: '0 0.85rem', overflowY: 'auto', overflowX: 'hidden' }}>
             {guidesData.categories.map(category => {
               let displayItems = [];
               let displaySubCats = [];
@@ -412,11 +488,12 @@ function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch })
                 }));
               }
 
-              const isOpened = openCategories[category.id];
+                            const isOpened = Boolean(openCategories[category.id]);
 
               // 서브카테고리가 없고 직속 아이템이 딱 1개인 경우: 아코디언 폴더 대신 바로 클릭 가능한 본문 링크로 렌더링
               if (displaySubCats.length === 0 && displayItems.length === 1) {
                 const item = displayItems[0];
+                const isItemActive = activePage === item.id;
                 return (
                   <div key={category.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                     <button 
@@ -428,18 +505,18 @@ function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch })
                       style={{ 
                          display: 'flex', alignItems: 'center', justifyContent: 'space-between', 
                          cursor: 'pointer', padding: '0.5rem',
-                         background: activePage === item.id ? 'var(--ci-primary-light)' : 'transparent',
+                         background: isItemActive ? 'var(--ci-primary-light)' : 'transparent',
                          border: 'none', borderRadius: 'var(--radius-md)',
                          width: '100%', textAlign: 'left', transition: 'all 0.2s'
                       }}
                       onMouseEnter={e => {
-                         if(activePage !== item.id) e.currentTarget.style.background = 'var(--surface-border)';
+                         if(!isItemActive) e.currentTarget.style.background = 'var(--surface-border)';
                       }}
                       onMouseLeave={e => {
-                         if(activePage !== item.id) e.currentTarget.style.background = 'transparent';
+                         if(!isItemActive) e.currentTarget.style.background = 'transparent';
                       }}
                     >
-                      <h3 style={{ fontSize: '0.8rem', color: activePage === item.id ? 'var(--ci-primary)' : 'var(--text-secondary)', margin: 0, fontWeight: 600, whiteSpace: 'nowrap', letterSpacing: '0.02em' }}>
+                      <h3 style={{ fontSize: '0.8rem', color: isItemActive ? 'var(--ci-primary)' : 'var(--text-secondary)', margin: 0, fontWeight: isItemActive ? 700 : 600, whiteSpace: 'nowrap', letterSpacing: '0.02em' }}>
                         {category.title}
                       </h3>
                     </button>
@@ -456,10 +533,18 @@ function Sidebar({ activePage, setActivePage, isOpen, setIsOpen, onOpenSearch })
                        cursor: 'pointer', padding: '0.5rem'
                     }}
                   >
-                    <h3 style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0, fontWeight: 600, whiteSpace: 'nowrap', letterSpacing: '0.02em' }}>
+                    <h3 style={{ 
+                      fontSize: '0.8rem', 
+                      color: isOpened ? 'var(--ci-primary)' : 'var(--text-secondary)', 
+                      margin: 0, 
+                      fontWeight: isOpened ? 700 : 600, 
+                      whiteSpace: 'nowrap', 
+                      letterSpacing: '0.02em',
+                      transition: 'color 0.2s'
+                    }}>
                       {category.title}
                     </h3>
-                    {isOpened ? <ChevronDown size={14} color="var(--text-secondary)" /> : <ChevronRight size={14} color="var(--text-secondary)" />}
+                    {isOpened ? <ChevronDown size={14} color="var(--ci-primary)" /> : <ChevronRight size={14} color="var(--text-secondary)" />}
                   </div>
                   
                   {isOpened && (

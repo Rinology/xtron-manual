@@ -82,6 +82,13 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [activePage]);
 
+  // 모바일 환경에서 페이지 이동 시 (본문, 빠른답변, 자가진단마법사) 사이드바 자동 닫힘
+  useEffect(() => {
+    if (activePage && window.innerWidth <= 768) {
+      setIsSidebarOpen(false);
+    }
+  }, [activePage]);
+
   // 브라우저 탭(파비콘 우측) 타이틀 동적 동기화
   useEffect(() => {
     if (!activePage) {
