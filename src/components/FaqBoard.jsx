@@ -981,7 +981,19 @@ function FaqBoard({ activePage, setActivePage }) {
                 : (item.relatedItemId ? String(item.relatedItemId).split(',').map(s => s.trim()).filter(Boolean) : []);
 
               const matchedRelatedGuides = rawRelatedIds
-                .map(relId => (allGuideItems || []).find(g => g && g.id && g.id.toLowerCase() === relId.toLowerCase()))
+                .map(relId => {
+                  const lowerRelId = relId.toLowerCase();
+                  const matchedGuide = (allGuideItems || []).find(g => g && g.id && g.id.toLowerCase() === lowerRelId);
+                  if (matchedGuide) return matchedGuide;
+
+                  const matchedFaq = (faqItems || []).find(
+                    f => f && f.id && f.id.toLowerCase() === lowerRelId && f.id.toLowerCase() !== item.id.toLowerCase()
+                  );
+                  if (matchedFaq) {
+                    return { id: matchedFaq.id, title: matchedFaq.question, isFaq: true };
+                  }
+                  return null;
+                })
                 .filter(Boolean);
 
               const isHighlighted = activePage && activePage.toLowerCase() === item.id.toLowerCase();
@@ -1103,7 +1115,9 @@ function FaqBoard({ activePage, setActivePage }) {
                                 <button
                                   onClick={() => {
                                     setActivePage(matchedRelatedGuides[0].id);
-                                    window.scrollTo({ top: 0, behavior: 'instant' });
+                                    if (!matchedRelatedGuides[0].isFaq) {
+                                      window.scrollTo({ top: 0, behavior: 'instant' });
+                                    }
                                   }}
                                   style={{
                                     display: 'inline-flex',
@@ -1192,7 +1206,9 @@ function FaqBoard({ activePage, setActivePage }) {
                                             onClick={() => {
                                               setOpenRelatedPopupId(null);
                                               setActivePage(guide.id);
-                                              window.scrollTo({ top: 0, behavior: 'instant' });
+                                              if (!guide.isFaq) {
+                                                window.scrollTo({ top: 0, behavior: 'instant' });
+                                              }
                                             }}
                                             style={{
                                               display: 'flex',

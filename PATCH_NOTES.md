@@ -4,6 +4,15 @@
 
 ---
 
+## 📅 [2026-11-24] FAQ `RelatedItemID` 자기참조(FAQ ↔ FAQ) 지원 추가
+
+### ✨ 기능 개선 (Features & Fixes)
+- **FAQ 연관 항목(`RelatedItemID`)에 다른 `FAQ_ID` 연결 지원 (`src/components/FaqBoard.jsx`)**
+  - 기존에는 `RelatedItemID`가 1번 탭 매뉴얼(`allGuideItems`)만 검색하도록 되어 있어 `FAQ-001` 같은 다른 FAQ ID를 입력하면 버튼이 노출되지 않던 부분을 개선했습니다.
+  - 1번 탭 매뉴얼에서 먼저 검색한 뒤 매칭 항목이 없을 경우 `faqItems`(자기 자신 제외)에서도 검색하여 관련 항목 버튼으로 노출하고, 클릭 시 해당 FAQ 아코디언이 자동으로 펼쳐지며 스크롤 이동하도록 보완했습니다.
+
+---
+
 ## 📅 [2026-11-02] 사이드바 UX 고도화: 스크롤바 슬림·투명도 최적화, 아코디언 독립 토글 복원, 대분류 미니멀 룩 통일, 단일 메뉴 타이포 규격 일원화
 
 ### ✨ 신규 기능 및 UX 개선 (Features & UX Improvements)
