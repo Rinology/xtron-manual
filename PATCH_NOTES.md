@@ -4,9 +4,16 @@
 
 ---
 
-## 📅 [2026-11-24] FAQ `RelatedItemID` 자기참조(FAQ ↔ FAQ) 지원 추가
+## 📅 [2026-11-24] FAQ `RelatedItemID` 자기참조(FAQ ↔ FAQ) 지원 추가 및 메인 가이드 1차 간결화
 
-### ✨ 기능 개선 (Features & Fixes)
+### ✨ 기능 개선 및 콘텐츠 정리 (Features & Content)
+- **에이전트 공통 매뉴얼 작성 규칙 추가 (`.agents/AGENTS.md`, `.agents/GUIDE_STYLE_RULES.md`)**
+  - 모든 메인 가이드 MD 문서가 `1줄 행위 지시(글) → 2D 일러스트(그림)` 순서와 `1동작 = 1이미지` 원칙을 일관되게 유지하도록 프로젝트 공통 에이전트 규칙 문서를 추가했습니다.
+- **프론트랙(타입C) 가이드 전면/후면 2개 문서 분리 및 시트 반영 (`frontrack-typeC-front.md`, `frontrack-typeC-rear.md`, `AS-manual`)**
+  - 기존 `Frontrack-TypeC.md`에 혼재되어 있던 전면(프론트) 및 후면(리어랙) 장착 방법을 두 개의 독립 문서로 분리하고, `AS-manual` 시트에서도 `타입C_전면(프론트) 장착`과 `타입C_후면(리어랙) 장착` 2개 행으로 분리·반영했습니다.
+- **메인 가이드 MD 1차 시범 간결화 (`tire-pressure-basic.md`, `inform.md`, `brake-pad.md`, `error-brake.md`)**
+  - `Deploy` 레퍼런스(`kickstand-TypeA.md`, `pedal.md`) 기준에 맞춰 `1줄 행위 지시(글) → 2D 일러스트(그림)` 순서로 전면 통일하고, 장황한 부연 설명과 불필요한 HTML/`<br>`을 제거했습니다.
+  - 1동작 = 1이미지 원칙에 따라 행위 묘사가 필요한 구간마다 `placehold.co` 플레이스홀더로 촬영/제작할 일러스트 장면 자리를 명확히 배치했습니다.
 - **FAQ 연관 항목(`RelatedItemID`)에 다른 `FAQ_ID` 연결 지원 (`src/components/FaqBoard.jsx`)**
   - 기존에는 `RelatedItemID`가 1번 탭 매뉴얼(`allGuideItems`)만 검색하도록 되어 있어 `FAQ-001` 같은 다른 FAQ ID를 입력하면 버튼이 노출되지 않던 부분을 개선했습니다.
   - 1번 탭 매뉴얼에서 먼저 검색한 뒤 매칭 항목이 없을 경우 `faqItems`(자기 자신 제외)에서도 검색하여 관련 항목 버튼으로 노출하고, 클릭 시 해당 FAQ 아코디언이 자동으로 펼쳐지며 스크롤 이동하도록 보완했습니다.
