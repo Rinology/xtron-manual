@@ -4,6 +4,18 @@
 
 ---
 
+## 📅 [2026-11-27] 품질 보증 안내 및 부품별 점검·교체 주기 가이드 추가 (`BranchDeploy`)
+
+### ✨ 신규 콘텐츠 및 메뉴 등록
+- **품질 보증 안내 문서 추가 (`src/data/markdown/basic/warranty-policy.md`)**
+  - 2026년 1월 1일 이전/이후 구매 기준별 무상 보증 기간 비교표 및 세부 기준(프레임, 배터리·모터, 컨트롤러·전기 계통, 소모품 제외)을 GFM 마크다운 표와 GitHub Alerts(`[!IMPORTANT]`, `[!NOTE]`)로 작성했습니다.
+- **부품별 점검 및 교체 주기 문서 추가 (`src/data/markdown/basic/maintenance-cycle.md`)**
+  - 14개 주요 부품 × 5개 주행거리(기간) 구간별 점검(`✔️`) 및 적극 점검/교체 권장(`🔄`) 기준표를 GFM 마크다운으로 작성했습니다.
+- **Google Sheets CMS 메뉴 등록 (`AS메뉴얼` → `AS-manual` 탭)**
+  - 신규 대분류 `품질 보증 및 점검`(`warranty`) 하위에 `품질 보증 안내`(`warranty-policy`) 및 `부품별 점검 및 교체 주기`(`maintenance-cycle`) 메뉴를 `Status: BranchDeploy` 상태로 추가했습니다.
+
+---
+
 ## 📅 [2026-11-24] FAQ `RelatedItemID` 자기참조(FAQ ↔ FAQ) 지원 추가 및 메인 가이드 1차 간결화
 
 ### ✨ 기능 개선 및 콘텐츠 정리 (Features & Content)
